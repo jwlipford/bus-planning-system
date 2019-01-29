@@ -1,0 +1,77 @@
+University of South Carolina Aiken
+ACSC 240	Project Description
+Spring 2019
+
+First set of requirements
+
+1.	Project Overview
+
+    The software to be developed is an electronic bus planning system that will be suitable for use in city bus stations. A user should
+    be able to input a starting bus station, a destination bus station, and a type of bus at which point the software will plan a route,
+    including any necessary stops based on the information. The software system is required to have a database of various bus stations
+    and types of bus for use in route planning.
+
+2.	Non-Functional Requirements
+
+    a.	The system must run on the computer system of the Department of Mathematical Sciences
+    b.	The system must be developed in Java or C#.
+    c.	The system may use either a text-based interface or a graphical interface.
+    d.	All code used in the system must be 100% original, unless otherwise approved by the instructor.
+    e.	The software must contain a start-up screen that states “THIS SOFTWARE IS NOT TO BE USED FOR ROUTE PLANNING PURPOSE”.
+
+3.	Functional Requirements
+    a.	Bus station database: 
+      i.	The system must contain a database of bus stations with the following information being stored in each
+          1.	Name
+          2.	Latitude
+          3.	Longitude
+      ii.	The user must be able to add a new bus station
+      iii.	The user must be able to modify any information about an existing bus station
+      iv.	The user must be able to delete a bus station
+      v.	The user must be able to display the information about a bus station
+
+    b.	Bus database
+        i.	The system must contain a database of bus with the following information being stored in each
+            1.	Make and model
+            2.	Type: City bus, and long distance
+            3.	Size of fuel tank in gallons
+            4.	Fuel burn at cruise power setting in gallons per hour
+            5.	Speed at cruise power setting in miles
+            6.	???
+            7.	???
+            8.	???
+            9.	???
+            10.	???
+        ii.	The user must be able to add a new bus
+        iii.	The user must be able to modify any information about an existing bus
+        iv.	The user must be able to delete a bus
+        v.	The user must be able to 
+        vi.	y the information about a bus
+    c.	Route planning
+        i.	The user must be able to enter a type of bus, a starting and one or more destination bus stations and have the system design
+            an appropriate travel plan. 
+        ii.	The system must accept bus station input as a substring of the full name. If more than one bus station matches the substring
+            entered, the system must display a menu of possible choices.
+        iii.	The travel planning system must add refueling stops as destinations if the distance from the starting and destination bus
+            stations is greater than the max range of the bus chosen. The max range being determined by fuel burn rate, fuel tank capacity, and bus speed.
+        iv.	The travel panning will include the following information for all legs
+            1.	Staring bus station: name, longitude and latitude.
+            2.	Heading – the true heading (direct straight line) to reach the destination
+            3.	Time to destination
+            4.	Distance of the leg
+            5.	Destination bus station: name, longitude and latitude.
+        v.	If the travel plan is impossible due to lack of refueling facilities, the program must report this, and insert a gas station
+            for refilling. 
+    d.	User Interfaces
+    The design of the user interfaces is up to your group. However, your system should have the following features:
+        i.	A login screen to allow user to input his / her starting bus station and destination bus station to plan a travel.
+        ii.	Bonus marks if the program provides the user with a graphical representation of the route plan.
+
+4.	Required Documents and Due Dates
+
+    a.	Code Listing: your source code with proper comments
+    b.	User’s Manual: The detailed description of how the system is used
+    c.	The following are the due dates:
+        i.	Architecture designs and Class diagrams are due on Monday, February 4.
+        ii.	Data model and file format are due on Monday, February 11.
+        iii.	Testing: (25 – minute)	 Monday, February 18.
