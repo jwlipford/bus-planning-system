@@ -1,7 +1,7 @@
 public class Place
 {
-    private double latitude;  // corresponds to a  y coordinate
-    private double longitude; // corresponds to an x coordinate
+    private double latitude;  // a vertical coordinate in miles
+    private double longitude; // a horizontal coordinate in miles
     
     public double getLatitude (){ return latitude;  }
     public double getLongitude(){ return longitude; }
@@ -19,13 +19,28 @@ public class Place
         return Math.sqrt( latDiff*latDiff + longDiff*longDiff );
     }
     
-    public String directionTo( Place place )
+    // Direction in degrees to another place
+    public double directionTo( Place place )
     {
-        // Not tested as of 1-31, but I think the general idea is right.
-        
         double latDiff  = place.latitude  - this.latitude;
         double longDiff = place.longitude - this.longitude;
-        double angle    = Math.toDegrees( Math.atan( latDiff/longDiff ) );
+        
+        if( longDiff == 0 ) // Going straight up or down
+            return (latDiff > 0) ? 90 : 270;
+        
+        double arctan = Math.toDegrees( Math.atan( latDiff/longDiff ) );
+        // -90 < arctan < 90
+        
+        if( longDiff > 0 ) // Going right
+            return (arctan > 0) ? arctan : (360 + arctan);
+        else // longDiff < 0; Going left
+            return 180 + arctan;
+    }
+    
+    // Returns a direction as text. Tested and works as of 1-Feb-19
+    public String headingTo( Place place )
+    {
+        double angle = directionTo( place );
         
         if(      angle ==   0 )     return "Due East";
         else if( angle  <  45 )     return angle + "° North of East";
