@@ -15,10 +15,13 @@ public class Main extends JFrame{
 	public Main(){
 		
 		JPanel masterPanel = new JPanel(new BorderLayout());
-		
 		JPanel p1 = new JPanel();
 		p1.setLayout(new GridLayout(4,3));
-		p1.add(new JButton("Just an example"));
+		p1.add(new JButton("Just an example1"));
+        p1.add(new JButton("Just an example2"));
+        p1.add(new JButton("Just an example3"));
+        p1.add(new JButton("Just an example4"));
+        p1.add(new JButton("Just an example5"));
 		masterPanel.add(p1,BorderLayout.EAST);
 		
 		
