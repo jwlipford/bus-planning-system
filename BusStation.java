@@ -12,7 +12,7 @@ public class BusStation extends Place
         return connectedStations.get(i);
     }
     
-    public BusStation( double latitude, double longitude, String name )
+    public BusStation( double latitude, double longitude, String name ) throws Exception
     {
         super( latitude, longitude );
         this.name = name;

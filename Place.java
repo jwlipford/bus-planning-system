@@ -1,19 +1,29 @@
 public class Place
 {
-    private double latitude;  // a vertical coordinate in miles
-    private double longitude; // a horizontal coordinate in miles
+    private double latitude;  // degrees (0 to 90) south of North Pole
+    private double longitude; // degrees (-180 to 180) east of Prime Meridian
     
     public double getLatitude (){ return latitude;  }
     public double getLongitude(){ return longitude; }
     
-    public Place( double latitude, double longitude )
+    public Place( double latitude, double longitude ) throws Exception
     {
-        this.latitude  = latitude;
+        if( latitude < 0 )
+        	throw new Exception( "Latitude < 0" );
+        if( latitude > 90 )
+        	throw new Exception( "Latitude > 90" );
+        if( longitude < -180 )
+        	throw new Exception( "Longitude < -180" );
+        if( longitude > 180 )
+        	throw new Exception( "Longitude > 180" );
+    	this.latitude  = latitude;
         this.longitude = longitude;
     }
     
     public double distanceTo( Place place )
     {
+    	// TODO: Convert to miles
+    	
         double latDiff  = place.latitude  - this.latitude;
         double longDiff = place.longitude - this.longitude;
         return Math.sqrt( latDiff*latDiff + longDiff*longDiff );
@@ -43,20 +53,20 @@ public class Place
         double angle = directionTo( place );
         
         if(      angle ==   0 )     return "Due East";
-        else if( angle  <  45 )     return angle + "Â° North of East";
+        else if( angle  <  45 )     return angle + "° North of East";
         else if( angle ==  45 )     return "North-East";
-        else if( angle  <  90 )     return (90 - angle) + "Â° East of North";
+        else if( angle  <  90 )     return (90 - angle) + "° East of North";
         else if( angle ==  90 )     return "Due North";
-        else if( angle  < 135 )     return (angle - 90) + "Â° West of North";
+        else if( angle  < 135 )     return (angle - 90) + "° West of North";
         else if( angle == 135 )     return "North-West";
-        else if( angle  < 180 )     return (180 - angle) + "Â° North of West";
+        else if( angle  < 180 )     return (180 - angle) + "° North of West";
         else if( angle == 180 )     return "Due West";
-        else if( angle  < 225 )     return (angle - 180) + "Â° South of West";
+        else if( angle  < 225 )     return (angle - 180) + "° South of West";
         else if( angle == 225 )     return "South-West";
-        else if( angle  < 270 )     return (270 - angle) + "Â° West of South";
+        else if( angle  < 270 )     return (270 - angle) + "° West of South";
         else if( angle == 270 )     return "Due South";
-        else if( angle  < 315 )     return (angle - 270) + "Â° East of South";
+        else if( angle  < 315 )     return (angle - 270) + "° East of South";
         else if( angle == 315 )     return "South-East";
-        else                        return (360 - angle) + "Â° South of East";
+        else                        return (360 - angle) + "° South of East";
     }
 }
