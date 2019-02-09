@@ -12,8 +12,8 @@ import java.util.ArrayList;
 public class DijkstraStation extends BusStation
 {
 	private double dist;
-	// A non-constant variable that will eventually equal the distance along
-	// along existing connections to a certain starting station
+	// A non-constant variable that will eventually equal the distance (in
+	// miles) along existing connections to a certain starting station
 	
 	private boolean visited;
 	// A non-constant variable indicating whether this station has been visited
@@ -28,10 +28,29 @@ public class DijkstraStation extends BusStation
 		super( station.getLatitude(), station.getLongitude(), station.getName() );
 		correspondingStation = station;
 		connectedStations    = station.connectedStations;
-		connectedDStations =
-			new ArrayList<DijkstraStation>( connectedStations.size() );
+		connectedDStations   = null;
 		dist = Double.POSITIVE_INFINITY;
 		visited = false;
+	}
+	
+	public void transferStations(
+			ArrayList<BusStation>      allBStations,
+			ArrayList<DijkstraStation> allDStations
+	)
+	// Once all DijkstraStations in an area have been created and gathered into
+	// ArrayList allDStations, call this method from each DijkstraStation to
+	// create transfer connectedStations to connectedDStations. The order will
+	// be randomized to improve performance for Dijkstra's Algorithm.
+	{
+		connectedDStations =
+				new ArrayList<DijkstraStation>( connectedStations.size() );
+		for( BusStation bs : connectedStations )
+		{
+			// Random index
+			int i = (int)( Math.random() * (connectedDStations.size() + 1) );
+			DijkstraStation ds = allDStations.get( allBStations.indexOf( bs ) );
+			connectedDStations.add( i, ds );
+		}
 	}
 	
 	@Override
@@ -74,10 +93,9 @@ public class DijkstraStation extends BusStation
 		// dStations will not change from now on. unvisited will gradually lose
 		// members from now on as more stations are visited.
 		
+		
 		for( DijkstraStation ds : dStations )
-			for( BusStation cs : ds.connectedStations )
-				ds.connectedDStations.add(
-						dStations.get( bStations.indexOf( cs ) ) );
+			ds.transferStations( bStations, dStations );
 		
 		dStations.get( bStations.indexOf( start ) ).dist = 0;
 		
@@ -93,7 +111,7 @@ public class DijkstraStation extends BusStation
 				if( !cs.visited )
 				{
 					double distThroughCurrent =
-						current.dist + current.distanceTo( cs );
+						current.dist + current.milesTo( cs );
 					if( cs.dist > distThroughCurrent )
 						cs.dist = distThroughCurrent;
 				}
