@@ -3,15 +3,15 @@
 
 City has 13 bus lines like this:
 
-   --1---9--17-- ... -- 33
-     |   |   |			 |
-   --2--10--18-- ... -- 34
-     |   |   |			 |
-   --3--11--19-- ... -- 35
-     |   |   |			 |
-    ... ... ...  ...   ...
-     |   |   |			 |
-   --8--16--24-- ... -- 40
+   --1---9--17--25--33
+     |   |   |   |   |
+   --2--10--18--26--34
+     |   |   |   |   |
+   --3--11--19--27--35
+     |   |   |	 |   |
+    ... ... ... ... ...
+     |   |   |	 |	 |
+   --8--16--24--32--40
 
 Current constraints around Atlanta:
 
@@ -107,52 +107,32 @@ public class CityDefaultInitialization
         BusPlanningSystem.createBusLine( stations.get(32), stations.get(33), stations.get(34), stations.get(35), 
         		stations.get(36), stations.get(37), stations.get(38), stations.get(39) );
         
-        // Bus Line Row 1
-        BusPlanningSystem.createBusLine( stations.get(0), stations.get(8), stations.get(16), stations.get(24), 
-        		stations.get(32) );
-        
-        // Bus Line Row 2
-        BusPlanningSystem.createBusLine( stations.get(1), stations.get(9), stations.get(17), stations.get(25), 
-        		stations.get(33) );
-        
-        // Bus Line Row 3
-        BusPlanningSystem.createBusLine( stations.get(2), stations.get(10), stations.get(18), stations.get(26), 
-        		stations.get(34) );
-        
-        // Bus Line Row 4
-        BusPlanningSystem.createBusLine( stations.get(3), stations.get(11), stations.get(19), stations.get(27), 
-        		stations.get(35) );
-        
-        // Bus Line Row 5
-        BusPlanningSystem.createBusLine( stations.get(4), stations.get(12), stations.get(20), stations.get(28), 
-        		stations.get(36) );
-        
-        // Bus Line Row 6
-        BusPlanningSystem.createBusLine( stations.get(5), stations.get(13), stations.get(21), stations.get(29), 
-        		stations.get(37) );
-        
-        // Bus Line Row 7
-        BusPlanningSystem.createBusLine( stations.get(6), stations.get(14), stations.get(22), stations.get(30), 
-        		stations.get(38) );
-        
-        // Bus Line Row 8
-        BusPlanningSystem.createBusLine( stations.get(7), stations.get(15), stations.get(23), stations.get(31), 
-        		stations.get(39) );
+        // Rows 0-7
+        for( int r = 0; r < 8; ++r )
+        {
+        	BusStation[] busLine = new BusStation[5];
+        	
+        	// Columns 0-4
+        	for( int c = 0; c < 5; ++c )
+        		busLine[c] = stations.get( r + 8*c );
+        	
+        	BusPlanningSystem.createBusLine( busLine );
+        }
         
         System.out.print( "Stations 1-40 created and connected\n\n" );
         
         Scanner s = new Scanner( System.in );
         
         System.out.print( "Start Station (1-40): " );
-        int start = Integer.parseInt( s.nextLine() );
-        if( start < 0 || start > 7 )
+        int start = Integer.parseInt( s.nextLine() ) - 1;
+        if( start < 0 || start > 39 )
         {
         	s.close(); // IDE was showing a warning about closing s for some reason.
         	throw new Exception();
         }
         System.out.print( "Destination Station (1-40): " );
-        int dest = Integer.parseInt( s.nextLine() );
-        if( dest < 0 || dest > 7 )
+        int dest = Integer.parseInt( s.nextLine() ) - 1;
+        if( dest < 0 || dest > 39 )
         {
         	s.close();
         	throw new Exception();

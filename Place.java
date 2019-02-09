@@ -1,6 +1,13 @@
+/* Method milesTo uses formulas found in the Distance section of
+ * https://www.movable-type.co.uk/scripts/latlong.html
+ */
+
+
 public class Place
 {
-    private double latitude;  // degrees (0 to 90) south of North Pole
+    public static final int EARTH_RADIUS = 3959; // miles
+	
+	private double latitude;  // degrees (0 to 90) south of North Pole
     private double longitude; // degrees (-180 to 180) east of Prime Meridian
     
     public double getLatitude (){ return latitude;  }
@@ -20,16 +27,26 @@ public class Place
         this.longitude = longitude;
     }
     
-    public double distanceTo( Place place )
-    {
-        double latDiff  = place.latitude  - this.latitude;
-        double longDiff = place.longitude - this.longitude;
-        return Math.sqrt( latDiff*latDiff + longDiff*longDiff );
-    }
-    
     public double milesTo( Place place )
     {
-    	return -1; // DUMMY VALUE -- IMPLEMENT!
+    	// Formulas found at the website cited above
+    	double f = Math.sin( 0.5 * (place.getLatitude() - this.getLatitude()) );
+    	double g = Math.sin( 0.5 * (place.getLongitude() - this.getLongitude()) );
+    	double h = Math.cos( place.getLatitude() ) + Math.cos( this.getLatitude() );
+    	double a = f*f + g*g + h;
+    	double c = 2 * Math.atan2( Math.sqrt(a), Math.sqrt( 1-a ) );
+    	return EARTH_RADIUS * c;
+    }
+    
+    public double hoursTo( Place place, Bus bus )
+    {
+    	double speed;
+    	if( bus == null )
+    		speed = 35;
+    	else
+    		speed = bus.getCruisingConsumption();
+    	return milesTo( place ) / speed;
+    	// miles/(miles/hour) = miles*(hours/mile) = hours
     }
     
     // Direction in degrees to another place

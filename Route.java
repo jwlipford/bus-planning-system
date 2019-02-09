@@ -12,8 +12,8 @@ public class Route extends ArrayList<BusStation>
             BusStation next    = this.get( i   );
             s += "Leg " + i + "\n";
             s += "  Start:       " + current.toString() + "\n";
-            s += "  Distance:    " + current.distanceTo( next ) + " degrees\n";
-            s += "  Time:        " + "\n"; // add functionality
+            s += "  Distance:    " + current.milesTo( next ) + " miles\n";
+            s += "  Time:        " + current.hoursTo( next, null ) + " hours\n";
             s += "  Heading:     " + current.headingTo( next ) + "\n";
             s += "  Destination: " + next.toString() + "\n";
         }
