@@ -57,7 +57,9 @@ public class CityDefaultInitialization
         s.close();
         System.out.println();
         
-        Route r = DijkstraStation.dijkstraRoute( stations.get(start), stations.get(dest), stations );
+        ArrayList<DijkstraStation> dStations =
+        		DijkstraStation.busStationsToDijkstraStations( stations, stations.get( start ) );
+        Route r = DijkstraStation.dijkstraRoute( dStations, stations.get( dest ) );
         System.out.print( r.toString() );
     }
 }

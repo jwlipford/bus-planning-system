@@ -22,11 +22,14 @@ public class Place
     
     public double distanceTo( Place place )
     {
-    	// TODO: Convert to miles
-    	
         double latDiff  = place.latitude  - this.latitude;
         double longDiff = place.longitude - this.longitude;
         return Math.sqrt( latDiff*latDiff + longDiff*longDiff );
+    }
+    
+    public double milesTo( Place place )
+    {
+    	return -1; // DUMMY VALUE -- IMPLEMENT!
     }
     
     // Direction in degrees to another place

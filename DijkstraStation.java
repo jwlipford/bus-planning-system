@@ -13,18 +13,21 @@ public class DijkstraStation extends BusStation
 {
 	private double dist;
 	// A non-constant variable that will eventually equal the distance along
-	// along existing connections to the starting station
+	// along existing connections to a certain starting station
 	
 	private boolean visited;
 	// A non-constant variable indicating whether this station has been visited
 	// in the algorithm
+	
+	private BusStation correspondingStation;
 	
 	public ArrayList<DijkstraStation> connectedDStations;
 	
 	public DijkstraStation( BusStation station ) throws Exception
 	{
 		super( station.getLatitude(), station.getLongitude(), station.getName() );
-		connectedStations  = station.connectedStations;
+		correspondingStation = station;
+		connectedStations    = station.connectedStations;
 		connectedDStations =
 			new ArrayList<DijkstraStation>( connectedStations.size() );
 		dist = Double.POSITIVE_INFINITY;
@@ -37,26 +40,6 @@ public class DijkstraStation extends BusStation
 		return super.toString() + ", " + dist + " units from start";
 	}
 	
-	
-	// Static method cor is overloaded, and the 2 overloads return different types.
-	public static DijkstraStation cor(
-			BusStation bs,
-			ArrayList<BusStation> bsList,
-			ArrayList<DijkstraStation> dsList )
-	// Returns the DijkstraStation in dsList that CORresponds to BusStation bs
-	// in parallel ArrayList bsList
-	{
-		return dsList.get( bsList.indexOf( bs ) );
-	}
-	public static BusStation cor(
-			DijkstraStation ds,
-			ArrayList<DijkstraStation> dsList,
-			ArrayList<BusStation> bsList )
-	// Returns the BusStation in bsList that corresponds to DijkstraStation ds
-	// in parallel ArrayList dsList
-	{
-		return bsList.get( dsList.indexOf( ds ) );
-	}
 	
 	
 	
@@ -73,14 +56,12 @@ public class DijkstraStation extends BusStation
 	}
 	
 	
-	
-	public static Route dijkstraRoute(
-			BusStation startStation,
-			BusStation destStation,
-			ArrayList<BusStation> bStations
+	public static ArrayList<DijkstraStation> busStationsToDijkstraStations(
+			ArrayList<BusStation> bStations, BusStation start
 	) throws Exception
-	// The Route from the start to the destination, determined using Dijkstra's
-	// Algorithm
+	// Returns an ArrayList of DijkstraStations parallel to bStations, each
+	// DijkstraStation with the same connections as the corresponding BusStation,
+	// and each DijkstraStation with dist from start calculated
 	{
 		ArrayList<DijkstraStation> dStations = new ArrayList<DijkstraStation>();
 		ArrayList<DijkstraStation> unvisited = new ArrayList<DijkstraStation>();
@@ -95,16 +76,18 @@ public class DijkstraStation extends BusStation
 		
 		for( DijkstraStation ds : dStations )
 			for( BusStation cs : ds.connectedStations )
-				ds.connectedDStations.add( cor( cs, bStations, dStations ) );
+				ds.connectedDStations.add(
+						dStations.get( bStations.indexOf( cs ) ) );
 		
-		final DijkstraStation start = cor( startStation, bStations, dStations );
-		final DijkstraStation dest  = cor(  destStation, bStations, dStations );
-		start.dist = 0;
+		dStations.get( bStations.indexOf( start ) ).dist = 0;
 		
-		DijkstraStation current = start; // non-constant
+		DijkstraStation current; // non-constant
 		
-		while( true ) // Until loop is broken when dest is visited
+		while( !unvisited.isEmpty() )
 		{
+			current = bestOf( unvisited );
+			// In the first iteration, current = the one with dist of 0,
+			// assigned above, corresponding to start.
 			for( DijkstraStation cs : current.connectedDStations )
 			{
 				if( !cs.visited )
@@ -117,24 +100,40 @@ public class DijkstraStation extends BusStation
 			}
 			current.visited = true;
 			unvisited.remove( current );
-			if( dest.visited)
-				break;
-			else
-				current = bestOf( unvisited );
 		}
 		
-		// Restore memory:
-		unvisited = null;
-		current   = null;
+		return dStations;
+	}
+	
+	
+	public static Route dijkstraRoute(
+			ArrayList<DijkstraStation> dStations, BusStation destination
+	) throws Exception
+	// The Route from the start (specified when creating the dStations
+	// ArrayList, probably using the busStationsToDijkstraStations method)
+	// to the destination (specified here)
+	{
+		DijkstraStation start       = null;
+		DijkstraStation backtracker = null;
+		for( DijkstraStation ds : dStations )
+		{
+			if( ds.correspondingStation == destination )
+				backtracker = ds;
+			if( ds.dist == 0 )
+				start = ds;
+			if( start != null && backtracker != null )
+				break;
+		}
 		
 		Route route = new Route();
-		route.add( destStation );
-		DijkstraStation backtracker = dest;
+		route.add( destination );
+		
 		while( backtracker != start )
 		{
 			backtracker = bestOf( backtracker.connectedDStations );
-			route.add( 0, cor( backtracker, dStations, bStations ) );
+			route.add( 0, backtracker.correspondingStation );
 		}
+		
 		return route;
 	}
 }
