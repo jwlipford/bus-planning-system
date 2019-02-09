@@ -7,3 +7,6 @@
 /Main.class
 /Place.class
 /Route.class
+/City.class
+/City$StationRltvToDest.class
+/DijkstraStation.class

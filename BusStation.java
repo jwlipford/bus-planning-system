@@ -3,14 +3,9 @@ import java.util.ArrayList;
 public class BusStation extends Place
 {
     private String name;
-    private ArrayList<BusStation> connectedStations;
+    public ArrayList<BusStation> connectedStations;
     
     public String getName(){ return name; }
-    
-    public BusStation getConnectedStation( int i )
-    {
-        return connectedStations.get(i);
-    }
     
     public BusStation( double latitude, double longitude, String name ) throws Exception
     {
@@ -22,5 +17,11 @@ public class BusStation extends Place
     public void connect( BusStation station )
     {
         connectedStations.add( station );
+    }
+    
+    @Override
+    public String toString()
+    {
+    	return name + " at (" + getLatitude() + ", " + getLongitude() + ")";
     }
 }
