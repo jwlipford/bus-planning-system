@@ -1,5 +1,6 @@
-/* Method milesTo uses formulas found in the Distance section of
- * https://www.movable-type.co.uk/scripts/latlong.html
+/* 
+ * 
+ * 
  */
 
 
@@ -7,7 +8,7 @@ public class Place
 {
     public static final int EARTH_RADIUS = 3959; // miles
 	
-	private double latitude;  // degrees (0 to 90) south of North Pole
+	private double latitude;  // degrees (-90 to 90) north of Equator
     private double longitude; // degrees (-180 to 180) east of Prime Meridian
     
     public double getLatitude (){ return latitude;  }
@@ -15,9 +16,9 @@ public class Place
     
     public Place( double latitude, double longitude ) throws Exception
     {
-        if( latitude < 0 )
-        	throw new Exception( "Latitude < 0" );
-        if( latitude > 90 )
+        if( latitude < -90 )
+        	throw new Exception( "Latitude < -90" );
+        if( latitude >  90 )
         	throw new Exception( "Latitude > 90" );
         if( longitude < -180 )
         	throw new Exception( "Longitude < -180" );
@@ -27,30 +28,53 @@ public class Place
         this.longitude = longitude;
     }
     
-    public double milesTo( Place place )
+    public double milesTo_Old( Place place )
+    // 1° latitude constantly = ~69 miles, and 1° longitude varies from 0
+    // miles at the poles to a maximum of ~69 miles at the equator.
+    // Source: https://gis.stackexchange.com/questions/142326/
+    //
+    // This method works and is quicker than milesTo below, but this method is
+    // less accurate. I am leaving it here in case it is needed, but prefer the
+    // other one.
     {
-    	// Formulas found at the website cited above
-    	double f = Math.sin( 0.5 * (place.getLatitude() - this.getLatitude()) );
-    	double g = Math.sin( 0.5 * (place.getLongitude() - this.getLongitude()) );
-    	double h = Math.cos( place.getLatitude() ) + Math.cos( this.getLatitude() );
-    	double a = f*f + g*g + h;
+    	double latDiff  = place.latitude  - this.latitude;
+        double longDiff = place.longitude - this.longitude;
+        
+        double vDiffMiles = 69 * latDiff;
+        double hDiffMiles = 69 * longDiff * Math.cos( Math.toRadians( latDiff ) );
+        
+        return Math.sqrt( vDiffMiles*vDiffMiles + hDiffMiles*hDiffMiles );
+    }
+    
+    public double milesTo( Place place )
+    // This method uses formulas found in the Distance section of
+	// https://www.movable-type.co.uk/scripts/latlong.html.
+    // I have no idea how they work, but I have verified that they do.
+    {
+    	double thisLatRad   = Math.toRadians(  this.getLatitude()  );
+    	double placeLatRad  = Math.toRadians( place.getLatitude()  );
+    	double thisLongRad  = Math.toRadians(  this.getLongitude() );
+    	double placeLongRad = Math.toRadians( place.getLongitude() );
+    	
+    	double f = Math.sin( 0.5*( Math.abs( thisLatRad - placeLatRad ) ) );
+    	double g = Math.cos( thisLatRad );
+    	double h = Math.cos( placeLatRad );
+    	double i = Math.sin( 0.5*( Math.abs( thisLongRad - placeLongRad ) ) );
+    	
+    	double a = f*f + g*h*i*i;
     	double c = 2 * Math.atan2( Math.sqrt(a), Math.sqrt( 1-a ) );
     	return EARTH_RADIUS * c;
     }
     
     public double hoursTo( Place place, Bus bus )
     {
-    	double speed;
-    	if( bus == null )
-    		speed = 35;
-    	else
-    		speed = bus.getCruisingConsumption();
-    	return milesTo( place ) / speed;
+    	return milesTo( place ) / bus.getCruisingConsumption();
     	// miles/(miles/hour) = miles*(hours/mile) = hours
     }
     
-    // Direction in degrees to another place
+    // Possibly update this one too?
     public double directionTo( Place place )
+    // Direction in degrees to another place
     {
         double latDiff  = place.latitude  - this.latitude;
         double longDiff = place.longitude - this.longitude;

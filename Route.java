@@ -2,7 +2,9 @@ import java.util.ArrayList;
 
 public class Route extends ArrayList<BusStation>
 {    
-    @Override
+    public Bus bus;
+	
+	@Override
     public String toString() // Use this to display the route!
     {
         String s = "";
@@ -13,7 +15,7 @@ public class Route extends ArrayList<BusStation>
             s += "Leg " + i + "\n";
             s += "  Start:       " + current.toString() + "\n";
             s += "  Distance:    " + current.milesTo( next ) + " miles\n";
-            s += "  Time:        " + current.hoursTo( next, null ) + " hours\n";
+            s += "  Time:        " + current.hoursTo( next, bus ) + " hours\n";
             s += "  Heading:     " + current.headingTo( next ) + "\n";
             s += "  Destination: " + next.toString() + "\n";
         }

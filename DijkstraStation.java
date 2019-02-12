@@ -33,26 +33,6 @@ public class DijkstraStation extends BusStation
 		visited = false;
 	}
 	
-	public void transferStations(
-			ArrayList<BusStation>      allBStations,
-			ArrayList<DijkstraStation> allDStations
-	)
-	// Once all DijkstraStations in an area have been created and gathered into
-	// ArrayList allDStations, call this method from each DijkstraStation to
-	// create transfer connectedStations to connectedDStations. The order will
-	// be randomized to improve performance for Dijkstra's Algorithm.
-	{
-		connectedDStations =
-				new ArrayList<DijkstraStation>( connectedStations.size() );
-		for( BusStation bs : connectedStations )
-		{
-			// Random index
-			int i = (int)( Math.random() * (connectedDStations.size() + 1) );
-			DijkstraStation ds = allDStations.get( allBStations.indexOf( bs ) );
-			connectedDStations.add( i, ds );
-		}
-	}
-	
 	@Override
 	public String toString() // This method is useful in debugging at least
 	{
@@ -95,7 +75,12 @@ public class DijkstraStation extends BusStation
 		
 		
 		for( DijkstraStation ds : dStations )
-			ds.transferStations( bStations, dStations );
+		{
+			ds.connectedDStations =
+					new ArrayList<DijkstraStation>( ds.connectedStations.size() );
+			for( BusStation bs : ds.connectedStations )
+				ds.connectedDStations.add( dStations.get( bStations.indexOf( bs ) ) );
+		}
 		
 		dStations.get( bStations.indexOf( start ) ).dist = 0;
 		

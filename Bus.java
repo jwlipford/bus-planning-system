@@ -12,6 +12,15 @@ public class Bus
     public double  getCruisingConsumption(){ return cruisingConsumption; }
     public double  getCruisingSpeed()      { return cruisingSpeed;       }
     
+    public Bus( String mm, BusType t, double ts, double cc, double cs )
+    {
+    	makeAndModel = mm;
+    	type = t;
+    	tankSize = ts;
+    	cruisingConsumption = cc;
+    	cruisingSpeed = cs;
+    }
+    
     // Max number of hours cruising before fuel runs out
     public double maxTime()
     {

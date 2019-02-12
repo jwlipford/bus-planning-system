@@ -20,8 +20,8 @@ SW) 33.651294, -84.548232
 SE) 33.651294, -84.273736
 NE) 33.883594, -84.273736
 
-Square Characteristics: ~256 square miles, ~16 mile edges, max length of a bus route is ~23 miles assuming straight line from
-	SE to NE
+Square Characteristics: ~256 square miles, ~16 mile edges, max length of a bus
+route is ~23 miles assuming straight line from SE to NE
  */
 
 import java.util.Scanner;
@@ -30,7 +30,6 @@ import java.util.ArrayList;
 public class CityDefaultInitialization
 {
     public static void main( String[] args ) throws Exception
-    // Testing
     {
         ArrayList<BusStation> stations = new ArrayList<BusStation>(40);
         
@@ -51,7 +50,7 @@ public class CityDefaultInitialization
 		stations.add( new BusStation( 33.883594, -84.479608, "Starborn Valley" ) );	// NNW Station
 		stations.add( new BusStation( 33.850408, -84.479608, "Star Haven" ) );
 		stations.add( new BusStation( 33.817223, -84.479608, "Crystal Palace" ) );
-		stations.add( new BusStation( 33.784037, -84.479608, "Widny Mill" ) );
+		stations.add( new BusStation( 33.784037, -84.479608, "Windy Mill" ) );
 		stations.add( new BusStation( 33.750851, -84.479608, "Shiver City" ) );
 		stations.add( new BusStation( 33.717665, -84.479608, "Gusty Gulch" ) );
 		stations.add( new BusStation( 33.684480, -84.479608, "Star Way" ) );
@@ -87,25 +86,17 @@ public class CityDefaultInitialization
 		stations.add( new BusStation( 33.684480, -84.273736, "Cloud Spires" ) );
 		stations.add( new BusStation( 33.651294, -84.273736, "Crystal Islands" ) );	// SE Station
 		
-		// Bus Line Column 1
-        BusPlanningSystem.createBusLine( stations.get(0), stations.get(1), stations.get(2), stations.get(3), 
-        		stations.get(4), stations.get(5), stations.get(6), stations.get(7) );
-        
-        // Bus Line Column 2
-        BusPlanningSystem.createBusLine( stations.get(8), stations.get(9), stations.get(10), stations.get(11), 
-        		stations.get(12), stations.get(13), stations.get(14), stations.get(15) );
-        
-        // Bus Line Column 3
-        BusPlanningSystem.createBusLine( stations.get(16), stations.get(17), stations.get(18), stations.get(19), 
-        		stations.get(20), stations.get(21), stations.get(22), stations.get(23) );
-        
-        // Bus Line Column 4
-        BusPlanningSystem.createBusLine( stations.get(24), stations.get(25), stations.get(26), stations.get(27), 
-        		stations.get(28), stations.get(29), stations.get(30), stations.get(31) );
-        
-        // Bus Line Column 5
-        BusPlanningSystem.createBusLine( stations.get(32), stations.get(33), stations.get(34), stations.get(35), 
-        		stations.get(36), stations.get(37), stations.get(38), stations.get(39) );
+		// Columns 0-4
+		for( int c = 0; c < 5; ++c )
+		{
+			BusStation[] busLine = new BusStation[8];
+			
+			// Rows 0-7
+			for( int r = 0; r < 8; ++r )
+				busLine[r] = stations.get( r + 8*c );
+			
+			BusPlanningSystem.createBusLine( busLine );
+		}
         
         // Rows 0-7
         for( int r = 0; r < 8; ++r )
@@ -143,6 +134,7 @@ public class CityDefaultInitialization
         ArrayList<DijkstraStation> dStations =
         		DijkstraStation.busStationsToDijkstraStations( stations, stations.get( start ) );
         Route r = DijkstraStation.dijkstraRoute( dStations, stations.get( dest ) );
+        r.bus = new Bus( "The Magic School Bus", BusType.city, 80, 7, 35 );
         System.out.print( r.toString() );
     }
 }
