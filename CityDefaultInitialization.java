@@ -112,29 +112,46 @@ public class CityDefaultInitialization
         
         System.out.print( "Stations 1-40 created and connected\n\n" );
         
-        Scanner s = new Scanner( System.in );
+        Scanner scanner = new Scanner( System.in );
         
         System.out.print( "Start Station (1-40): " );
-        int start = Integer.parseInt( s.nextLine() ) - 1;
-        if( start < 0 || start > 39 )
+        int s = Integer.parseInt( scanner.nextLine() ) - 1;
+        if( s < 0 || s > 39 )
         {
-        	s.close(); // IDE was showing a warning about closing s for some reason.
+        	scanner.close(); // IDE was showing a warning about closing s for some reason.
         	throw new Exception();
         }
         System.out.print( "Destination Station (1-40): " );
-        int dest = Integer.parseInt( s.nextLine() ) - 1;
-        if( dest < 0 || dest > 39 )
+        int d = Integer.parseInt( scanner.nextLine() ) - 1;
+        if( d < 0 || d > 39 )
         {
-        	s.close();
+        	scanner.close();
         	throw new Exception();
         }
-        s.close();
+        scanner.close();
         System.out.println();
         
+        BusStation start = stations.get(s);
+        BusStation dest  = stations.get(d);
+        
         ArrayList<DijkstraStation> dStations =
-        		DijkstraStation.busStationsToDijkstraStations( stations, stations.get( start ) );
-        Route r = DijkstraStation.dijkstraRoute( dStations, stations.get( dest ) );
-        r.bus = new Bus( "The Magic School Bus", BusType.city, 80, 7, 35 );
-        System.out.print( r.toString() );
+        		DijkstraStation.busStationsToDijkstraStations( stations, start );
+        
+        Route bestRoute  = DijkstraStation.dijkstraRoute( dStations, dest, false );
+        Route randRoute1 = DijkstraStation.dijkstraRoute( dStations, dest, true  );
+        Route randRoute2 = DijkstraStation.dijkstraRoute( dStations, dest, true  );
+        
+        bestRoute.bus  = new Bus( "The Magic School Bus", BusType.city, 80, 7, 35 );
+        randRoute1.bus = bestRoute.bus;
+        randRoute2.bus = bestRoute.bus;
+        
+        System.out.println( "------  Best Route  --------------------" );
+        System.out.print( bestRoute.toString() );
+        System.out.println();
+        System.out.println( "------  Semi-Random Route 1  -----------" );
+        System.out.print( randRoute1.toString() );
+        System.out.println();
+        System.out.println( "------  Semi-Random Route 2  -----------" );
+        System.out.print( randRoute2.toString() );
     }
 }

@@ -36,13 +36,13 @@ public class DijkstraStation extends BusStation
 	@Override
 	public String toString() // This method is useful in debugging at least
 	{
-		return super.toString() + ", " + dist + " units from start";
+		return super.toString() + " with dist = " + dist + " from start";
 	}
 	
 	
 	
 	
-	public static DijkstraStation bestOf( ArrayList<DijkstraStation> dStations )
+	public static DijkstraStation best( ArrayList<DijkstraStation> dStations )
 	{
 		DijkstraStation bestSoFar = dStations.get(0);
 		for( int i = 1; i < dStations.size(); ++i )
@@ -53,6 +53,24 @@ public class DijkstraStation extends BusStation
 		}
 		return bestSoFar;
 	}
+	
+	public DijkstraStation bestConnectedStation()
+	{
+		return best( this.connectedDStations );
+	}
+	
+	public DijkstraStation randomBetterConnectedStation()
+	// A station randomly chosen from those stations connected to this that are
+	// closer than this to the destinations
+	{
+		ArrayList<DijkstraStation> betterStations = new ArrayList<DijkstraStation>();
+		for( DijkstraStation ds : this.connectedDStations )
+			if( ds.dist < this.dist )
+				betterStations.add( ds );
+		return betterStations.get( (int)( Math.random() * betterStations.size() ) );
+	}
+	
+	
 	
 	
 	public static ArrayList<DijkstraStation> busStationsToDijkstraStations(
@@ -88,7 +106,7 @@ public class DijkstraStation extends BusStation
 		
 		while( !unvisited.isEmpty() )
 		{
-			current = bestOf( unvisited );
+			current = best( unvisited );
 			// In the first iteration, current = the one with dist of 0,
 			// assigned above, corresponding to start.
 			for( DijkstraStation cs : current.connectedDStations )
@@ -110,11 +128,16 @@ public class DijkstraStation extends BusStation
 	
 	
 	public static Route dijkstraRoute(
-			ArrayList<DijkstraStation> dStations, BusStation destination
+			ArrayList<DijkstraStation> dStations,
+			BusStation destination,
+			boolean random
 	) throws Exception
 	// The Route from the start (specified when creating the dStations
 	// ArrayList, probably using the busStationsToDijkstraStations method)
-	// to the destination (specified here)
+	// to the destination (specified here), either along the best route (as
+	// determined by the traditional Dijkstra's Algorithm) or along a semi-
+	// random route still with the constraint that each leg takes the person
+	// closer to the destination
 	{
 		DijkstraStation start       = null;
 		DijkstraStation backtracker = null;
@@ -133,7 +156,10 @@ public class DijkstraStation extends BusStation
 		
 		while( backtracker != start )
 		{
-			backtracker = bestOf( backtracker.connectedDStations );
+			if( random )
+				backtracker = backtracker.randomBetterConnectedStation();
+			else
+				backtracker = backtracker.bestConnectedStation();
 			route.add( 0, backtracker.correspondingStation );
 		}
 		
