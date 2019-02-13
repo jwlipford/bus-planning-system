@@ -140,6 +140,8 @@ public class CityDefaultInitialization
         Route bestRoute  = DijkstraStation.dijkstraRoute( dStations, dest, false );
         Route randRoute1 = DijkstraStation.dijkstraRoute( dStations, dest, true  );
         Route randRoute2 = DijkstraStation.dijkstraRoute( dStations, dest, true  );
+        // Sometimes a randomly generated route is the same as one of the other
+        // routes. TODO: Fix this, maybe. Possibly use Route.equalTo method.
         
         bestRoute.bus  = new Bus( "The Magic School Bus", BusType.city, 80, 7, 35 );
         randRoute1.bus = bestRoute.bus;

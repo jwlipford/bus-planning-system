@@ -1,10 +1,4 @@
-/* 
- * 
- * 
- */
-
-
-public class Place
+public abstract class Place
 {
     public static final int EARTH_RADIUS = 3959; // miles
 	
@@ -86,7 +80,7 @@ public class Place
         // -90 < arctan < 90
         
         if( longDiff > 0 ) // Going right
-            return (arctan > 0) ? arctan : (360 + arctan);
+            return (arctan >= 0) ? arctan : (360 + arctan);
         else // longDiff < 0; Going left
             return 180 + arctan;
     }

@@ -21,4 +21,15 @@ public class Route extends ArrayList<BusStation>
         }
         return s;
     }
+	
+	// Remove if not needed
+	public boolean equalTo( Route r )
+	{
+		if( r == null || this.size() != r.size() || this.bus != r.bus )
+			return false;
+		for( int i = 0; i < this.size(); ++i )
+			if( this.get(i) != r.get(i) )
+				return false;
+		return true;
+	}
 }
