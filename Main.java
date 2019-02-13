@@ -3,6 +3,8 @@ import java.util.regex.Pattern;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+
 import javax.swing.*;
 import javax.swing.table.*;
 /*The system needs: button for adding bus stations. User must be able modify existing bus station.
@@ -17,6 +19,7 @@ import javax.swing.table.*;
 public class Main extends JFrame{
 	public Main(){
 		setLayout(new BorderLayout());
+		
 		
 		JPanel master = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		
@@ -190,7 +193,7 @@ public class Main extends JFrame{
 			String actualValue;
 			String value;
 			String[] arr = new String[4];
-			for(int i = 0; i < 5; i++) {
+			for(int i = 0; i <=3; i++) {
 				
 			value = table.getModel().getValueAt(table.convertRowIndexToModel(row), i).toString();
 			arr[i]=value;
@@ -231,7 +234,7 @@ public class Main extends JFrame{
 			String actualValue;
 			String value;
 			String[] arr = new String[4];
-			for(int i = 0; i < 5; i++) {
+			for(int i = 0; i <= 3; i++) {
 				
 			value = table2.getModel().getValueAt(table2.convertRowIndexToModel(row), i).toString();
 			arr[i]=value;
@@ -279,14 +282,33 @@ public class Main extends JFrame{
 		rightBottom.add(finalSelectDest);
 		rightBottom.add(userSelectionEnd);
 		rightPanel.add(rightBottom, BorderLayout.SOUTH);
-		
-		
-		
 		master.add(rightPanel);
 		
 		
+		GridLayout gridLayout = new GridLayout();
+		gridLayout.setRows(9);
+		gridLayout.setColumns(1);
+		gridLayout.setHgap(10);
+		gridLayout.setVgap(10);    
 		
-		add(master,BorderLayout.WEST);	
+		JPanel console = new JPanel(gridLayout);
+		
+		JButton finalize = new JButton("Finalize Travel");
+		JButton addBusSt= new JButton("+ Bus Station");
+		JButton addBus = new JButton("+ Bus");
+		console.add(finalize);
+		console.add(addBusSt);
+		console.add(addBus);
+		master.add(console);
+		
+		JPanel titlePan = new JPanel(new GridBagLayout());
+		JLabel title = new JLabel("Bus Routing System");
+		Font font = new Font("Courier", Font.BOLD, 34);
+		title.setFont(font);
+		titlePan.add(title);
+		add(titlePan,BorderLayout.NORTH);
+		
+		add(master);	
 		
 		
 	
