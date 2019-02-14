@@ -66,9 +66,8 @@ public abstract class Place
     	// miles/(miles/hour) = miles*(hours/mile) = hours
     }
     
-    // Possibly update this one too?
-    public double directionTo( Place place )
-    // Direction in degrees to another place
+    public double directionTo_old( Place place )
+    // Direction in degrees (CCW from East, as in Trig) to another place
     {
         double latDiff  = place.latitude  - this.latitude;
         double longDiff = place.longitude - this.longitude;
@@ -85,10 +84,31 @@ public abstract class Place
             return 180 + arctan;
     }
     
-    // Returns a direction as text. Tested and works as of 1-Feb-19
+    public double bearingTo( Place place )
+    // Direction in degrees (CW from North, as in Geography) to another place
+    // Also from https://www.movable-type.co.uk/scripts/latlong.html
+    {
+    	double thisLatRad   = Math.toRadians(  this.getLatitude()  );
+    	double placeLatRad  = Math.toRadians( place.getLatitude()  );
+    	double thisLongRad  = Math.toRadians(  this.getLongitude() );
+    	double placeLongRad = Math.toRadians( place.getLongitude() );
+    	
+    	double f = placeLongRad - thisLongRad;
+    	double g = Math.sin(f) * Math.cos( placeLatRad );
+    	double h = Math.cos( thisLatRad ) * Math.sin( placeLatRad );
+    	double i = Math.sin( thisLatRad ) * Math.cos( placeLatRad ) * Math.cos(f);
+    	
+    	return Math.toDegrees( Math.atan2( g, h-i ) );
+    }
+    
+    // Returns a direction as text.
+    // TODO: Modify maybe
     public String headingTo( Place place )
     {
-        double angle = directionTo( place );
+        // Old:
+    	//  double angle = directionTo_old( place );
+    	// Basically equivalent to:
+    	double angle = 90 - bearingTo( place );
         
         if(      angle ==   0 )     return "Due East";
         else if( angle  <  45 )     return angle + "° North of East";
