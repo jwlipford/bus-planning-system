@@ -20,9 +20,14 @@ import javax.swing.table.*;
  * System must accept bus station input as a substring of the full name
  * */
 public class BusStationMain extends JFrame{
+
+	int userStart, userEnd;
+	String[] start = new String[3];
+	String[] end = new String[3];
+	String[] travelPlans = new String[3];
+	String chosen = "";
 	public BusStationMain() throws IOException{
 		setLayout(new BorderLayout());
-		
 		
 		JPanel master = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		
@@ -138,6 +143,9 @@ public class BusStationMain extends JFrame{
 		JTextField searchBox2 = new JTextField(20);
 		
 		searchBox2.addActionListener(e -> {
+			
+			
+			
 			if(sorter2.getRowFilter() != null) {
 				sorter2.setRowFilter(null);
 			}else {
@@ -146,6 +154,8 @@ public class BusStationMain extends JFrame{
 				sorter2.setRowFilter(RowFilter.regexFilter(regex2));
 				
 			}
+			
+			
 	});
 		
 		JLabel selectedStart2 = new JLabel();
@@ -172,21 +182,25 @@ public class BusStationMain extends JFrame{
 		JTextArea userSelectionStart = new JTextArea();	
 		userSelectionStart.setEditable(false);
 		userSelectionStart.setBorder(BorderFactory.createLineBorder(Color.black));
-		arrowRightStart.addActionListener(e ->{
-			int row = table.getSelectedRow();
-			String actualValue;
+		
+		arrowRightStart.addActionListener(e ->{	
+			//arrows to select values
+			//JOptionPane.showMessageDialog(null, "No Selection Made!", "Alert!", getDefaultCloseOperation());
+			
+			int row = table.getSelectedRow(); //get user selected row
+			String actualValue; 
 			String value;
-			String[] arr = new String[3];
+			//String[] arr = new String[3];
 			for(int i = 0; i <=2; i++) {
 				
 			value = table.getModel().getValueAt(table.convertRowIndexToModel(row), i).toString();
-			arr[i]=value;
+			this.start[i]=value; //assign to global variable
 			//JOptionPane.showMessageDialog(this, arr[i]);
-			actualValue = convertToString(arr);
+			
+			}
+			actualValue = convertToString(this.start);
 
 			userSelectionStart.setText(actualValue);
-			}
-			
 			
 		});
 		
@@ -217,13 +231,13 @@ public class BusStationMain extends JFrame{
 			int row = table2.getSelectedRow();
 			String actualValue;
 			String value;
-			String[] arr = new String[3];
+			//String[] arr = new String[3];
 			for(int i = 0; i <= 2; i++) {
-				
+			
 			value = table2.getModel().getValueAt(table2.convertRowIndexToModel(row), i).toString();
-			arr[i]=value;
+			this.end[i]=value;
 			//JOptionPane.showMessageDialog(this, arr[i]);
-			actualValue = convertToString(arr);
+			actualValue = convertToString(this.end);
 
 			userSelectionEnd.setText(actualValue);
 			}
@@ -281,46 +295,206 @@ public class BusStationMain extends JFrame{
 		finalize.addActionListener(e ->{
 			//String[] options = new String[]{"View A", "View B", "View C", "Cancel"};
 			//JOptionPane.showOptionDialog(null, "Message", "Choose Preferred Route", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+			
+			try {
+				this.userStart = findStationNumber(this.start[0]); //retrieve the position of the station for start location
+				this.userEnd = findStationNumber(this.end[0]);
+				//System.out.print(this.userStart + "end " + this.userEnd); //checks to ensure numbers are correct before passing to citydefaultinitialization
+			} catch (IOException e1) {
+				
+				e1.printStackTrace();
+			}
+			
+			CityDefaultInitialization cdi = new CityDefaultInitialization();
+			
+			try {
+				this.travelPlans = cdi.implementTravel(this.userStart, this.userEnd); //returns an array of strings that will be used to input into JLabels
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			
+		
+			
+			
 			JFrame showOptions = new JFrame();
-			showOptions.setLayout(new FlowLayout());
+			showOptions.setLayout(new BorderLayout());
 			showOptions.setTitle("Choose Preferred Route");
 			showOptions.setSize(500,260);
 			showOptions.setLocationRelativeTo(null);
 			showOptions.setVisible(true);
-
-			JPanel first = new JPanel();
-			JPanel second = new JPanel();
-			JPanel three = new JPanel();
-			JPanel bottom = new JPanel();
+			
+			JPanel holdOps = new JPanel(new FlowLayout());
+			JPanel first = new JPanel(new BorderLayout());
+			JPanel wrapA = new JPanel();//used to keep button from fill main panel
+			JPanel wrapB = new JPanel();
+			JPanel wrapC = new JPanel();
+			JPanel second = new JPanel(new BorderLayout());
+			JPanel three = new JPanel(new BorderLayout());
+			
+			ButtonGroup optionGroup = new ButtonGroup();
+			
+			JRadioButton optionA = new JRadioButton("Option A: ");
+			optionA.setSelected(true);
+			JRadioButton optionB = new JRadioButton("Option B: ");
+			JRadioButton optionC = new JRadioButton("Option C: ");
+			
+			optionGroup.add(optionA);
+			optionGroup.add(optionB);
+			optionGroup.add(optionC);
 			
 			JButton viewA = new JButton("View A");
-			first.add(viewA);
+			wrapA.add(viewA);
+			first.add(optionA, BorderLayout.NORTH);
+			first.add(wrapA,BorderLayout.SOUTH);
 			viewA.addActionListener(e2->   {
+				JFrame optionAFrame = new JFrame();
+				optionAFrame.setLayout(new BorderLayout());
+				optionAFrame.setTitle("Option A Route");
+				optionAFrame.setSize(500,600);
+				optionAFrame.setLocationRelativeTo(null);
+				optionAFrame.setVisible(true);
+				
+				JPanel masterA = new JPanel();
+				JPanel holdA = new JPanel();
+				
+				JTextArea bestRoute = new JTextArea(this.travelPlans[0]);
+				
+				holdA.add(bestRoute);
+				JScrollPane paneOne = new JScrollPane();
+				paneOne.setViewportView(holdA);
+				optionAFrame.add(paneOne);
+				
+				JButton close = new JButton("Close");
+				masterA.add(close);
+				optionAFrame.add(masterA,BorderLayout.SOUTH);
+				
+				close.addActionListener(f->{
+					JComponent comp = (JComponent) f.getSource();
+					  Window win = SwingUtilities.getWindowAncestor(comp);
+					  win.dispose();
+				});
 				
 			});
-			showOptions.add(first);
+			holdOps.add(first);
 			
 			JButton viewB  = new JButton("View B");
-			second.add(viewB);
+			wrapB.add(viewB);
+			second.add(optionB,BorderLayout.NORTH);
+			second.add(wrapB,BorderLayout.SOUTH);
 			viewB.addActionListener(e3->{
+				JFrame optionBFrame = new JFrame();
+				optionBFrame.setLayout(new BorderLayout());
+				optionBFrame.setTitle("Option B Route");
+				optionBFrame.setSize(500,600);
+				optionBFrame.setLocationRelativeTo(null);
+				optionBFrame.setVisible(true);
 				
+				JPanel masterB = new JPanel();
+				JPanel holdB = new JPanel();
+				
+				JTextArea SecondRoute = new JTextArea(this.travelPlans[1]);
+				
+				holdB.add(SecondRoute);
+				JScrollPane paneTwo = new JScrollPane();
+				paneTwo.setViewportView(holdB);
+				optionBFrame.add(paneTwo);
+				
+				JButton close = new JButton("Close");
+				masterB.add(close);
+				optionBFrame.add(masterB,BorderLayout.SOUTH);
+				
+				close.addActionListener(f->{
+					JComponent comp = (JComponent) f.getSource();
+					  Window win = SwingUtilities.getWindowAncestor(comp);
+					  win.dispose();
+				});
 			});
-			showOptions.add(second);
+			holdOps.add(second);
 			
 			JButton viewC = new JButton("View C");
-			three.add(viewC);
+			wrapC.add(viewC);
+			three.add(optionC,BorderLayout.NORTH);
+			three.add(wrapC,BorderLayout.SOUTH);
 			viewC.addActionListener(e4->{
+				JFrame optionCFrame = new JFrame();
+				optionCFrame.setLayout(new BorderLayout());
+				optionCFrame.setTitle("Option C Route");
+				optionCFrame.setSize(500,600);
+				optionCFrame.setLocationRelativeTo(null);
+				optionCFrame.setVisible(true);
 				
+				JPanel masterC = new JPanel();
+				JPanel holdC = new JPanel();
+				
+				JTextArea ThirdRoute = new JTextArea(this.travelPlans[1]);
+				
+				holdC.add(ThirdRoute);
+				JScrollPane paneThree = new JScrollPane();
+				paneThree.setViewportView(holdC);
+				optionCFrame.add(paneThree);
+				
+				JButton close = new JButton("Close");
+				masterC.add(close);
+				optionCFrame.add(masterC,BorderLayout.SOUTH);
+				
+				close.addActionListener(f->{
+					JComponent comp = (JComponent) f.getSource();
+					  Window win = SwingUtilities.getWindowAncestor(comp);
+					  win.dispose();
+				});
 			});
-			showOptions.add(three);
+			holdOps.add(three);
+			showOptions.add(holdOps,BorderLayout.CENTER);
 			
 			
-			
+			JPanel holdButtons = new JPanel(new FlowLayout());
+			JPanel approveWrap = new JPanel();
+			JPanel cancelWrap = new JPanel();
+			JButton approve = new JButton("OK");
+			approveWrap.add(approve);
+			holdButtons.add(approveWrap);
+			approve.addActionListener(c->{
+				if(optionA.isSelected())
+			{	
+				this.chosen = this.travelPlans[0];
+			}else if(optionB.isSelected()) {
+				this.chosen = this.travelPlans[1];
+			}else if(optionC.isSelected()) {
+				this.chosen = this.travelPlans[2];
+			}
+				
+				JComponent comp = (JComponent) c.getSource();
+				  Window win = SwingUtilities.getWindowAncestor(comp);
+				  win.dispose();
+			});
+			JButton cancel = new JButton("Cancel");
+			cancelWrap.add(cancel);
+			holdButtons.add(cancelWrap);
+			showOptions.add(holdButtons,BorderLayout.SOUTH);
+			cancel.addActionListener(f1->{
+				this.chosen = "";
+				JComponent comp = (JComponent) f1.getSource();
+				  Window win = SwingUtilities.getWindowAncestor(comp);
+				  win.dispose();
+			});
 			
 			});
 			
 		JButton addBusSt= new JButton("+ Bus Station");
+		
+		addBusSt.addActionListener(t->{
+			JOptionPane.showMessageDialog(null, "Coming Soon!", "Alert!", getDefaultCloseOperation());
+
+		});
+		
+		
 		JButton addBus = new JButton("+ Bus");
+		addBus.addActionListener(t->{
+			JOptionPane.showMessageDialog(null, "Coming Soon!", "Alert!", getDefaultCloseOperation());
+
+		});
+		
 		console.add(finalize);
 		console.add(addBusSt);
 		console.add(addBus);
@@ -333,10 +507,62 @@ public class BusStationMain extends JFrame{
 		titlePan.add(title);
 		add(titlePan,BorderLayout.NORTH);
 		
-		add(master);	
+		add(master,BorderLayout.CENTER);	
 		
 		
-	
+		JPanel result = new JPanel(new FlowLayout());
+		JLabel showResult = new JLabel("Selected: ");
+		JButton view = new JButton("View Selection");
+		JButton clear = new JButton("Clear Selection!");
+		result.add(showResult);
+		result.add(view);
+		result.add(clear);
+		add(result,BorderLayout.SOUTH);
+		
+		clear.addActionListener(j->{
+			if(!this.chosen.equals("")) {
+				this.chosen="";
+				JOptionPane.showMessageDialog(null, "Selection Cleared", "Success!", getDefaultCloseOperation());
+			}else {
+				JOptionPane.showMessageDialog(null, "Selection is already empty!", "Alert!", getDefaultCloseOperation());
+			}
+			
+		});
+		
+		view.addActionListener(b->{ //used to get view for selected items.
+			
+			if(this.chosen.equals("")) {
+				JOptionPane.showMessageDialog(null, "No Selection Made!", "Alert!", getDefaultCloseOperation());
+			}else {
+				JFrame selection = new JFrame();
+				selection.setLayout(new BorderLayout());
+				selection.setTitle("Your Selected Route");
+				selection.setSize(500,600);
+				selection.setLocationRelativeTo(null);
+				selection.setVisible(true);
+				
+				JPanel masterFinal = new JPanel();
+				JPanel holdFinal = new JPanel();
+				
+				JTextArea finalSelection = new JTextArea(this.chosen);
+				
+				holdFinal.add(finalSelection);
+				JScrollPane finalPane = new JScrollPane();
+				finalPane.setViewportView(holdFinal);
+				selection.add(finalPane);
+				
+				JButton close = new JButton("Close");
+				masterFinal.add(close);
+				selection.add(masterFinal,BorderLayout.SOUTH);
+				
+				close.addActionListener(f->{
+					JComponent comp = (JComponent) f.getSource();
+					  Window win = SwingUtilities.getWindowAncestor(comp);
+					  win.dispose();
+				});
+				
+			}
+		});
 		
 	}
 	
@@ -364,7 +590,7 @@ public class BusStationMain extends JFrame{
 		String temp,name,lat,longit;																// create variables for name, longitude, latitude, and temp
 		
 	
-	
+			cr.close();
 		  BufferedReader br = new BufferedReader(new FileReader(file)); 							//Have to create another BufferedReader because can't use twice
 		  
 		  
@@ -382,12 +608,38 @@ public class BusStationMain extends JFrame{
 			  array[x-1][2] = longit;																// assign longit in array
 			x++;  																					// increase x to position next object
 		  }
+		  br.close();
 		return array;																				//return newly create array of stations
 	}
 	
 	
+	public int findStationNumber(String station) throws IOException { 								//Method to return a number or position to get route started.
+		
+		String[][] temp = stations();
+		String arrStat = "";
+		int position = 0;
+		for(int i = 0; i<temp.length; i++) {
+			arrStat = temp[i][0];
+		//System.out.println(temp[i][0]);
+			if(arrStat.equals(station)) {
+				position = i+1;
+				break;
+			}
+			
+			
+		}
+		return position;
+
+	}
 	
-	public static void BusStationMain(String[] args) throws IOException {
+	public String Routes() {
+		String a = "";
+		
+		return a;
+	}
+	
+	
+	public static void main(String[] args) throws IOException {
 		
 		JOptionPane.showMessageDialog(null, "SOFTWARE IS NOT TO BE USED FOR ROUTE PLANNING PURPOSE.");
 		

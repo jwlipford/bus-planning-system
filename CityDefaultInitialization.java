@@ -27,16 +27,17 @@ route is ~23 miles assuming straight line from SE to NE
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.io.*;
+import java.lang.reflect.Array;
 
 public class CityDefaultInitialization
 {
     public static ArrayList<BusStation> stationsFileToArrayList() throws Exception
     {
-    	File file = new File( "CityStationsText2.txt" );
+    	File file = new File( "C:\\Users\\JRT12\\Desktop\\Bus Station\\CityStationsText.txt" );
     	BufferedReader br = new BufferedReader( new FileReader( file ) );
     	ArrayList<BusStation> stations = new ArrayList<BusStation>();
     	String line = br.readLine();
-    	while( !line.isEmpty() ) // until line.Equals("")
+    	while( line != null )
     	{
     		String[] splitLine = line.split( ", " );
     		stations.add( new BusStation(
@@ -45,47 +46,57 @@ public class CityDefaultInitialization
     			splitLine[2].replaceAll( "\"", "" ) ) );
     		line = br.readLine();
     	}
-    	line = br.readLine();
-    	while( line != null )
-    	{
-    		String[] splitLine = line.split( " " );
-    		for( int i = 0; i < (splitLine.length - 1); ++i )
-    		{
-    			int index0 = Integer.parseInt( splitLine[  i  ] );
-    			int index1 = Integer.parseInt( splitLine[ i+1 ] );
-    			stations.get( index0 ).connect( stations.get( index1 ) );
-    			stations.get( index1 ).connect( stations.get( index0 ) );
-    		}
-    		line = br.readLine();
-    	}
     	br.close();
     	return stations;
     }
 	
-	public static void main( String[] args ) throws Exception
+	public String[] implementTravel(int begin, int end) throws Exception
     {
+		String[] plans = new String[3];
+		
     	ArrayList<BusStation> stations = stationsFileToArrayList();
+		
+		// Columns 0-4
+		for( int c = 0; c < 5; ++c )
+		{
+			BusStation[] busLine = new BusStation[8];
+			
+			// Rows 0-7
+			for( int r = 0; r < 8; ++r )
+				busLine[r] = stations.get( r + 8*c );
+			
+			BusPlanningSystem.createBusLine( busLine );
+		}
+        
+        // Rows 0-7
+        for( int r = 0; r < 8; ++r )
+        {
+        	BusStation[] busLine = new BusStation[5];
+        	
+        	// Columns 0-4
+        	for( int c = 0; c < 5; ++c )
+        		busLine[c] = stations.get( r + 8*c );
+        	
+        	BusPlanningSystem.createBusLine( busLine );
+        }
         
         System.out.print( "Stations 1-40 created and connected\n\n" );
         
-        Scanner scanner = new Scanner( System.in );
+        //Scanner scanner = new Scanner( System.in );
         
-        System.out.print( "Start Station (1-40): " );
-        int s = Integer.parseInt( scanner.nextLine() ) - 1;
+        //System.out.print( "Start Station (1-40): " );
+        int s = begin - 1;
         if( s < 0 || s > 39 )
         {
-        	scanner.close(); // IDE showed a warning about closing s for some reason.
+        	
         	throw new Exception();
         }
-        System.out.print( "Destination Station (1-40): " );
-        int d = Integer.parseInt( scanner.nextLine() ) - 1;
+        //System.out.print( "Destination Station (1-40): " );
+        int d = end - 1;
         if( d < 0 || d > 39 )
         {
-        	scanner.close();
         	throw new Exception();
         }
-        scanner.close();
-        System.out.println();
         
         BusStation start = stations.get(s);
         BusStation dest  = stations.get(d);
@@ -103,7 +114,7 @@ public class CityDefaultInitialization
         randRoute1.bus = bestRoute.bus;
         randRoute2.bus = bestRoute.bus;
         
-        System.out.println( "------  Best Route  --------------------" );
+        /*System.out.println( "------  Best Route  --------------------" );
         System.out.print( bestRoute.toString() );
         System.out.println();
         System.out.println( "------  Semi-Random Route 1  -----------" );
@@ -111,5 +122,12 @@ public class CityDefaultInitialization
         System.out.println();
         System.out.println( "------  Semi-Random Route 2  -----------" );
         System.out.print( randRoute2.toString() );
+        */
+        
+        plans[0] = bestRoute.toString();
+        plans[1] = randRoute1.toString();
+        plans[2] = randRoute2.toString();
+        
+        return plans;
     }
 }
