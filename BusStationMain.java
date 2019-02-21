@@ -3,6 +3,8 @@ import java.util.regex.Pattern;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -302,7 +304,7 @@ public class BusStationMain extends JFrame{
 				//System.out.print(this.userStart + "end " + this.userEnd); //checks to ensure numbers are correct before passing to citydefaultinitialization
 			} catch (IOException e1) {
 				
-				e1.printStackTrace();
+				//JOptionPane.showMessageDialog(null, "Missing a location!", "Attention!", getDefaultCloseOperation());
 			}
 			
 			CityDefaultInitialization cdi = new CityDefaultInitialization();
@@ -427,7 +429,7 @@ public class BusStationMain extends JFrame{
 				JPanel masterC = new JPanel();
 				JPanel holdC = new JPanel();
 				
-				JTextArea ThirdRoute = new JTextArea(this.travelPlans[1]);
+				JTextArea ThirdRoute = new JTextArea(this.travelPlans[2]);
 				
 				holdC.add(ThirdRoute);
 				JScrollPane paneThree = new JScrollPane();
@@ -520,26 +522,33 @@ public class BusStationMain extends JFrame{
 		add(result,BorderLayout.SOUTH);
 		
 		clear.addActionListener(j->{
+			this.setEnabled(false);
 			if(!this.chosen.equals("")) {
+				
 				this.chosen="";
 				JOptionPane.showMessageDialog(null, "Selection Cleared", "Success!", getDefaultCloseOperation());
+				this.setEnabled(true);
 			}else {
 				JOptionPane.showMessageDialog(null, "Selection is already empty!", "Alert!", getDefaultCloseOperation());
+				this.setEnabled(true);
 			}
 			
 		});
 		
 		view.addActionListener(b->{ //used to get view for selected items.
-			
+			this.setEnabled(false);
 			if(this.chosen.equals("")) {
 				JOptionPane.showMessageDialog(null, "No Selection Made!", "Alert!", getDefaultCloseOperation());
+				this.setEnabled(true);//enable frame again
 			}else {
-				JFrame selection = new JFrame();
+				JFrame selection = new JFrame();//used to disable main frame
 				selection.setLayout(new BorderLayout());
 				selection.setTitle("Your Selected Route");
 				selection.setSize(500,600);
 				selection.setLocationRelativeTo(null);
 				selection.setVisible(true);
+				selection.setDefaultCloseOperation(HIDE_ON_CLOSE);//used instead  to ensure the main menu is enabled
+				
 				
 				JPanel masterFinal = new JPanel();
 				JPanel holdFinal = new JPanel();
@@ -556,6 +565,7 @@ public class BusStationMain extends JFrame{
 				selection.add(masterFinal,BorderLayout.SOUTH);
 				
 				close.addActionListener(f->{
+					this.setEnabled(true); //used to enable Main Frame
 					JComponent comp = (JComponent) f.getSource();
 					  Window win = SwingUtilities.getWindowAncestor(comp);
 					  win.dispose();
