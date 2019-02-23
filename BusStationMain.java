@@ -28,9 +28,19 @@ public class BusStationMain extends JFrame{
 	String[] end = new String[3];
 	String[] travelPlans = new String[3];
 	String chosen = "";
+	boolean isStart = false;
+	boolean isEnd = false;
+	String selectStart, selectEnd;
+	JTextArea userSelectionStart = new JTextArea("");
+	JTextArea userSelectionEnd = new JTextArea("");
+	
+	
+	
+	
+	JButton finalize = new JButton("Finalize Travel"); // button to finalize the user's selection.
 	public BusStationMain() throws IOException{
 		setLayout(new BorderLayout());
-		
+		this.finalize.setEnabled(false);
 		JPanel master = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -86,15 +96,9 @@ public class BusStationMain extends JFrame{
 		JTextField searchBox = new JTextField(20);
 		
 		searchBox.addActionListener(e -> {
-			if(sorter.getRowFilter() != null) {
-				sorter.setRowFilter(null);
-			}else {
-				String text = Pattern.quote(searchBox.getText());
-				String regex = String.format("^%s$", text);
-				sorter.setRowFilter(RowFilter.regexFilter(regex));
-				
-			}
-	});
+			String text = Pattern.quote(searchBox.getText());
+			sorter.setRowFilter(RowFilter.regexFilter(text));
+		});
 		
 		JLabel selectedStart = new JLabel();
 		gbc.anchor = GridBagConstraints.NORTHWEST;
@@ -145,20 +149,9 @@ public class BusStationMain extends JFrame{
 		JTextField searchBox2 = new JTextField(20);
 		
 		searchBox2.addActionListener(e -> {
-			
-			
-			
-			if(sorter2.getRowFilter() != null) {
-				sorter2.setRowFilter(null);
-			}else {
-				String text2 = Pattern.quote(searchBox2.getText());
-				String regex2 = String.format("^%s$", text2);
-				sorter2.setRowFilter(RowFilter.regexFilter(regex2));
-				
-			}
-			
-			
-	});
+			String text = Pattern.quote(searchBox2.getText());
+			sorter2.setRowFilter(RowFilter.regexFilter(text));
+		});
 		
 		JLabel selectedStart2 = new JLabel();
 		gbc.anchor = GridBagConstraints.NORTHWEST;
@@ -181,7 +174,6 @@ public class BusStationMain extends JFrame{
 		
 		JButton arrowRightStart = new JButton(">>>");
 		
-		JTextArea userSelectionStart = new JTextArea();	
 		userSelectionStart.setEditable(false);
 		userSelectionStart.setBorder(BorderFactory.createLineBorder(Color.black));
 		
@@ -192,7 +184,7 @@ public class BusStationMain extends JFrame{
 			int row = table.getSelectedRow(); //get user selected row
 			String actualValue; 
 			String value;
-			//String[] arr = new String[3];
+			try {
 			for(int i = 0; i <=2; i++) {
 				
 			value = table.getModel().getValueAt(table.convertRowIndexToModel(row), i).toString();
@@ -200,10 +192,14 @@ public class BusStationMain extends JFrame{
 			//JOptionPane.showMessageDialog(this, arr[i]);
 			
 			}
-			actualValue = convertToString(this.start);
-
-			userSelectionStart.setText(actualValue);
+			this.selectStart = convertToString(this.start);
+			userSelectionStart.setText(this.selectStart);
+			this.isStart = true;
 			
+			changeFinal(this.isStart,this.isEnd);
+			}catch(IndexOutOfBoundsException g) {
+				JOptionPane.showMessageDialog(null, "No departure location selected!", "Alert!", getDefaultCloseOperation());
+			}
 		});
 		
 		
@@ -223,7 +219,7 @@ public class BusStationMain extends JFrame{
 		  
 		  
 		  
-		JTextArea userSelectionEnd = new JTextArea();
+		
 		userSelectionEnd.setEditable(false);
 		userSelectionEnd.setBorder(BorderFactory.createLineBorder(Color.black));
 		
@@ -231,18 +227,27 @@ public class BusStationMain extends JFrame{
 
 		arrowRightEnd.addActionListener(e ->{
 			int row = table2.getSelectedRow();
-			String actualValue;
 			String value;
 			//String[] arr = new String[3];
+			try {
 			for(int i = 0; i <= 2; i++) {
 			
 			value = table2.getModel().getValueAt(table2.convertRowIndexToModel(row), i).toString();
 			this.end[i]=value;
 			//JOptionPane.showMessageDialog(this, arr[i]);
-			actualValue = convertToString(this.end);
+			this.selectEnd = convertToString(this.end);
 
-			userSelectionEnd.setText(actualValue);
+			userSelectionEnd.setText(this.selectEnd);
 			}
+			this.isEnd = true;
+			if(this.userSelectionStart.equals("")) {
+				this.isStart = false;
+			}
+			changeFinal(this.isStart,this.isEnd);
+			}catch(IndexOutOfBoundsException g) {
+				JOptionPane.showMessageDialog(null, "No destination selected!", "Alert!", getDefaultCloseOperation());
+			}
+				
 			
 			
 		});
@@ -293,19 +298,22 @@ public class BusStationMain extends JFrame{
 		
 		JPanel console = new JPanel(gridLayout);
 		
-		JButton finalize = new JButton("Finalize Travel"); // button to finalize the user's selection.
+		//JButton finalize = new JButton("Finalize Travel"); // button to finalize the user's selection.
 		finalize.addActionListener(e ->{
 			//String[] options = new String[]{"View A", "View B", "View C", "Cancel"};
 			//JOptionPane.showOptionDialog(null, "Message", "Choose Preferred Route", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
 			
-			try {
-				this.userStart = findStationNumber(this.start[0]); //retrieve the position of the station for start location
-				this.userEnd = findStationNumber(this.end[0]);
-				//System.out.print(this.userStart + "end " + this.userEnd); //checks to ensure numbers are correct before passing to citydefaultinitialization
-			} catch (IOException e1) {
+
+				try {
+					this.userStart = findStationNumber(this.start[0]);
+					this.userEnd = findStationNumber(this.end[0]);
+				} catch (IOException e5) {
+
+					JOptionPane.showMessageDialog(null, "One of the selections are null or empty", "Alert!", getDefaultCloseOperation());
+				} 																	//retrieve the position of the station for start location
 				
-				//JOptionPane.showMessageDialog(null, "Missing a location!", "Attention!", getDefaultCloseOperation());
-			}
+				
+			
 			
 			CityDefaultInitialization cdi = new CityDefaultInitialization();
 			
@@ -522,24 +530,27 @@ public class BusStationMain extends JFrame{
 		add(result,BorderLayout.SOUTH);
 		
 		clear.addActionListener(j->{
-			this.setEnabled(false);
-			if(!this.chosen.equals("")) {
-				
+
+			if(!this.chosen.equals("") || !userSelectionStart.equals("") || !userSelectionStart.equals("")){
 				this.chosen="";
-				JOptionPane.showMessageDialog(null, "Selection Cleared", "Success!", getDefaultCloseOperation());
-				this.setEnabled(true);
+				userSelectionStart.setText("");;
+				userSelectionEnd.setText("");
+				this.isStart = false;
+				this.isEnd = false;
+				JOptionPane.showMessageDialog(null, "All selections cleared.", "Success!", getDefaultCloseOperation());
+				changeFinal(this.isStart,this.isEnd);
 			}else {
 				JOptionPane.showMessageDialog(null, "Selection is already empty!", "Alert!", getDefaultCloseOperation());
-				this.setEnabled(true);
+				
 			}
 			
 		});
 		
 		view.addActionListener(b->{ //used to get view for selected items.
-			this.setEnabled(false);
+	
 			if(this.chosen.equals("")) {
 				JOptionPane.showMessageDialog(null, "No Selection Made!", "Alert!", getDefaultCloseOperation());
-				this.setEnabled(true);//enable frame again
+				
 			}else {
 				JFrame selection = new JFrame();//used to disable main frame
 				selection.setLayout(new BorderLayout());
@@ -577,9 +588,7 @@ public class BusStationMain extends JFrame{
 	}
 	
 	public String convertToString(String[] arr) {
-		String concat = "";
-		
-		return concat = "Bus Station: " + arr[0]  + "\n Longitude: " + arr[1] + "\n Latitude: " + arr[2];	
+		return "Bus Station: " + arr[0]  + "\n Longitude: " + arr[1] + "\n Latitude: " + arr[2];	
 	
 	}
 	
@@ -648,6 +657,13 @@ public class BusStationMain extends JFrame{
 		return a;
 	}
 	
+	public void changeFinal(boolean a, boolean b) {
+	if(a == true && b == true) {
+			this.finalize.setEnabled(true);
+		}else
+			this.finalize.setEnabled(false);
+	}
+	
 	
 	public static void main(String[] args) throws IOException {
 		
@@ -660,6 +676,7 @@ public class BusStationMain extends JFrame{
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
 
+		
 	}
 
 }
