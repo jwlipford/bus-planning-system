@@ -59,14 +59,34 @@ public class DijkstraStation extends BusStation
 		return best( this.connectedDStations );
 	}
 	
-	public DijkstraStation randomBetterConnectedStation()
+	public DijkstraStation randomBetterConnectedStation( int deviation, int deviationPoint )
 	// A station randomly chosen from those stations connected to this that are
 	// closer than this to the destinations
 	{
 		ArrayList<DijkstraStation> betterStations = new ArrayList<DijkstraStation>();
+		
 		for( DijkstraStation ds : this.connectedDStations )
-			if( ds.dist < this.dist )
+		{
+			if( deviation == 1  )
+			{
+				if( ds.dist < this.dist && deviationPoint == 1 || deviationPoint == 2 )
+				{
+					betterStations.add( ds );
+					betterStations.add( ds );
+					if( ds.dist < this.dist && deviationPoint == 2 ) 
+					{
+						betterStations.add( ds );
+						betterStations.add( ds );
+					}
+				}
 				betterStations.add( ds );
+			}
+			
+			if( ds.dist < this.dist ) 
+			{
+				betterStations.add( ds );
+			}
+		}
 		return betterStations.get( (int)( Math.random() * betterStations.size() ) );
 	}
 	
@@ -130,7 +150,7 @@ public class DijkstraStation extends BusStation
 	public static Route dijkstraRoute(
 			ArrayList<DijkstraStation> dStations,
 			BusStation destination,
-			boolean random
+			boolean random, int deviation, int deviationPoint
 	) throws Exception
 	// The Route from the start (specified when creating the dStations
 	// ArrayList, probably using the busStationsToDijkstraStations method)
@@ -157,7 +177,7 @@ public class DijkstraStation extends BusStation
 		while( backtracker != start )
 		{
 			if( random )
-				backtracker = backtracker.randomBetterConnectedStation();
+				backtracker = backtracker.randomBetterConnectedStation(deviation, deviationPoint);
 			else
 				backtracker = backtracker.bestConnectedStation();
 			route.add( 0, backtracker.correspondingStation );
