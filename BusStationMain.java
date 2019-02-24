@@ -1,10 +1,5 @@
-import java.util.*;
 import java.util.regex.Pattern;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -100,7 +95,6 @@ public class BusStationMain extends JFrame{
 			sorter.setRowFilter(RowFilter.regexFilter(text));
 		});
 		
-		JLabel selectedStart = new JLabel();
 		gbc.anchor = GridBagConstraints.NORTHWEST;
 		gbc.weightx = 1.0;
 		gbc.weighty = 1.0;
@@ -153,7 +147,6 @@ public class BusStationMain extends JFrame{
 			sorter2.setRowFilter(RowFilter.regexFilter(text));
 		});
 		
-		JLabel selectedStart2 = new JLabel();
 		gbc.anchor = GridBagConstraints.NORTHWEST;
 		gbc.weightx = 1.0;
 		gbc.weighty = 1.0;
@@ -182,7 +175,6 @@ public class BusStationMain extends JFrame{
 			//JOptionPane.showMessageDialog(null, "No Selection Made!", "Alert!", getDefaultCloseOperation());
 			
 			int row = table.getSelectedRow(); //get user selected row
-			String actualValue; 
 			String value;
 			try {
 			for(int i = 0; i <=2; i++) {
@@ -315,10 +307,8 @@ public class BusStationMain extends JFrame{
 				
 			
 			
-			CityDefaultInitialization cdi = new CityDefaultInitialization();
-			
 			try {
-				this.travelPlans = cdi.implementTravel(this.userStart, this.userEnd); //returns an array of strings that will be used to input into JLabels
+				this.travelPlans = CityDefaultInitialization.implementTravel(this.userStart, this.userEnd); //returns an array of strings that will be used to input into JLabels
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -588,46 +578,43 @@ public class BusStationMain extends JFrame{
 	}
 	
 	public String convertToString(String[] arr) {
-		return "Bus Station: " + arr[0]  + "\n Longitude: " + arr[1] + "\n Latitude: " + arr[2];	
-	
+		return "Bus Station: " + arr[0]  + "\n Longitude: " + arr[1] + "\n Latitude: " + arr[2];
 	}
 	
 	public String[][] stations() throws IOException{
-		int n = 0; 																					//initialize n which will determine the space required for array
 		
+	  //File file = new File("C:\\Users\\JRT12\\Desktop\\Bus Station\\CityStationsText.txt"); 	//Find the file with stations 
+	  //File file = new File( "E:\\USCA\\Spring 2019\\CSCI 240\\Project\\BusPlanningSystem\\"
+	  //		+ "BusPlanningSystem\\src\\CityStationsText.txt" );
+		File file = new File( "CityStationsText.txt" );
 		
-		  	File file = new File("C:\\Users\\JRT12\\Desktop\\Bus Station\\CityStationsText.txt"); 	//Find the file with stations 
-		  
-		  BufferedReader cr = new BufferedReader(new FileReader(file));  						 	//user bufferedReader on the file
-		  String counter;																			// used as a reference to the line
-		  while((counter = cr.readLine()) != null) {												//count number of lines for reference to dynamically add more later.
-			  n++;
-		  }
+		BufferedReader cr = new BufferedReader(new FileReader(file));  						 	//user bufferedReader on the file
 		
+		int n = 0; 																				//initialize n which will determine the space required for array
+		while( !cr.readLine().isEmpty() )															//count number of lines for reference to dynamically add more later.
+			n++;
 		
 		String [][] array = new String[n][3];														//Create two dimensional array with n being the number lines 
 		String temp,name,lat,longit;																// create variables for name, longitude, latitude, and temp
 		
-	
-			cr.close();
-		  BufferedReader br = new BufferedReader(new FileReader(file)); 							//Have to create another BufferedReader because can't use twice
+		cr.close();
+		cr = new BufferedReader(new FileReader(file)); 											//Have to create another BufferedReader because can't use twice
 		  
-		  
-		  String st; 																				//attribute to hold line
-		  int x = 1;																				//Used to determine array position		
-		  while ((st = br.readLine()) != null) 														//Used to retrieve the information from file.
-		  {
-			  temp = st.split(",")[2];																//The information is seperate by comma to get a temporary name value;
-			  name = temp.replaceAll("\"", "");														//Assign non-Quotation value to name.
-			  lat = st.split(",")[0];																//assign latitude
-			  longit = st.split(",")[1];															//assign longit
+		String st; 																				//attribute to hold line
+		int x = 1;																				//Used to determine array position		
+		while (!(st = cr.readLine()).isEmpty()) 														//Used to retrieve the information from file.
+		{
+			temp = st.split(",")[2];																//The information is seperate by comma to get a temporary name value;
+			name = temp.replaceAll("\"", "");														//Assign non-Quotation value to name.
+			lat = st.split(",")[0];																//assign latitude
+			longit = st.split(",")[1];															//assign longit
 
-			  array[x-1][0] = name;																	//position x-1 in array create an object at 0,1,2
-			  array[x-1][1] = lat;																	// assign lat to position in array
-			  array[x-1][2] = longit;																// assign longit in array
+			array[x-1][0] = name;																	//position x-1 in array create an object at 0,1,2
+			array[x-1][1] = lat;																	// assign lat to position in array
+			array[x-1][2] = longit;																// assign longit in array
 			x++;  																					// increase x to position next object
-		  }
-		  br.close();
+		}
+		cr.close();
 		return array;																				//return newly create array of stations
 	}
 	

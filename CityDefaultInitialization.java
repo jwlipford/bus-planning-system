@@ -28,11 +28,11 @@ public class CityDefaultInitialization
 {
     public static ArrayList<BusStation> stationsFileToArrayList() throws Exception
     {
-    	File file = new File( "E:\\USCA\\Spring 2019\\CSCI 240\\Project\\BusPlanningSystem\\BusPlanningSystem\\src\\CityStationsText.txt" );
+    	File file = new File( "CityStationsText.txt" );
     	BufferedReader br = new BufferedReader( new FileReader( file ) );
     	ArrayList<BusStation> stations = new ArrayList<BusStation>();
     	String line = br.readLine();
-    	while( line != null )
+    	while( !line.isEmpty() ) // until line.Equals("")
     	{
     		String[] splitLine = line.split( ", " );
     		stations.add( new BusStation(
@@ -41,39 +41,28 @@ public class CityDefaultInitialization
     			splitLine[2].replaceAll( "\"", "" ) ) );
     		line = br.readLine();
     	}
+    	line = br.readLine();
+    	while( line != null )
+    	{
+    		String[] splitLine = line.split( " " );
+    		for( int i = 0; i < (splitLine.length - 1); ++i )
+    		{
+    			int index0 = Integer.parseInt( splitLine[  i  ] );
+    			int index1 = Integer.parseInt( splitLine[ i+1 ] );
+    			stations.get( index0 ).connect( stations.get( index1 ) );
+    			stations.get( index1 ).connect( stations.get( index0 ) );
+    		}
+    		line = br.readLine();
+    	}
     	br.close();
     	return stations;
     }
 	
-	public String[] implementTravel(int begin, int end) throws Exception
+	public static String[] implementTravel(int begin, int end) throws Exception
     {
 		String[] plans = new String[3];
 		
     	ArrayList<BusStation> stations = stationsFileToArrayList();
-		
-		// Columns 0-4
-		for( int c = 0; c < 5; ++c )
-		{
-			BusStation[] busLine = new BusStation[8];
-			
-			// Rows 0-7
-			for( int r = 0; r < 8; ++r )
-				busLine[r] = stations.get( r + 8*c );
-			
-			BusPlanningSystem.createBusLine( busLine );
-		}
-        
-        // Rows 0-7
-        for( int r = 0; r < 8; ++r )
-        {
-        	BusStation[] busLine = new BusStation[5];
-        	
-        	// Columns 0-4
-        	for( int c = 0; c < 5; ++c )
-        		busLine[c] = stations.get( r + 8*c );
-        	
-        	BusPlanningSystem.createBusLine( busLine );
-        }
         
         System.out.print( "Stations 1-40 created and connected\n\n" );
         
@@ -82,16 +71,12 @@ public class CityDefaultInitialization
         //System.out.print( "Start Station (1-40): " );
         int s = begin - 1;
         if( s < 0 || s > 39 )
-        {
-        	
         	throw new Exception();
-        }
+        
         //System.out.print( "Destination Station (1-40): " );
         int d = end - 1;
         if( d < 0 || d > 39 )
-        {
         	throw new Exception();
-        }
         
         BusStation start = stations.get(s);
         BusStation dest  = stations.get(d);
