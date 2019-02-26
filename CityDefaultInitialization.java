@@ -19,10 +19,8 @@ Square Characteristics: ~256 square miles, ~16 mile edges, max length of a bus
 route is ~23 miles assuming straight line from SE to NE
  */
 
-import java.util.Scanner;
 import java.util.ArrayList;
 import java.io.*;
-import java.lang.reflect.Array;
 
 public class CityDefaultInitialization
 {
@@ -58,22 +56,18 @@ public class CityDefaultInitialization
     	return stations;
     }
 	
+    // Generates three routes
 	public static String[] implementTravel(int begin, int end) throws Exception
     {
-		String[] plans = new String[3];
-		
-    	ArrayList<BusStation> stations = stationsFileToArrayList();
+		ArrayList<BusStation> stations = stationsFileToArrayList();
         
+		// Just for debugging purposes
         System.out.print( "Stations 1-40 created and connected\n\n" );
         
-        //Scanner scanner = new Scanner( System.in );
-        
-        //System.out.print( "Start Station (1-40): " );
         int s = begin - 1;
         if( s < 0 || s > 39 )
         	throw new Exception();
         
-        //System.out.print( "Destination Station (1-40): " );
         int d = end - 1;
         if( d < 0 || d > 39 )
         	throw new Exception();
@@ -84,63 +78,40 @@ public class CityDefaultInitialization
         ArrayList<DijkstraStation> dStations =
         		DijkstraStation.busStationsToDijkstraStations( stations, start );
         
-        Route bestRoute  = DijkstraStation.dijkstraRoute( dStations, dest, false, 0, 0 );
-        Route randRoute1 = DijkstraStation.dijkstraRoute( dStations, dest, true, 0, 0  );
-        Route randRoute2 = DijkstraStation.dijkstraRoute( dStations, dest, true, 0, 0  );
-        // Sometimes a randomly generated route is the same as one of the other
-        // routes. TODO: Fix this, maybe. Possibly use Route.equalTo method.
+        Route bestRoute = DijkstraStation.dijkstraRoute( dStations, dest, false );
         
-        if(!bestRoute.equalTo(randRoute1) && !bestRoute.equalTo(randRoute2) && !randRoute1.equalTo(randRoute2))
+        final Bus BUS = new Bus( "The Magic School Bus", BusType.city, 60, 4.5, 30 );
+        
+        // Number of tries to find a new Route different from previous ones
+        final int MAX_TRIES = 8;
+        
+        int numTries = 0;
+        Route secondRoute;
+        while( true ) // until broken
         {
-	        bestRoute.bus  = new Bus( "The Magic School Bus", BusType.city, 80, 7, 35 );
-	        randRoute1.bus = bestRoute.bus;
-	        randRoute2.bus = bestRoute.bus;
-        }
-        else 
-        {
-        	int check = 0;
-        	int deviation = 1;
-        	int deviationPoint1 = 1;
-        	int deviationPoint2 = 2;
-        	
-        	while(bestRoute.equalTo(randRoute1) || bestRoute.equalTo(randRoute2) || randRoute1.equalTo(randRoute2))
-        	{
-        		if(bestRoute.equalTo(randRoute2) || randRoute1.equalTo(randRoute2)) 
-        		{
-        			randRoute2 = DijkstraStation.dijkstraRoute( dStations, dest, true, deviation, deviationPoint2 );
-        		}
-        		if(bestRoute.equalTo(randRoute1))
-        		{
-        			randRoute1 = DijkstraStation.dijkstraRoute( dStations, dest, true, deviation, deviationPoint1 );
-        		}
-        		if(check >= 2)
-        		{
-        			System.out.println("Unable to generate 3 unique routes");
-        			break;
-        		}
-
-        		check++;
-        	}
-        	
-        	bestRoute.bus  = new Bus( "The Magic School Bus", BusType.city, 80, 7, 35 );
-	        randRoute1.bus = bestRoute.bus;
-	        randRoute2.bus = bestRoute.bus;
+        	if( numTries >= MAX_TRIES )
+        		return new String[] { bestRoute.display( BUS ), null, null };
+        	secondRoute = DijkstraStation.dijkstraRoute( dStations, dest, true );
+        	if( !bestRoute.equals( secondRoute ) )
+        		break; // secondRoute found!
+        	++numTries;
         }
         
-        /*System.out.println( "------  Best Route  --------------------" );
-        System.out.print( bestRoute.toString() );
-        System.out.println();
-        System.out.println( "------  Semi-Random Route 1  -----------" );
-        System.out.print( randRoute1.toString() );
-        System.out.println();
-        System.out.println( "------  Semi-Random Route 2  -----------" );
-        System.out.print( randRoute2.toString() );*/
+        numTries = 0;
+        Route thirdRoute;
+        while( true ) // until broken
+        {
+        	if( numTries >= MAX_TRIES )
+        		return new String[]	{ bestRoute.display( BUS ),
+        				              secondRoute.display( BUS ), null };
+        	thirdRoute = DijkstraStation.dijkstraRoute( dStations, dest, true );
+        	if( !bestRoute.equals( thirdRoute ) && !secondRoute.equals( thirdRoute ) )
+        		break; // thirdRoute found!
+        	++numTries;
+        }
         
-        
-        plans[0] = bestRoute.toString();
-        plans[1] = randRoute1.toString();
-        plans[2] = randRoute2.toString();
-        
-        return plans;
+        return new String[] { bestRoute.display( BUS ),
+        					  secondRoute.display( BUS ),
+        					  thirdRoute.display( BUS )   };
     }
 }

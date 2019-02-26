@@ -2,12 +2,9 @@ import java.util.ArrayList;
 
 public class Route extends ArrayList<BusStation>
 {    
-    public Bus bus;
-	
-	@Override
-    public String toString() // Use this to display the route!
+    public String display( Bus bus )
     {
-        String s = "";
+    	String s = "";
         for( int i = 1; i < this.size(); ++i )
         {
             BusStation current = this.get( i-1 );
@@ -21,14 +18,23 @@ public class Route extends ArrayList<BusStation>
         }
         return s;
     }
+    
+	@Override
+    public String toString() // Mostly for debugging, not for actual display
+    {
+        String s = "A Route with " + this.size() + " stations:\n";
+        for( BusStation bs : this )
+        	s += " " + bs.getName() + "\n";
+        return s;
+    }
 	
-	// Remove if not needed
-	public boolean equalTo( Route r )
+	public boolean equals( Route route )
+	// Overrides super.equals, but only when the argument is a Route
 	{
-		if( r == null || this.size() != r.size() || this.bus != r.bus )
+		if( this.size() != route.size() )
 			return false;
 		for( int i = 0; i < this.size(); ++i )
-			if( this.get(i) != r.get(i) )
+			if( this.get(i) != route.get(i) )
 				return false;
 		return true;
 	}
