@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.table.*;
 /*The system needs: button for adding bus stations. User must be able modify existing bus station.
@@ -35,6 +37,13 @@ public class BusStationMain extends JFrame{
 	JButton finalize = new JButton("Finalize Travel"); // button to finalize the user's selection.
 	public BusStationMain() throws IOException{
 		setLayout(new BorderLayout());
+		
+		  try {
+	            setIconImage(ImageIO.read(getClass().getResource("busIcon.jpg")));
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	        }
+		
 		this.finalize.setEnabled(false);
 		JPanel master = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		
@@ -52,6 +61,8 @@ public class BusStationMain extends JFrame{
 		lowInnerLeft.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		
 		String[][] data = stations(); //get the array of stations that is read from a file and assign it.
+		
+		//textConverter(data);
 		
 		String[] header= {"Station","Longitude","Latitude"};
 		
@@ -348,32 +359,12 @@ public class BusStationMain extends JFrame{
 			first.add(optionA, BorderLayout.NORTH);
 			first.add(wrapA,BorderLayout.SOUTH);
 			viewA.addActionListener(e2->   {
-				JFrame optionAFrame = new JFrame();
-				optionAFrame.setLayout(new BorderLayout());
-				optionAFrame.setTitle("Option A Route");
-				optionAFrame.setSize(500,600);
-				optionAFrame.setLocationRelativeTo(null);
-				optionAFrame.setVisible(true);
-				
-				JPanel masterA = new JPanel();
-				JPanel holdA = new JPanel();
-				
+
 				JTextArea bestRoute = new JTextArea(this.travelPlans[0]);
 				
-				holdA.add(bestRoute);
-				JScrollPane paneOne = new JScrollPane();
-				paneOne.setViewportView(holdA);
-				optionAFrame.add(paneOne);
-				
-				JButton close = new JButton("Close");
-				masterA.add(close);
-				optionAFrame.add(masterA,BorderLayout.SOUTH);
-				
-				close.addActionListener(f->{
-					JComponent comp = (JComponent) f.getSource();
-					  Window win = SwingUtilities.getWindowAncestor(comp);
-					  win.dispose();
-				});
+				JScrollPane paneOne = new JScrollPane(bestRoute);
+				paneOne.setPreferredSize(new Dimension(400,600));
+				JOptionPane.showMessageDialog(null,paneOne,"Option A",JOptionPane.PLAIN_MESSAGE);
 				
 			});
 			holdOps.add(first);
@@ -383,33 +374,13 @@ public class BusStationMain extends JFrame{
 			second.add(optionB,BorderLayout.NORTH);
 			second.add(wrapB,BorderLayout.SOUTH);
 			viewB.addActionListener(e3->{
-				JFrame optionBFrame = new JFrame();
-				optionBFrame.setLayout(new BorderLayout());
-				optionBFrame.setTitle("Option B Route");
-				optionBFrame.setSize(500,600);
-				optionBFrame.setLocationRelativeTo(null);
-				optionBFrame.setVisible(true);
-				
-				JPanel masterB = new JPanel();
-				JPanel holdB = new JPanel();
-				
-				JTextArea SecondRoute = new JTextArea(this.travelPlans[1]);
-				
-				holdB.add(SecondRoute);
-				JScrollPane paneTwo = new JScrollPane();
-				paneTwo.setViewportView(holdB);
-				optionBFrame.add(paneTwo);
-				
-				JButton close = new JButton("Close");
-				masterB.add(close);
-				optionBFrame.add(masterB,BorderLayout.SOUTH);
-				
-				close.addActionListener(f->{
-					JComponent comp = (JComponent) f.getSource();
-					  Window win = SwingUtilities.getWindowAncestor(comp);
-					  win.dispose();
+				JTextArea secondRoute = new JTextArea(this.travelPlans[1]);
+
+				JScrollPane paneTwo = new JScrollPane(secondRoute);
+				paneTwo.setPreferredSize(new Dimension(400,600));
+				JOptionPane.showMessageDialog(null,paneTwo,"Option B",JOptionPane.PLAIN_MESSAGE);
 				});
-			});
+
 			holdOps.add(second);
 			
 			JButton viewC = new JButton("View C");
@@ -417,32 +388,12 @@ public class BusStationMain extends JFrame{
 			three.add(optionC,BorderLayout.NORTH);
 			three.add(wrapC,BorderLayout.SOUTH);
 			viewC.addActionListener(e4->{
-				JFrame optionCFrame = new JFrame();
-				optionCFrame.setLayout(new BorderLayout());
-				optionCFrame.setTitle("Option C Route");
-				optionCFrame.setSize(500,600);
-				optionCFrame.setLocationRelativeTo(null);
-				optionCFrame.setVisible(true);
 				
-				JPanel masterC = new JPanel();
-				JPanel holdC = new JPanel();
-				
-				JTextArea ThirdRoute = new JTextArea(this.travelPlans[2]);
-				
-				holdC.add(ThirdRoute);
-				JScrollPane paneThree = new JScrollPane();
-				paneThree.setViewportView(holdC);
-				optionCFrame.add(paneThree);
-				
-				JButton close = new JButton("Close");
-				masterC.add(close);
-				optionCFrame.add(masterC,BorderLayout.SOUTH);
-				
-				close.addActionListener(f->{
-					JComponent comp = (JComponent) f.getSource();
-					  Window win = SwingUtilities.getWindowAncestor(comp);
-					  win.dispose();
-				});
+				JTextArea thirdRoute = new JTextArea(this.travelPlans[2]);
+
+				JScrollPane paneThree = new JScrollPane(thirdRoute);
+				paneThree.setPreferredSize(new Dimension(400,600));
+				JOptionPane.showMessageDialog(null,paneThree,"Option C",JOptionPane.PLAIN_MESSAGE);
 			});
 			holdOps.add(three);
 			showOptions.add(holdOps,BorderLayout.CENTER);
@@ -542,35 +493,13 @@ public class BusStationMain extends JFrame{
 				JOptionPane.showMessageDialog(null, "No Selection Made!", "Alert!", getDefaultCloseOperation());
 				
 			}else {
-				JFrame selection = new JFrame();//used to disable main frame
-				selection.setLayout(new BorderLayout());
-				selection.setTitle("Your Selected Route");
-				selection.setSize(500,600);
-				selection.setLocationRelativeTo(null);
-				selection.setVisible(true);
-				selection.setDefaultCloseOperation(HIDE_ON_CLOSE);//used instead  to ensure the main menu is enabled
-				
-				
-				JPanel masterFinal = new JPanel();
-				JPanel holdFinal = new JPanel();
+
 				
 				JTextArea finalSelection = new JTextArea(this.chosen);
-				
-				holdFinal.add(finalSelection);
-				JScrollPane finalPane = new JScrollPane();
-				finalPane.setViewportView(holdFinal);
-				selection.add(finalPane);
-				
-				JButton close = new JButton("Close");
-				masterFinal.add(close);
-				selection.add(masterFinal,BorderLayout.SOUTH);
-				
-				close.addActionListener(f->{
-					this.setEnabled(true); //used to enable Main Frame
-					JComponent comp = (JComponent) f.getSource();
-					  Window win = SwingUtilities.getWindowAncestor(comp);
-					  win.dispose();
-				});
+				JScrollPane scl = new JScrollPane(finalSelection);
+				scl.setPreferredSize(new Dimension(400,600));
+				JOptionPane.showMessageDialog(null,scl,"Final Selection",JOptionPane.PLAIN_MESSAGE);
+			
 				
 			}
 		});
@@ -586,7 +515,7 @@ public class BusStationMain extends JFrame{
 	  //File file = new File("C:\\Users\\JRT12\\Desktop\\Bus Station\\CityStationsText.txt"); 	//Find the file with stations 
 	  //File file = new File( "E:\\USCA\\Spring 2019\\CSCI 240\\Project\\BusPlanningSystem\\"
 	  //		+ "BusPlanningSystem\\src\\CityStationsText.txt" );
-		File file = new File( "CityStationsText.txt" );
+		File file = new File( "C:\\Users\\JRT12\\Desktop\\Bus Station\\CityStationsText.txt" );
 		
 		BufferedReader cr = new BufferedReader(new FileReader(file));  						 	//user bufferedReader on the file
 		
@@ -643,7 +572,7 @@ public class BusStationMain extends JFrame{
 		
 		return a;
 	}
-	
+		
 	public void changeFinal(boolean a, boolean b) {
 	if(a == true && b == true) {
 			this.finalize.setEnabled(true);
