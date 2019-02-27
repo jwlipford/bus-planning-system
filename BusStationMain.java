@@ -24,6 +24,7 @@ public class BusStationMain extends JFrame{
 	String[] start = new String[3];
 	String[] end = new String[3];
 	String[] travelPlans = new String[3];
+	String[] planTotals  = new String[3];
 	String chosen = "";
 	boolean isStart = false;
 	boolean isEnd = false;
@@ -102,7 +103,7 @@ public class BusStationMain extends JFrame{
 		JTextField searchBox = new JTextField(20);
 		
 		searchBox.addActionListener(e -> {
-			String text = Pattern.quote(searchBox.getText());
+			String text = "(?i)" + Pattern.quote(searchBox.getText()); // (?i) = case-insensitive
 			sorter.setRowFilter(RowFilter.regexFilter(text));
 		});
 		
@@ -154,7 +155,7 @@ public class BusStationMain extends JFrame{
 		JTextField searchBox2 = new JTextField(20);
 		
 		searchBox2.addActionListener(e -> {
-			String text = Pattern.quote(searchBox2.getText());
+			String text = "(?i)" + Pattern.quote(searchBox2.getText());
 			sorter2.setRowFilter(RowFilter.regexFilter(text));
 		});
 		
@@ -318,9 +319,25 @@ public class BusStationMain extends JFrame{
 				
 			
 			
-			try {
-				this.travelPlans = CityDefaultInitialization.implementTravel(this.userStart, this.userEnd); //returns an array of strings that will be used to input into JLabels
-			} catch (Exception e1) {
+			try
+			{
+				Route[] routes = CityDefaultInitialization.implementTravel(this.userStart, this.userEnd);
+				for( int i = 0; i < 3; ++i )
+				{
+					if( routes[i] == null )
+					{
+						this.travelPlans[i] = "No alternative found";
+						this.planTotals[i]  = this.travelPlans[i];
+					}
+					else
+					{
+						this.travelPlans[i] = routes[i].display( Bus.DEFAULT_BUS );
+						this.planTotals[i]  = routes[i].totals();
+					}
+				}
+			}
+			catch (Exception e1)
+			{
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
@@ -515,7 +532,7 @@ public class BusStationMain extends JFrame{
 	  //File file = new File("C:\\Users\\JRT12\\Desktop\\Bus Station\\CityStationsText.txt"); 	//Find the file with stations 
 	  //File file = new File( "E:\\USCA\\Spring 2019\\CSCI 240\\Project\\BusPlanningSystem\\"
 	  //		+ "BusPlanningSystem\\src\\CityStationsText.txt" );
-		File file = new File( "C:\\Users\\JRT12\\Desktop\\Bus Station\\CityStationsText.txt" );
+	    File file = new File( "CityStationsText.txt" );
 		
 		BufferedReader cr = new BufferedReader(new FileReader(file));  						 	//user bufferedReader on the file
 		

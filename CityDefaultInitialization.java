@@ -24,7 +24,7 @@ import java.io.*;
 
 public class CityDefaultInitialization
 {
-    public static ArrayList<BusStation> stationsFileToArrayList() throws Exception
+	public static ArrayList<BusStation> stationsFileToArrayList() throws Exception
     {
     	File file = new File( "CityStationsText.txt" );
     	BufferedReader br = new BufferedReader( new FileReader( file ) );
@@ -57,7 +57,7 @@ public class CityDefaultInitialization
     }
 	
     // Generates three routes
-	public static String[] implementTravel(int begin, int end) throws Exception
+	public static Route[] implementTravel(int begin, int end) throws Exception
     {
 		ArrayList<BusStation> stations = stationsFileToArrayList();
         
@@ -80,8 +80,6 @@ public class CityDefaultInitialization
         
         Route bestRoute = DijkstraStation.dijkstraRoute( dStations, dest, false );
         
-        final Bus BUS = new Bus( "The Magic School Bus", BusType.city, 60, 4.5, 30 );
-        
         // Number of tries to find a new Route different from previous ones
         final int MAX_TRIES = 8;
         
@@ -90,7 +88,7 @@ public class CityDefaultInitialization
         while( true ) // until broken
         {
         	if( numTries >= MAX_TRIES )
-        		return new String[] { bestRoute.display( BUS ), null, null };
+        		return new Route[] { bestRoute, null, null };
         	secondRoute = DijkstraStation.dijkstraRoute( dStations, dest, true );
         	if( !bestRoute.equals( secondRoute ) )
         		break; // secondRoute found!
@@ -102,16 +100,13 @@ public class CityDefaultInitialization
         while( true ) // until broken
         {
         	if( numTries >= MAX_TRIES )
-        		return new String[]	{ bestRoute.display( BUS ),
-        				              secondRoute.display( BUS ), null };
+        		return new Route[] { bestRoute, secondRoute, null };
         	thirdRoute = DijkstraStation.dijkstraRoute( dStations, dest, true );
         	if( !bestRoute.equals( thirdRoute ) && !secondRoute.equals( thirdRoute ) )
         		break; // thirdRoute found!
         	++numTries;
         }
         
-        return new String[] { bestRoute.display( BUS ),
-        					  secondRoute.display( BUS ),
-        					  thirdRoute.display( BUS )   };
+        return new Route[] { bestRoute, secondRoute, thirdRoute };
     }
 }

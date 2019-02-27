@@ -24,4 +24,10 @@ public class BusStation extends Place
     {
     	return name + " at (" + getLatitude() + ", " + getLongitude() + ")";
     }
+    
+    public double hoursTo( Place place, Bus bus )
+    {
+    	return this.milesTo( place ) / bus.getCruisingSpeed();
+    	// miles/(miles/hour) = miles*(hours/mile) = hours
+    }    
 }

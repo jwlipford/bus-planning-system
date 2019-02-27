@@ -21,6 +21,9 @@ public class Bus
     	cruisingSpeed = cs;
     }
     
+    public static final Bus DEFAULT_BUS =
+    		new Bus( "The Magic School Bus", BusType.city, 60, 4.5, 30 );
+    
     // Max number of hours cruising before fuel runs out
     public double maxTime()
     {

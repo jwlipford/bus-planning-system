@@ -46,12 +46,6 @@ public abstract class Place
     	return EARTH_RADIUS * c;
     }
     
-    public double hoursTo( Place place, Bus bus )
-    {
-    	return this.milesTo( place ) / bus.getCruisingConsumption();
-    	// miles/(miles/hour) = miles*(hours/mile) = hours
-    }
-    
     public double bearingTo( Place place )
     // This method, like milesTo, uses a formula found in the Bearing section
 	// of https://www.movable-type.co.uk/scripts/latlong.html, though I applied
