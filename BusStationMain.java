@@ -532,7 +532,7 @@ public class BusStationMain extends JFrame{
 	  //File file = new File("C:\\Users\\JRT12\\Desktop\\Bus Station\\CityStationsText.txt"); 	//Find the file with stations 
 	  //File file = new File( "E:\\USCA\\Spring 2019\\CSCI 240\\Project\\BusPlanningSystem\\"
 	  //		+ "BusPlanningSystem\\src\\CityStationsText.txt" );
-	    File file = new File( "CityStationsText.txt" );
+	    File file = new File( "C:\\Users\\JRT12\\Desktop\\Bus Station\\CityStationsText.txt" );
 		
 		BufferedReader cr = new BufferedReader(new FileReader(file));  						 	//user bufferedReader on the file
 		
@@ -602,14 +602,32 @@ public class BusStationMain extends JFrame{
 		
 		JOptionPane.showMessageDialog(null, "SOFTWARE IS NOT TO BE USED FOR ROUTE PLANNING PURPOSE.");
 		
-		BusStationMain frame = new BusStationMain();
-		frame.setTitle("Bus Route System");
-		frame.setSize(1000,550);
-		frame.setLocationRelativeTo(null);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setVisible(true);
+		Object[] options = {"City Transit","National Transit"};
+		int n = JOptionPane.showOptionDialog(null,"Please choose an option.", "Travel Plans", JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.INFORMATION_MESSAGE,null,options,options[1]);
+		
+		if(n == 0) {
+			BusStationMain frame = new BusStationMain();
+			frame.setTitle("City Bus Routing System");
+			frame.setSize(1000,550);
+			frame.setLocationRelativeTo(null);
+			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			frame.setVisible(true);	
+		}else if(n==1){
+			NationalMainFrame frame = new NationalMainFrame();
+			frame.setTitle("National Bus Routing System");
+			frame.setSize(1000,550);
+			frame.setLocationRelativeTo(null);
+			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			frame.setVisible(true);
+		}
+		
 
 		
 	}
 
+	
+
 }
+
+	
+	
