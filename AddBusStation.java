@@ -35,15 +35,5 @@ public class AddBusStation extends JFrame
         this.setSize( 256, 256 );
         this.setLocationRelativeTo( null ); // IDK what this does
     }
-    
-    public static void main( String[] args )
-    {
-        // TESTING ONLY --------------------------
-        AddBusStation abs = new AddBusStation();
-        abs.setVisible( true );
-        // ---------------------------------------
-        
-        // Not working so far
-    }
 }
 
