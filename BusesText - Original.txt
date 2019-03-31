@@ -1,0 +1,6 @@
+// Just for backup! Not used in actual program!
+
+The Magic School Bus, City, 60, 4.5, 30
+Autobus of the Arcane Academy, LD, 49, 7, 33
+L'Autobus Magique de L'École, LD, 50, 5, 25
+The Magic Back Up System, LD, 64, 4, 32

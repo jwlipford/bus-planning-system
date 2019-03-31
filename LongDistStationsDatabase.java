@@ -14,8 +14,8 @@ public class LongDistStationsDatabase
 	public void createConnection( int i0, int i1 )
 	// Connects the (i0)th BusStation to the (i1)th BusStation
 	{
-		BusStation bs0 = lDStations.get( i0 );
-		BusStation bs1 = lDStations.get( i1 );
+		BusStation bs0 = this.lDStations.get( i0 );
+		BusStation bs1 = this.lDStations.get( i1 );
 		bs0.connect( bs1 );
 		bs1.connect( bs0 );
 	}
@@ -46,7 +46,6 @@ public class LongDistStationsDatabase
     		BusStation lDStation = isGasStation ? new GasStation( lat, lng, name )
                                                 : new BusStation( lat, lng, name );
     		this.lDStations.add( lDStation );
-
     		line = br.readLine();
     	}
     	line = br.readLine();
@@ -64,7 +63,7 @@ public class LongDistStationsDatabase
 	
 	public BusStation[] toArray()
 	{
-		return (BusStation[])lDStations.toArray();
+		return (BusStation[])this.lDStations.toArray();
 	}
 	
 	public void update() throws Exception
@@ -73,19 +72,16 @@ public class LongDistStationsDatabase
 		FileWriter fw = new FileWriter( DATA_FILE );
 		
 		// Write first part of file:
-		for( int i = 0; i < lDStations.size(); ++i )
-		{
-			BusStation bs = lDStations.get(i);
+		for( BusStation bs : this.lDStations )
 			fw.write( bs.getLatitude()  + ", " + bs.getLongitude() + ", " +
 			          (bs.getClass() == GasStation.class ? "Gas, " : "City, ") +
 			          bs.getName() + "\n" );
-		}
 		fw.write( "\n" );
 		
 		// Write second part of file:
-		for( int i = 0; i < lDStations.size(); ++i )
-			for( int j = i + 1; j < lDStations.size(); ++j )
-				if( lDStations.get(i).connectedStations.contains( lDStations.get(j) ) )
+		for( int i = 0; i < this.lDStations.size(); ++i )
+			for( int j = i + 1; j < this.lDStations.size(); ++j )
+				if( this.lDStations.get(i).connectedStations.contains( this.lDStations.get(j) ) )
 					fw.write( i + " " + j + "\n" );
 		
 		fw.close();
@@ -115,9 +111,9 @@ public class LongDistStationsDatabase
 	// Deletes a BusStation from lDStations, but does not update DATA_FILE
 	// (call update() to do so)
 	{
-		String name = lDStations.get( index ).getName();
-		lDStations.remove( index );
-		for( BusStation bs : lDStations )
+		String name = this.lDStations.get( index ).getName();
+		this.lDStations.remove( index );
+		for( BusStation bs : this.lDStations )
 		{
 			for( int i = 0; i < bs.connectedStations.size(); ++i )
 			{
