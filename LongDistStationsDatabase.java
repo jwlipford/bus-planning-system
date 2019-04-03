@@ -61,6 +61,11 @@ public class LongDistStationsDatabase
     	br.close();
 	}
 	
+	public ArrayList<BusStation> toArrayList()
+	{
+	    return (ArrayList<BusStation>)lDStations.clone();
+	}
+	
 	public BusStation[] toArray()
 	{
 		return (BusStation[])this.lDStations.toArray();
