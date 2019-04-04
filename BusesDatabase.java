@@ -42,6 +42,25 @@ public class BusesDatabase
 		br.close();
 	}
 	
+	public String[][] longDistBuses()
+	{
+	    ArrayList<Bus> lDBuses = new ArrayList<Bus>( buses.size() );
+	    for( Bus b : buses )
+	        if( b.getType() == BusType.longDistance )
+	            lDBuses.add(b);
+	    String[][] array = new String[ lDBuses.size() ][ 5 ];
+	    for( int i = 0; i < lDBuses.size(); ++i )
+	    {
+	        Bus b = lDBuses.get(i);
+	        array[i][0] = b.getMakeAndModel();
+	        array[i][1] = "LD";
+	        array[i][2] = String.valueOf( b.getTankSize() );
+	        array[i][3] = String.valueOf( b.getCruisingConsumption() );
+	        array[i][4] = String.valueOf( b.getCruisingSpeed() );
+	    }
+	    return array;
+	}
+	
 	public Bus[] toArray()
 	{
 		return (Bus[])this.buses.toArray();
@@ -93,9 +112,9 @@ public class BusesDatabase
 				                      Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY );
 		bd.addBus( ANTI_BUS );
 		bd.update();
-		bd.delete( bd.buses.size() - 1 ); // Delete JUPITER
+		bd.delete( bd.buses.size() - 1 ); // Delete ANTI_BUS
 		bd.update();
-		bd.delete( bd.buses.size() - 1 ); // Delete THE_MOON
+		bd.delete( bd.buses.size() - 1 ); // Delete SUS
 		bd.update();
 	}
 }
