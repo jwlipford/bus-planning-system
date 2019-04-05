@@ -2,7 +2,7 @@
 // https://www.movable-type.co.uk/scripts/latlong.html.
 // These methods' comments contain more information.
 
-public abstract class Place
+public class Place
 {
     public static final int EARTH_RADIUS = 3959; // miles
 	
@@ -63,7 +63,9 @@ public abstract class Place
     	double h = Math.cos( thisLatRad ) * Math.sin( placeLatRad );
     	double i = Math.sin( thisLatRad ) * Math.cos( placeLatRad ) * Math.cos(f);
     	
-    	return Math.toDegrees( Math.atan2( g, h-i ) ) % 360;
+    	double degrees = Math.toDegrees( Math.atan2( g, h-i ) );
+    	// Java's % operator is remainder, not modulus, and can return a negative.
+    	return (degrees < 0) ? (degrees + 360) : (degrees % 360);
     }
     
     public String headingTo( Place place )
