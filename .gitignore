@@ -17,3 +17,8 @@
 /BusesDatabase.class
 /Database.class
 /LongDistTravel.class
+/NationalMainFrame$addBusPanel.class
+/NationalMainFrame$addStationPanel.class
+/NationalMainFrame$deleteStations.class
+/NationalMainFrame$selectBus.class
+/NationalMainFrame$setLocations.class

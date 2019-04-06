@@ -27,6 +27,8 @@ public class LongDistTravel
                 DijkstraStation.busStationsToDijkstraStations( stations, start );
         
         Route bestRoute = DijkstraStation.dijkstraRoute( dStations, dest, false );
+        if( bestRoute == null )
+            return new Route[] { null, null, null };
         
         // Number of tries to find a new Route different from previous ones
         final int MAX_TRIES = 8;
@@ -38,6 +40,8 @@ public class LongDistTravel
             if( numTries >= MAX_TRIES )
                 return new Route[] { bestRoute, null, null };
             secondRoute = DijkstraStation.dijkstraRoute( dStations, dest, true );
+            if( secondRoute == null )
+                return new Route[] { bestRoute, null, null };
             if( !bestRoute.equals( secondRoute ) )
                 break; // secondRoute found!
             ++numTries;
@@ -50,6 +54,8 @@ public class LongDistTravel
             if( numTries >= MAX_TRIES )
                 return new Route[] { bestRoute, secondRoute, null };
             thirdRoute = DijkstraStation.dijkstraRoute( dStations, dest, true );
+            if( thirdRoute == null )
+                return new Route[] { bestRoute, secondRoute, null };
             if( !bestRoute.equals( thirdRoute ) && !secondRoute.equals( thirdRoute ) )
                 break; // thirdRoute found!
             ++numTries;
