@@ -8,6 +8,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.table.*;
 /*The system needs: button for adding bus stations. User must be able modify existing bus station.
  * delete bus station. display information about a bus station
@@ -31,11 +32,9 @@ public class BusStationMain extends JFrame{
 	String selectStart, selectEnd;
 	JTextArea userSelectionStart = new JTextArea("");
 	JTextArea userSelectionEnd = new JTextArea("");
-	
-	
-	
-	
+
 	JButton finalize = new JButton("Finalize Travel"); // button to finalize the user's selection.
+	
 	public BusStationMain() throws IOException{
 		setLayout(new BorderLayout());
 		
@@ -447,7 +446,7 @@ public class BusStationMain extends JFrame{
 				  win.dispose();
 			});
 			
-			});
+			});//end of finalize
 			
 		JButton addBusSt= new JButton("+ Bus Station");
 		
@@ -532,7 +531,7 @@ public class BusStationMain extends JFrame{
 	  //File file = new File("C:\\Users\\JRT12\\Desktop\\Bus Station\\CityStationsText.txt"); 	//Find the file with stations 
 	  //File file = new File( "E:\\USCA\\Spring 2019\\CSCI 240\\Project\\BusPlanningSystem\\"
 	  //		+ "BusPlanningSystem\\src\\CityStationsText.txt" );
-	    File file = new File( "C:\\Users\\JRT12\\Desktop\\Bus Station\\CityStationsText.txt" );
+	    File file = new File( "C:\\Users\\JRT12\\Desktop\\BusStation\\BusStation\\src\\CityStationsText.txt" );
 		
 		BufferedReader cr = new BufferedReader(new FileReader(file));  						 	//user bufferedReader on the file
 		
@@ -598,8 +597,17 @@ public class BusStationMain extends JFrame{
 	}
 	
 	
-	public static void main(String[] args) throws IOException {
-		
+	public static void main(String[] args) throws Exception {
+		  // Sets the L&F theme.
+        try {
+            for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    UIManager.setLookAndFeel(info.getClassName());
+                  //  break;
+                }
+            }
+        } catch (Exception e) {
+        }
 		JOptionPane.showMessageDialog(null, "SOFTWARE IS NOT TO BE USED FOR ROUTE PLANNING PURPOSE.");
 		
 		Object[] options = {"City Transit","National Transit"};
@@ -609,14 +617,17 @@ public class BusStationMain extends JFrame{
 			BusStationMain frame = new BusStationMain();
 			frame.setTitle("City Bus Routing System");
 			frame.setSize(1000,550);
+			frame.setResizable(false);
 			frame.setLocationRelativeTo(null);
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			frame.setVisible(true);	
+			
 		}else if(n==1){
 			NationalMainFrame frame = new NationalMainFrame();
 			frame.setTitle("National Bus Routing System");
-			frame.setSize(1000,550);
+			frame.setSize(1000,600);
 			frame.setLocationRelativeTo(null);
+			frame.setResizable(false);
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			frame.setVisible(true);
 		}
