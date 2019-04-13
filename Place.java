@@ -2,7 +2,7 @@
 // https://www.movable-type.co.uk/scripts/latlong.html.
 // These methods' comments contain more information.
 
-public class Place
+public abstract class Place
 {
     public static final int EARTH_RADIUS = 3959; // miles
 	

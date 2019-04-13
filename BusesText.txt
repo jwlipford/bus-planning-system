@@ -1,4 +1,7 @@
-The Magic School Bus, City, 60.0, 4.5, 30.0
-Autobus of the Arcane Academy, LD, 49.0, 7.0, 33.0
-L'Autobus Magique de L'École, LD, 50.0, 5.0, 25.0
-The Magic Back Up System, LD, 64.0, 4.0, 32.0
+Orion International (Canada) - Orion V, LD, 60.0, 10.0, 50.0
+General Motors Truck & Coach (USA) - Old Look, LD, 60.0, 10.0, 60.0
+Mercedes-Benz (Germany) - T2, LD, 60.0, 10.0, 70.0
+Isuzu (Japan) - Super Cruiser, LD, 60.0, 10.0, 80.0
+Ashok Leyland (India) - 12M, LD, 60.0, 10.0, 90.0
+Škoda Transportation (Czech Republic) - 21Ab, LD, 60.0, 10.0, 90.0
+Ikarus (Hungary), LD, 30.0, 60.0, 100.0

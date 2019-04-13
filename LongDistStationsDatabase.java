@@ -178,18 +178,9 @@ public class LongDistStationsDatabase
     // TESTING ONLY:
     public static void main(String[] args) throws Exception
     {
-        // Open LongDistStationsText.txt and see how it changes during this method!
-        LongDistStationsDatabase ldsd = new LongDistStationsDatabase();
-        final BusStation THE_MOON = new BusStation( Double.NaN, Double.NaN, "THE MOON" );
-        ldsd.addLDStation( THE_MOON );
-        ldsd.update();
-        final GasStation JUPITER = new GasStation( Double.NaN, Double.NaN, "JUPITER" );
-        ldsd.addLDStation( JUPITER );
-        ldsd.createConnection( 0, ldsd.lDStations.size() - 1 ); // Connect JUPITER to NYC
-        ldsd.update();
-        ldsd.delete( ldsd.lDStations.size() - 1 ); // Delete JUPITER
-        ldsd.update();
-        ldsd.delete( ldsd.lDStations.size() - 1 ); // Delete THE_MOON
-        ldsd.update();
+        LongDistStationsDatabase ldsd = new LongDistStationsDatabase();        
+        Route[] routes = LongDistTravel.implementTravel( ldsd, 2, 4 ); // LA to Aiken
+        Route r0 = routes[0];
+        LongDistTravel.insertGasStations( r0, Bus.DEFAULT_BUS, ldsd );
     }
 }
