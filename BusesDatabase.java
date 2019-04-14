@@ -63,7 +63,14 @@ public class BusesDatabase
 	
 	public Bus[] toArray()
 	{
-		return (Bus[])this.buses.toArray();
+		// IDK why, but {return this.buses.toArray()} did not work.
+	    
+	    Bus[] array = new Bus[ buses.size() ];
+	    for( int i = 0; i < buses.size(); ++i )
+	    {
+	        array[i] = buses.get(i);
+	    }    
+	    return array;
 	}
 	
 	public void update() throws Exception

@@ -179,7 +179,7 @@ public class LongDistStationsDatabase
     public static void main(String[] args) throws Exception
     {
         LongDistStationsDatabase ldsd = new LongDistStationsDatabase();        
-        Route[] routes = LongDistTravel.implementTravel( ldsd, 2, 4 ); // LA to Aiken
+        Route[] routes = LongDistTravel.implementTravel( ldsd, 3, 5 ); // LA -> Aiken
         Route r0 = routes[0];
         LongDistTravel.insertGasStations( r0, Bus.DEFAULT_BUS, ldsd );
     }

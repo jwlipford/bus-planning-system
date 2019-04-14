@@ -64,27 +64,53 @@ public class LongDistTravel
         return new Route[] { bestRoute, secondRoute, thirdRoute };
     }
     
-    public static ArrayList<Place> suggestedGasStations( Route route, Bus bus )
-            throws Exception
-    // Returns a list of Places at which it is suggested that the user create
-    // GasStations for legs of the route that are too long. The user does not
-    // have to create GasStations at these places exactly; for each suggested
-    // Place, the user should be allowed to create a GasStation in its general
-    // vicinity.
+    public static void insertGasStations(
+        Route route, Bus bus, LongDistStationsDatabase ldsdb ) throws Exception
+    // Inserts gas stations as needed in legs of the route that are too long,
+    // adding those gas stations to ldsdb
     {
         final double maxDist = bus.maxRange();
-        ArrayList<Place> suggestions = new ArrayList<Place>( route.size() );
-        for( int i = 0; i < route.size() - 1; ++i )
+        
+        for( int i = 0; i < (route.size() - 1); ++i )
         {
-            Place start = route.get(i);
-            Place dest  = route.get( i+1 );
-            if( start.milesTo( dest ) >= maxDist )
+            BusStation start = route.get(i);
+            BusStation dest  = route.get( i+1 );
+            
+            double legDist = start.milesTo( dest );
+            int numGasStationsNeeded = (int)(legDist / maxDist); // rounding down
+            if( numGasStationsNeeded == 0)
+                continue;
+            int numSubsectionsOfLeg = numGasStationsNeeded + 1;
+            
+            double latChangePerSubsection =
+                (dest.getLatitude() - start.getLatitude()) / numSubsectionsOfLeg;
+            double lngChangePerSubsection =
+                (dest.getLongitude() - start.getLongitude()) / numSubsectionsOfLeg;
+            
+            int numGasStationsInDatabase = ldsdb.gasStations().length;
+                // Used to generate names for new GasStations
+            
+            BusStation station = start;
+            for( int j = 0; j < numGasStationsNeeded; ++j )
             {
-                double midLat = (start.getLatitude() + dest.getLatitude()) / 2;
-                double midLng = (start.getLongitude() + dest.getLongitude()) / 2;
-                suggestions.add( new Place( midLat, midLng ) );
+                double newLat = station.getLatitude()  + latChangePerSubsection;
+                double newLng = station.getLongitude() + lngChangePerSubsection;
+                String newName = "Gas Station " + (numGasStationsInDatabase + 1);
+                
+                GasStation newGS = new GasStation( newLat, newLng, newName );
+                newGS.connect( station );
+                station.connect( newGS );
+                station = newGS;
+                
+                ++i;
+                route.add( i, newGS );
+                
+                ldsdb.addLDStation( newGS );
+                ++numGasStationsInDatabase;
             }
+            station.connect( dest );
+            dest.connect( station );
         }
-        return suggestions;
+        ldsdb.update();
     }
 }
