@@ -1,9 +1,11 @@
 // Just for backup! Not used in actual program!
 
-Orion International (Canada) - Orion V, LD, 60, 10, 50
+// Name, type, tank size, consumption, speed
+
+Orion International (Canada) - Orion V, LD, 50, 10, 60
 General Motors Truck & Coach (USA) - Old Look, LD, 60, 10, 60
-Mercedes-Benz (Germany) - T2, LD, 60, 10, 70
-Isuzu (Japan) - Super Cruiser, LD, 60, 10, 80
-Ashok Leyland (India) - 12M, LD, 60, 10, 90
-Škoda Transportation (Czech Republic) - 21Ab, LD, 60, 10, 90
-Ikarus (Hungary), LD, 30, 60, 100
+Mercedes-Benz (Germany) - T2, LD, 70, 10, 60
+Isuzu (Japan) - Super Cruiser, LD, 80, 10, 60
+Ashok Leyland (India) - 12M, LD, 90, 10, 60
+Škoda Transportation (Czech Republic) - 21Ab, LD, 90, 10, 60
+Ikarus (Hungary), LD, 100, 60, 30

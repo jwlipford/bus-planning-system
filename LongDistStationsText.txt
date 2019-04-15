@@ -1,23 +1,20 @@
-40.6635, -73.9387, City, New York City
-41.8376, -87.6818, City, Chicago
-34.0194, -118.4108, City, Los Angeles
-29.7866, -95.3909, City, Houston
-33.5606, -81.7193, City, Aiken
-38.9041, -77.0172, City, Washington D.C.
-40.6542, -95.8591, Gas, Phillips 66 of Nebraska City
+81.0, 34.0, City, Columbia SC
+81.97, 33.47, City, Augusta GA
+84.23, 33.44, City, Atlanta GA
+80.84, 35.23, City, Charlotte NC
+80.87, 35.79, City, Statesville NC
+77.04, 38.9, City, Washington DC
+73.94, 40.67, City, New York City NY
+77.43, 37.54, City, Richmond VA
 
 0 1
-0 5
-0 6
+0 3
 1 2
-1 3
-1 5
-1 6
 2 3
-2 6
 3 4
 3 5
-3 6
+3 7
 4 5
-4 6
+4 7
 5 6
+5 7
