@@ -331,7 +331,7 @@ public class BusStationMain extends JFrame{
 					else
 					{
 						this.travelPlans[i] = routes[i].display( Bus.DEFAULT_BUS );
-						this.planTotals[i]  = routes[i].totals();
+						this.planTotals[i]  = routes[i].totals( Bus.DEFAULT_BUS );
 					}
 				}
 			}
