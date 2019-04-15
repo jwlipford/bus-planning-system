@@ -4,10 +4,4 @@ public class GasStation extends BusStation
 	{
 		super( latitude, longitude, name );
 	}
-	
-	@Override
-	public String toString()
-	{
-		return "GAS STATION: " + super.toString();
-	}
 }

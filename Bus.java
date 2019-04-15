@@ -22,7 +22,8 @@ public class Bus
     }
     
     public static final Bus DEFAULT_BUS =
-    		new Bus( "Default Bus", BusType.city, 60, 4.5, 30 );
+    		new Bus( "DEFAULT CITY BUS: General Motors Truck & Coach (USA) - Old Look",
+    		         BusType.city, 60, 10, 60 );
     
     // Max number of hours cruising before fuel runs out
     public double maxTime()

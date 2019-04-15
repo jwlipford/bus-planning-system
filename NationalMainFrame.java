@@ -47,6 +47,8 @@ public class NationalMainFrame extends JFrame{
 	String[] delBus = new String[5];
 	JButton finalize = new JButton("Finalize Travel"); 		// button to finalize the user's selection.
 	
+	Bus chosenBus = null; // Used in finalize.addActionListener  --Jeffrey
+	
 	public NationalMainFrame() throws Exception {
 		finalize.setEnabled(false);
 		setLayout(new BorderLayout()); 						// set layout of frame to BorderLayout.
@@ -312,21 +314,23 @@ public class NationalMainFrame extends JFrame{
 			if(var == JOptionPane.OK_OPTION) {
 				try {
 					int row = selectBus.busTable.getSelectedRow();
-				String value;
-
-				for(int i = 0; i <= 4; i++) {
-				
-				value = selectBus.busTable.getModel().getValueAt(selectBus.busTable.convertRowIndexToModel(row), i).toString();
-				NationalMainFrame.this.selectedBus[i]=value;
-				//JOptionPane.showMessageDialog(this, arr[i]);
-				
-				}
-				String userChosenBus = "Bus Name: " + this.selectedBus[0] + "\nTank Size: " + this.selectedBus[2] + "\nCruise Consumption: " + this.selectedBus[3] + "\nCruise Speed: " + this.selectedBus[4];
-				chosenBusPane.setText("");//resets pre-existing text
-				docum.insertString(0, userChosenBus, null );
-				/*used to see if bus array worked for(int i = 0; i<this.selectedBus.length; i++) {
-					System.out.println(this.selectedBus[i]);
-				}*/
+					
+					BusesDatabase bd = new BusesDatabase();
+					this.chosenBus = bd.toArray()[ row ];
+    
+    				for(int i = 0; i <= 4; i++) {
+    				
+        				String value = selectBus.busTable.getModel().getValueAt(selectBus.busTable.convertRowIndexToModel(row), i).toString();
+        				NationalMainFrame.this.selectedBus[i]=value;
+        				//JOptionPane.showMessageDialog(this, arr[i]);
+        				
+    				}
+    				String userChosenBus = "Bus Name: " + this.selectedBus[0] + "\nTank Size: " + this.selectedBus[2] + "\nCruise Consumption: " + this.selectedBus[3] + "\nCruise Speed: " + this.selectedBus[4];
+    				chosenBusPane.setText("");//resets pre-existing text
+    				docum.insertString(0, userChosenBus, null );
+    				/*used to see if bus array worked for(int i = 0; i<this.selectedBus.length; i++) {
+    					System.out.println(this.selectedBus[i]);
+    				}*/
 				}catch(Exception e2) {
 					JOptionPane.showMessageDialog(this, "No value was selected! ");
 				}
@@ -383,9 +387,8 @@ public class NationalMainFrame extends JFrame{
 				Double CruiseCon = Double.parseDouble(addBusArr[2]);
 				Double CruiseSpd = Double.parseDouble(addBusArr[3]);
 				//String LongDist = "LD";
-				BusesDatabase bd;
 				try {
-					bd = new BusesDatabase();
+				    BusesDatabase bd = new BusesDatabase();
 					final Bus UserBus = new Bus(busName, BusType.longDistance, //constructor that takes makeandmodel, type, tanksize, cruisingconsumption, cruising speed
 				                         tankSz, CruiseCon, CruiseSpd );
 
@@ -393,7 +396,6 @@ public class NationalMainFrame extends JFrame{
 					bd.update();
 
 				} catch (Exception e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 
@@ -477,7 +479,6 @@ public class NationalMainFrame extends JFrame{
 						
 						
 					} catch (Exception e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
 				}
@@ -587,23 +588,26 @@ public class NationalMainFrame extends JFrame{
 			//String[] options = new String[]{"View A", "View B", "View C", "Cancel"};
 			//JOptionPane.showOptionDialog(null, "Message", "Choose Preferred Route", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
 			
-			
-				try {
-					this.userStart = findStationNumber(this.start[0]);
-					this.userEnd = findStationNumber(this.end[0]);
-		
-				} catch (IOException e5) {
+			if( this.chosenBus == null )
+			{
+			    JOptionPane.showMessageDialog( null, "No bus selected!" );
+			    return;
+			}
+		    
+			try {
+				this.userStart = findStationNumber(this.start[0]);
+				this.userEnd = findStationNumber(this.end[0]);
+	
+			} catch (IOException e5) {
 
-					JOptionPane.showMessageDialog(null, "One of the selections are null or empty", "Alert!", getDefaultCloseOperation());
-				} 																	//retrieve the position of the station for start location
-				
-				
+				JOptionPane.showMessageDialog(null, "One of the selections are null or empty", "Alert!", getDefaultCloseOperation());
+			} 																	//retrieve the position of the station for start location
 			
-			
+			Route[] routes = null;
 			
 			try
 			{
-				Route[] routes = LongDistTravel.implementTravel(new LongDistStationsDatabase(),this.userStart, this.userEnd);
+				routes = LongDistTravel.implementTravel(new LongDistStationsDatabase(),this.userStart, this.userEnd);
 				for( int i = 0; i < 3; ++i )
 				{
 					if( routes[i] == null )
@@ -613,18 +617,17 @@ public class NationalMainFrame extends JFrame{
 					}
 					else
 					{
-						this.travelPlans[i] = routes[i].display( Bus.DEFAULT_BUS );
-						this.planTotals[i]  = routes[i].totals();
+						this.travelPlans[i] = routes[i].display( this.chosenBus );
+						this.planTotals[i]  = routes[i].totals( this.chosenBus );
 					}
 				}
 			}
 			catch (Exception e1)
 			{
-				// TODO Auto-generated catch block
 				System.out.print(this.userStart + " " + this.userEnd);
 			}
 			
-		
+			final Route[] ROUTES = routes;
 			
 			
 			JFrame showOptions = new JFrame();
@@ -705,19 +708,33 @@ public class NationalMainFrame extends JFrame{
 			approveWrap.add(approve);
 			holdButtons.add(approveWrap);
 			approve.addActionListener(c->{
-				if(optionA.isSelected())
-			{	
-				this.chosen = this.travelPlans[0];
-			
-			}else if(optionB.isSelected()) {
-				this.chosen = this.travelPlans[1];
-			}else if(optionC.isSelected()) {
-				this.chosen = this.travelPlans[2];
-			}
+			    try {
+			        LongDistStationsDatabase ldsd = new LongDistStationsDatabase();
+    				if(optionA.isSelected())
+    				{
+    				    LongDistTravel.insertGasStations( ROUTES[0], this.chosenBus, ldsd );
+    				    this.chosen = ROUTES[0].display( this.chosenBus );
+    				}
+    				else if(optionB.isSelected())
+    				{
+    				    LongDistTravel.insertGasStations( ROUTES[1], this.chosenBus, ldsd );
+    				    this.chosen = ROUTES[1].display( this.chosenBus );
+    				}
+    				else if(optionC.isSelected())
+    				{
+    				    LongDistTravel.insertGasStations( ROUTES[2], this.chosenBus, ldsd );
+    				    this.chosen = ROUTES[2].display( this.chosenBus );
+    				}
+			    }
+                catch( Exception x )
+                {
+                    System.out.println( "Error in approve.addActionListener" );
+                }
+				
 				//finalPane.setText(this.chosen);
 				try {
-				finalPane.setText("");
-				doc.insertString(0, this.chosen, null );
+    				finalPane.setText("");
+    				doc.insertString(0, this.chosen, null );
 				}catch(Exception e6) {
 					System.out.print("Something went wrong in finalizing JTextPane.");
 				}
@@ -952,6 +969,7 @@ public int findStationNumber(String station) throws IOException { 								//Meth
 															//create 2-dim array to hold data
 		String[] busHeader= {"Name","Type","Tank Size","Cruise Consumption", "Cruise Speed"}; 
 		static JTable busTable;
+		
 		selectBus(){
 	
 			try {
@@ -1013,7 +1031,6 @@ public int findStationNumber(String station) throws IOException { 								//Meth
 				stations = new LongDistStationsDatabase();
 				nmf = new NationalMainFrame();
 			} catch (Exception e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 				 
@@ -1071,7 +1088,6 @@ public int findStationNumber(String station) throws IOException { 								//Meth
 				stations = new LongDistStationsDatabase();
 				nmf = new NationalMainFrame();
 			} catch (Exception e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 				 

@@ -28,7 +28,7 @@ public class Route extends ArrayList<BusStation>
         return s;
     }
     
-	public String totals()
+	public String totals( Bus bus )
 	// A 2-line String containing the total distance and total time
 	{
 		double totalMiles = 0,
@@ -36,7 +36,7 @@ public class Route extends ArrayList<BusStation>
 		for( int i = 1; i < this.size(); ++i )
 		{
 			totalMiles += this.get( i-1 ).milesTo( this.get(i) );
-			totalHours += this.get( i-1 ).hoursTo( this.get(i), Bus.DEFAULT_BUS );
+			totalHours += this.get( i-1 ).hoursTo( this.get(i), bus );
 		}
         return "Total distance: " + totalMiles + " miles\n" +
 		       "Total time    : " + totalHours + " hours\n";
