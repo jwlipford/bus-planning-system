@@ -1,13 +1,13 @@
 // Just for backup! Not used in actual program!
 
-81.00, 34.00, City, Columbia SC
-81.97, 33.47, City, Augusta GA
-84.23, 33.44, City, Atlanta GA
-80.84, 35.23, City, Charlotte NC
-80.87, 35.79, City, Statesville NC
-77.04, 38.90, City, Washington DC, 
-73.94, 40.67, City, New York City NY
-77.43, 37.54, City, Richmond VA
+34.00, -81.00, City, Columbia SC
+33.47, -81.97, City, Augusta GA
+33.44, -84.23, City, Atlanta GA
+35.23, -80.84, City, Charlotte NC
+35.79, -80.87, City, Statesville NC
+38.90, -77.04, City, Washington DC, 
+40.67, -73.94, City, New York City NY
+37.54, -77.43, City, Richmond VA
 
 0 1
 0 3

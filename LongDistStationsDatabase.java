@@ -100,7 +100,7 @@ public class LongDistStationsDatabase
     
     public ArrayList<BusStation> toArrayList()
     {
-        return (ArrayList<BusStation>)this.lDStations.clone();
+        return this.lDStations;
     }
 
     public String[][] busStations()
@@ -135,7 +135,9 @@ public class LongDistStationsDatabase
             for( int j = i + 1; j < this.lDStations.size(); ++j )
                 if( this.lDStations.get( i ).connectedStations
                         .contains( this.lDStations.get( j ) ) )
+                {
                     fw.write( i + " " + j + "\n" );
+                }
 
         fw.close();
     }

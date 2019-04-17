@@ -9,3 +9,5 @@ Isuzu (Japan) - Super Cruiser, LD, 80, 10, 60
 Ashok Leyland (India) - 12M, LD, 90, 10, 60
 Škoda Transportation (Czech Republic) - 21Ab, LD, 90, 10, 60
 Ikarus (Hungary), LD, 100, 60, 30
+
+// Ikarus has a terrible range since its consumption is 60 gal/hr!

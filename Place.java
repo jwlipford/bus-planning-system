@@ -64,8 +64,7 @@ public abstract class Place
     	double i = Math.sin( thisLatRad ) * Math.cos( placeLatRad ) * Math.cos(f);
     	
     	double degrees = Math.toDegrees( Math.atan2( g, h-i ) );
-    	// Java's % operator is remainder, not modulus, and can return a negative.
-    	return (degrees < 0) ? (degrees + 360) : (degrees % 360);
+    	return (degrees + 360) % 360;
     }
     
     public String headingTo( Place place )

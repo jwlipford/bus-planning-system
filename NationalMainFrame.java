@@ -39,7 +39,7 @@ public class NationalMainFrame extends JFrame{
 	String selectEnd = " ";
 	JTextArea userSelectionStart = new JTextArea("");
 	JTextArea userSelectionEnd = new JTextArea("");
-	String[] selectedBus = new String[5];
+	String[] selectedBus = new String[6];
 	JTextPane finalPane = new JTextPane();
 	JTextPane chosenBusPane = new JTextPane();
 	StyledDocument docum = chosenBusPane.getStyledDocument();
@@ -318,14 +318,19 @@ public class NationalMainFrame extends JFrame{
 					BusesDatabase bd = new BusesDatabase();
 					this.chosenBus = bd.toArray()[ row ];
     
-    				for(int i = 0; i <= 4; i++) {
+    				for(int i = 0; i <= 5; i++) {
     				
         				String value = selectBus.busTable.getModel().getValueAt(selectBus.busTable.convertRowIndexToModel(row), i).toString();
         				NationalMainFrame.this.selectedBus[i]=value;
         				//JOptionPane.showMessageDialog(this, arr[i]);
         				
     				}
-    				String userChosenBus = "Bus Name: " + this.selectedBus[0] + "\nTank Size: " + this.selectedBus[2] + "\nCruise Consumption: " + this.selectedBus[3] + "\nCruise Speed: " + this.selectedBus[4];
+    				String userChosenBus =
+    				        "Bus Name: " + this.selectedBus[0] + "\n" +
+    				        "Tank Size: " + this.selectedBus[2] + " gallons\n" +
+    				        "Cruise Consumption: " + this.selectedBus[3] + " gallons/hour\n" +
+    				        "Cruise Speed: " + this.selectedBus[4] + " miles/hour\n" +
+    				        "Max Range: " + this.selectedBus[5] + " miles";
     				chosenBusPane.setText("");//resets pre-existing text
     				docum.insertString(0, userChosenBus, null );
     				/*used to see if bus array worked for(int i = 0; i<this.selectedBus.length; i++) {
@@ -409,7 +414,6 @@ public class NationalMainFrame extends JFrame{
 		addStation.addActionListener(e->{
 			
 			boolean empty = false;
-			String position = "";
 			String typeChose = "";
 			double longit;
 			double lat;
@@ -588,6 +592,12 @@ public class NationalMainFrame extends JFrame{
 			//String[] options = new String[]{"View A", "View B", "View C", "Cancel"};
 			//JOptionPane.showOptionDialog(null, "Message", "Choose Preferred Route", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
 			
+		    if( this.start[0].equals( this.end[0] ) )
+            {
+                JOptionPane.showMessageDialog( null,
+                    "No route needed.\nDeparture and destination are the same!" );
+                return;
+            }
 			if( this.chosenBus == null )
 			{
 			    JOptionPane.showMessageDialog( null, "No bus selected!" );
@@ -881,40 +891,53 @@ public int findStationNumber(String station) throws IOException { 								//Meth
 	}
 	
 	class addBusPanel extends JPanel {
-		JTextField mAndm;
+		JPanel input = new JPanel();
+	    ;
+	    JTextField mAndm;
 		JTextField tank;
 		JTextField cruiseTxt;
 		JTextField CruiseSpd;
 		
 		addBusPanel(){
-			setLayout(new GridLayout(4,2));
+		    this.setLayout(new BorderLayout());
+		    
+			input.setLayout(new GridLayout(4,2));
 			JLabel MakeandModel = new JLabel("Make and Model: ");
-			 mAndm = new JTextField();
+			mAndm = new JTextField();
 			
 			JLabel tankSize = new JLabel("Tank Size: ");
 			tank = new JTextField();
 
-		
 			JLabel cruisCon = new JLabel("Cruising Consumption: ");
 			cruiseTxt = new JTextField();
 
 			JLabel CruiseSpeed = new JLabel("Cruising Speed: ");
 			CruiseSpd = new JTextField();
 			
-			add(MakeandModel);
-			add(mAndm);
-			add(tankSize);
-			add(tank);
-			add(cruisCon);
-			add(cruiseTxt);
-			add(CruiseSpeed);
-			add(CruiseSpd);
+			input.add(MakeandModel);
+			input.add(mAndm);
+			input.add(tankSize);
+			input.add(tank);
+			input.add(cruisCon);
+			input.add(cruiseTxt);
+			input.add(CruiseSpeed);
+			input.add(CruiseSpd);
 			
-		
-			//new Bus( MakeAndModel, BusType.longDistance, )
+			JPanel holdLatLong = new JPanel();
 			
+			String note = 
+			    "<html><br/><b>Note:</b><br/>Longitudes are positive in the east " +
+			    "but negative in the west.<br/>Latitudes are positive in the north " +
+			    "but negative in the south.<br/>That means all locations in the " +
+			    "continental USA will have positive<br/>" +
+	            "latitude but negative longitude!</html>";
 			
+			JLabel latLongNote = new JLabel( note );
+	            
+			holdLatLong.add(latLongNote);
 			
+			this.add(input,BorderLayout.NORTH);
+			this.add(latLongNote,BorderLayout.SOUTH);
 		}
 	}
 	
@@ -967,7 +990,7 @@ public int findStationNumber(String station) throws IOException { 								//Meth
 		
 		
 															//create 2-dim array to hold data
-		String[] busHeader= {"Name","Type","Tank Size","Cruise Consumption", "Cruise Speed"}; 
+		String[] busHeader= {"Name","Type","Tank Size","Cruise Consumption", "Cruise Speed", "Max Range"}; 
 		static JTable busTable;
 		
 		selectBus(){

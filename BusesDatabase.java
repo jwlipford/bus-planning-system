@@ -48,7 +48,7 @@ public class BusesDatabase
 	    for( Bus b : buses )
 	        if( b.getType() == BusType.longDistance )
 	            lDBuses.add(b);
-	    String[][] array = new String[ lDBuses.size() ][ 5 ];
+	    String[][] array = new String[ lDBuses.size() ][ 6 ];
 	    for( int i = 0; i < lDBuses.size(); ++i )
 	    {
 	        Bus b = lDBuses.get(i);
@@ -57,6 +57,7 @@ public class BusesDatabase
 	        array[i][2] = String.valueOf( b.getTankSize() );
 	        array[i][3] = String.valueOf( b.getCruisingConsumption() );
 	        array[i][4] = String.valueOf( b.getCruisingSpeed() );
+	        array[i][5] = String.valueOf( b.maxRange() );
 	    }
 	    return array;
 	}
