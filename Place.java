@@ -64,6 +64,7 @@ public abstract class Place
     	double i = Math.sin( thisLatRad ) * Math.cos( placeLatRad ) * Math.cos(f);
     	
     	double degrees = Math.toDegrees( Math.atan2( g, h-i ) );
+    	// Java's % operator is remainder, not modulus, and can return a negative.
     	return (degrees + 360) % 360;
     }
     
@@ -73,13 +74,21 @@ public abstract class Place
         // Convert to float to use fewer characters
     	float bearing  = (float)this.bearingTo( place );
     	
-    	if( 359 < bearing || bearing < 1 )
+    	if( 337.5 < bearing || bearing <= 22.5 )
     		return bearing + "° (North)";
-    	else if( 89 < bearing && bearing < 91 )
+    	else if(22.5 < bearing && bearing <= 67.5)
+    		return bearing + "° (Northeast)";
+    	else if( 67.5 < bearing && bearing <= 112.5 )
     		return bearing + "° (East)";
-    	else if( 179 < bearing && bearing < 181 )
+    	else if(112.5 < bearing && bearing <= 157.5)
+    		return bearing + "° (Southeast)";
+    	else if( 157.5 < bearing && bearing <= 202.5 )
     		return bearing + "° (South)";
-    	else if( 269 < bearing && bearing < 271 )
+    	else if( 202.5 < bearing && bearing <= 247.5 )
+    		return bearing + "° (Southwest)";
+    	else if( 247.5 < bearing && bearing <= 292.5 )
+    		return bearing + "° (West)";
+    	else if( 292.5 < bearing && bearing <= 337.5 )
     		return bearing + "° (West)";
     	else
     		return bearing + "°";
