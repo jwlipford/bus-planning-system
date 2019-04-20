@@ -14,6 +14,11 @@ public class BusStation extends Place
         this.connectedStations = new ArrayList<BusStation>();
     }
     
+    public boolean equals( BusStation b )
+    {
+        return super.equals( b ) && this.name.equals( b.name );
+    }
+    
     public void connect( BusStation station )
     {
         connectedStations.add( station );
@@ -22,7 +27,8 @@ public class BusStation extends Place
     @Override
     public String toString()
     {
-    	return name + " at (" + getLatitude() + ", " + getLongitude() + ")";
+    	// Convert lat and long to floats to make line shorter
+        return name + " at (" + (float)getLatitude() + ", " + (float)getLongitude() + ")";
     }
     
     public double hoursTo( Place place, Bus bus )

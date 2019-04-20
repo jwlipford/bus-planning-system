@@ -42,6 +42,18 @@ public class BusesDatabase
 		br.close();
 	}
 	
+	public Bus[] toArray()
+    {
+        // IDK why, but {return this.buses.toArray()} did not work.
+        
+        Bus[] array = new Bus[ buses.size() ];
+        for( int i = 0; i < buses.size(); ++i )
+        {
+            array[i] = buses.get(i);
+        }    
+        return array;
+    }
+	
 	public String[][] longDistBuses()
 	{
 	    ArrayList<Bus> lDBuses = new ArrayList<Bus>( buses.size() );
@@ -62,16 +74,19 @@ public class BusesDatabase
 	    return array;
 	}
 	
-	public Bus[] toArray()
+	public String[][] allBuses()
 	{
-		// IDK why, but {return this.buses.toArray()} did not work.
-	    
-	    Bus[] array = new Bus[ buses.size() ];
+	    String[][] array = new String[ buses.size() ][6];
 	    for( int i = 0; i < buses.size(); ++i )
 	    {
-	        array[i] = buses.get(i);
-	    }    
-	    return array;
+	        Bus b = buses.get(i);
+            array[i][0] = b.getMakeAndModel();
+            array[i][1] = b.getType().toString();
+            array[i][2] = String.valueOf( b.getTankSize() );
+            array[i][3] = String.valueOf( b.getCruisingConsumption() );
+            array[i][4] = String.valueOf( b.getCruisingSpeed() );
+            array[i][5] = String.valueOf( b.maxRange() );
+	    }
 	}
 	
 	public void update() throws Exception

@@ -26,6 +26,12 @@ public abstract class Place
         this.longitude = longitude;
     }
     
+    public boolean equals( Place place )
+    {
+        return    this.latitude  == place.latitude
+               && this.longitude == place.longitude;
+    }
+    
     public double milesTo( Place place )
     // This method uses formulas found in the Distance section of
 	// https://www.movable-type.co.uk/scripts/latlong.html.
