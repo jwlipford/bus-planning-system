@@ -861,8 +861,9 @@ public int findStationNumber(String station) throws IOException { 								//Meth
 		ButtonGroup group = new ButtonGroup();
 		addStationPanel(){
 			JPanel radio = new JPanel();
+			JPanel input = new JPanel();
 			
-			setLayout(new GridLayout(4,2));
+			input.setLayout(new GridLayout(4,2));
 			JLabel station= new JLabel("Station Name: ");
 			stName = new JTextField();
 			
@@ -878,15 +879,31 @@ public int findStationNumber(String station) throws IOException { 								//Meth
 			JLabel lat = new JLabel("Latitude: ");
 			latTxt = new JTextField();
 			
-			add(station);
-			add(stName);
-			add(type);
-			add(radio);
-			add(longit);
-			add(longitTxt);
-			add(lat);
-			add(latTxt);
+			JPanel holdLatLong = new JPanel();
+			
+			String note = 
+			    "<html><br/><b>Note:</b><br/>Longitudes are positive in the east " +
+			    "but negative in the west.<br/>Latitudes are positive in the north " +
+			    "but negative in the south.<br/>That means all locations in the " +
+			    "continental USA will have positive<br/>" +
+	            "latitude but negative longitude!</html>";
+			
+			JLabel latLongNote = new JLabel( note );
+			
+			input.add(station);
+			input.add(stName);
+			input.add(type);
+			input.add(radio);
+			input.add(longit);
+			input.add(longitTxt);
+			input.add(lat);
+			input.add(latTxt);
 		
+			setLayout(new BorderLayout());
+			
+			add(input, BorderLayout.NORTH);
+			add(latLongNote, BorderLayout.SOUTH);
+			
 			//new Bus( MakeAndModel, BusType.longDistance, )
 			
 			
@@ -1072,6 +1089,3 @@ public int findStationNumber(String station) throws IOException { 								//Meth
 	
 	
 }
-
-
-
