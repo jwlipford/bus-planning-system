@@ -39,7 +39,7 @@ public class NationalMainFrame extends JFrame{
 	String selectEnd = " ";
 	JTextArea userSelectionStart = new JTextArea("");
 	JTextArea userSelectionEnd = new JTextArea("");
-	String[] selectedBus = new String[6];
+	String[] selectedBus = new String[5];
 	JTextPane finalPane = new JTextPane();
 	JTextPane chosenBusPane = new JTextPane();
 	StyledDocument docum = chosenBusPane.getStyledDocument();
@@ -171,131 +171,6 @@ public class NationalMainFrame extends JFrame{
 		leftPanel.add(blah,BorderLayout.CENTER);
 
 		
-		
-		
-		
-		//leftPanel.add(startPanel,BorderLayout.NORTH);					//add startpanel to leftpanel
-		
-		/*
-		DefaultTableModel model2 = new DefaultTableModel(data, header); 	//add data and header to table model
-		
-		TableRowSorter<TableModel> sorter2 = new TableRowSorter<>(model2); //create method for sorting
-		
-		JTable table2 = new JTable(model2);				 				//Create JTable using model
-		table2.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS); 		//Resize to fit columns
-		table2.setPreferredScrollableViewportSize(new Dimension(300,100)); //set dimensions of scrollable
-		
-		table2.setRowSorter(sorter2);										//add sorter to table
-		
-		JScrollPane scroll2 = new JScrollPane(table2);					//set scrollpane for JTable
-		scroll2.setVisible(true);										//make scroll appear
-		
-		table2.setRowSelectionAllowed(true);								//Able to select the specific row
-		
-		JTextField searchBox2 = new JTextField(20);						//create text box for user input
-			
-		searchBox2.addActionListener(e -> {								//event to sort table
-			String text2 = "(?i)" + Pattern.quote(searchBox2.getText()); // (?i) = case-insensitive
-			sorter.setRowFilter(RowFilter.regexFilter(text2));		   //sort table according to text
-		});
-		
-		JLabel endHeader = new JLabel("Select Destination");
-		
-		endPanel.setLayout(new BorderLayout());							//set layout for endPanel
-		endPanel.add(endHeader,BorderLayout.NORTH);						//add endHeader to startPanel make it top
-		endPanel.add(scroll2,BorderLayout.CENTER);						//add scroll2 (Jtable) to centered endpanel
-		endPanel.add(searchBox2,BorderLayout.SOUTH);					//add searchbox2 to bottom of endpanel
-		leftPanel.add(endPanel,BorderLayout.SOUTH);						//add endpanel to leftpanel
-		
-		master.add(leftPanel);
-	*/
-//*********************************CenterPanel********************************//
-		JPanel centerPanel = new JPanel(new BorderLayout());
-	
-		/*
-		arrowRightStart.addActionListener(e ->{	
-			
-			int row = table.getSelectedRow(); //get user selected row
-			String value;
-			try {
-			for(int i = 0; i <=3; i++) {
-				
-			value = table.getModel().getValueAt(table.convertRowIndexToModel(row), i).toString();
-			
-			this.start[i]=value; //assign to global variable
-			System.out.print(this.start[i]);
-			}
-			this.selectStart = convertToString(this.start);
-			System.out.print(this.selectStart);
-			
-			userSelectionStart.setText(this.selectStart);
-			this.isStart = true;
-			
-			changeFinal(this.isStart,this.isEnd);
-			}catch(IndexOutOfBoundsException g) {
-				JOptionPane.showMessageDialog(null, "No departure location selected!", "Alert!", getDefaultCloseOperation());
-			}
-		});*/
-		
-
-		
-		//Center bottom arrow button
-		
-		
-	
-/*
-		arrowRightEnd.addActionListener(e ->{
-			int row = table2.getSelectedRow();
-			String value;
-			try {
-			for(int i = 0; i <= 3; i++) {
-			
-			value = table2.getModel().getValueAt(table2.convertRowIndexToModel(row), i).toString();
-			this.end[i]=value;
-			//JOptionPane.showMessageDialog(this, arr[i]);
-			this.selectEnd = convertToString(this.end);
-
-			userSelectionEnd.setText(this.selectEnd);
-			}
-			this.isEnd = true;
-			if(this.userSelectionStart.equals("")) {
-				this.isStart = false;
-			}
-			changeFinal(this.isStart,this.isEnd);
-			}catch(IndexOutOfBoundsException g) {
-				JOptionPane.showMessageDialog(null, "No destination selected!", "Alert!", getDefaultCloseOperation());
-			}
-	
-		});
-		
-		
-		JPanel butPan1= new JPanel(new GridBagLayout());
-		//butPan1.setBorder(BorderFactory.createLineBorder(Color.black));
-		butPan1.setPreferredSize(new Dimension(100,170));
-
-		butPan1.add(arrowRightEnd,gbc1);
-		centerPanel.add(butPan1,BorderLayout.SOUTH);
-
-		master.add(centerPanel);
-		*/
-	//*****************Right Panel ***************//	
-		
-		//JPanel rightPanel = new JPanel(new BorderLayout());
-		//rightPanel.setBorder(BorderFactory.createLineBorder(Color.black));
-		//rightPanel.setPreferredSize(new Dimension(300,340));
-
-		
-		//JPanel rightBottom = new JPanel(new GridLayout());
-		
-		//rightBottom.setPreferredSize(new Dimension(300,170));
-		//rightBottom.setBorder(BorderFactory.createLineBorder(Color.black));
-		//JLabel finalSelectDest = new JLabel("Selected Destination: ");
-		
-		//rightBottom.add(finalSelectDest);
-		//rightBottom.add(userSelectionEnd);
-		//rightPanel.add(rightBottom, BorderLayout.SOUTH);
-		//master.add(rightPanel);
-		
 		GridLayout gridLayout = new GridLayout();
 		gridLayout.setRows(9);
 		gridLayout.setColumns(1);
@@ -318,19 +193,14 @@ public class NationalMainFrame extends JFrame{
 					BusesDatabase bd = new BusesDatabase();
 					this.chosenBus = bd.toArray()[ row ];
     
-    				for(int i = 0; i <= 5; i++) {
+    				for(int i = 0; i <= 4; i++) {
     				
         				String value = selectBus.busTable.getModel().getValueAt(selectBus.busTable.convertRowIndexToModel(row), i).toString();
         				NationalMainFrame.this.selectedBus[i]=value;
         				//JOptionPane.showMessageDialog(this, arr[i]);
         				
     				}
-    				String userChosenBus =
-    				        "Bus Name: " + this.selectedBus[0] + "\n" +
-    				        "Tank Size: " + this.selectedBus[2] + " gallons\n" +
-    				        "Cruise Consumption: " + this.selectedBus[3] + " gallons/hour\n" +
-    				        "Cruise Speed: " + this.selectedBus[4] + " miles/hour\n" +
-    				        "Max Range: " + this.selectedBus[5] + " miles";
+    				String userChosenBus = "Bus Name: " + this.selectedBus[0] + "\nTank Size: " + this.selectedBus[2] + "\nCruise Consumption: " + this.selectedBus[3] + "\nCruise Speed: " + this.selectedBus[4];
     				chosenBusPane.setText("");//resets pre-existing text
     				docum.insertString(0, userChosenBus, null );
     				/*used to see if bus array worked for(int i = 0; i<this.selectedBus.length; i++) {
@@ -367,6 +237,7 @@ public class NationalMainFrame extends JFrame{
 		JButton addBus = new JButton("Add Bus");
 		addBus.addActionListener(e->{
 			boolean empty = false;
+			boolean isChar = false;
 			addBusPanel addBusPanel = new addBusPanel();
 			int var = JOptionPane.showConfirmDialog(null, addBusPanel,
 	                     "Create Bus", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
@@ -380,45 +251,79 @@ public class NationalMainFrame extends JFrame{
 						empty = true;
 						break;
 					}
+					
 				}
 				if(empty == true) {
 					
 					JOptionPane.showMessageDialog(this, "One or more of your inputs were blank. Bus was not saved!");
 	
 				}
-
+				
 				String busName = addBusArr[0];
+				
+				if (busName.indexOf(',') != -1) {
+					isChar = true;
+					JOptionPane.showMessageDialog(this, "Name cannot contain a comma.");
+				}
+				
+			if(empty == false && isChar==false) {	
+				try {
 				Double tankSz = Double.parseDouble(addBusArr[1]);
 				Double CruiseCon = Double.parseDouble(addBusArr[2]);
 				Double CruiseSpd = Double.parseDouble(addBusArr[3]);
 				//String LongDist = "LD";
-				try {
-				    BusesDatabase bd = new BusesDatabase();
-					final Bus UserBus = new Bus(busName, BusType.longDistance, //constructor that takes makeandmodel, type, tanksize, cruisingconsumption, cruising speed
-				                         tankSz, CruiseCon, CruiseSpd );
+				 BusesDatabase bd = new BusesDatabase();
+				 String[][] data = bd.allBuses();
+				 boolean same = false;
+				 
+				 for(int i = 0; i < data.length; i++) {
+					 if(busName.equalsIgnoreCase(data[i][0])) {
+						 same = true;
+						 break;
+					 }
+				 }
+			if(same == true) {
+				JOptionPane.showMessageDialog(this, "Bus is already listed in database. Bus not saved!");
 
-					bd.addBus(UserBus);
-					bd.update();
-
-				} catch (Exception e1) {
-					e1.printStackTrace();
-				}
-
-			}
+			}else if(tankSz<=0 || CruiseCon<=0 || CruiseSpd<=0) {
+				
+					JOptionPane.showMessageDialog(this, "Tank size, Cruise Consumption and Cruise Speed must all be a number greater than or equal to 0.");
+					
+					}else {
+							try {
+								
+									final Bus UserBus = new Bus(busName, BusType.longDistance, //constructor that takes makeandmodel, type, tanksize, cruisingconsumption, cruising speed
+									                         tankSz, CruiseCon, CruiseSpd );
+										
+									bd.addBus(UserBus);
+									bd.update();
+					
+								} catch (Exception e1) {
+										e1.printStackTrace();
+								}
+							}
+							
+						
+						}catch(Exception a) {
+							JOptionPane.showMessageDialog(this, "Tank size, Cruise Consumption and Cruise Speed must all be a number greater than or equal to 0.");
+					}
+				}//end of if
+			}//end of ok statement
 		});
-		
 		
 	
 		
 		JButton addStation = new JButton("Add Station");
 		addStation.addActionListener(e->{
-			
+			boolean isChar = false;
 			boolean empty = false;
+			String position = "";
 			String typeChose = "";
 			double longit;
 			double lat;
 			String bsName = "";
 			boolean isGasSt = false;
+			boolean same = false;
 			addStationPanel addStationPanel = new addStationPanel();
 			int var = JOptionPane.showConfirmDialog(null, addStationPanel,
 	                     "Create Station", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
@@ -430,52 +335,59 @@ public class NationalMainFrame extends JFrame{
 					typeChose = "gas";
 					isGasSt = true;
 				}
-				
+				bsName = addStationArr[0];
 				addStationArr[1] = typeChose;
-				
-				try {
-					bsName = addStationArr[0];
-					
-				}catch(Exception e5) {
-					System.out.print("Issue while trying to get name of station!");
-				}
-				
-				
-				try{
-				
-					addStationArr[2] = addStationPanel.longitTxt.getText();
-					
-				}catch(Exception e1) {
-					JOptionPane.showMessageDialog(this, "Longitude must be a number. Station not saved!");
-				}
-				
-				try{
-				
-					addStationArr[3] = addStationPanel.latTxt.getText();
-				}catch(Exception e1) {
-					JOptionPane.showMessageDialog(this, "Latitude must be a number. Station not saved!");
-				}
-				 
-				
-				
-				
+				addStationArr[2] = addStationPanel.longitTxt.getText();
+				addStationArr[3] = addStationPanel.latTxt.getText();	
+
 				for(int i = 0; i<addStationArr.length; i++) {
-					//System.out.println(addStationArr[i]);
 					if(addStationArr[i].equals("")) {
 						empty = true;
 						break;
 					}
 				}
-				if(empty == true) { //Check to see if array is empty proving user didn't fill out completely
+				
+				try {
+					//used to determine if the name and type are the same and if they are reject request.
+					LongDistStationsDatabase ldsd1 = new LongDistStationsDatabase();
+					String[][] data = ldsd1.allStations();
+					for(int i = 0; i < data.length; i++) {
+								if(data[i][0].equalsIgnoreCase(bsName) && data[i][1].equalsIgnoreCase(addStationArr[1])) {	
+								same=true;
+								break;
+							
+						}
+						
+					}
+					
+				} catch (Exception e2) {
+					e2.printStackTrace();
+				}
+				
+				longit = Double.parseDouble(addStationPanel.longitTxt.getText());
+				lat = Double.parseDouble(addStationPanel.latTxt.getText());
+				
+				
+				//boundary conditions resulting in failure of request.
+				if(same==true) {
+					JOptionPane.showMessageDialog(this, "Name is already listed in Station Database for Long Distance.");
+				}else if (bsName.indexOf(',') != -1) {
+					JOptionPane.showMessageDialog(this, "Name cannot contain a comma.");
+				}else if(empty == true) { //Check to see if array is empty proving user didn't fill out completely
 					
 					JOptionPane.showMessageDialog(this, "One or more of your inputs were blank. Station was not saved!");
 	
-				}else {
+				}else if(longit<-180 || longit>180){
+					JOptionPane.showMessageDialog(this, "Longitude must be greater than -180 and less than 180 inclusive. Station not saved!");
+
+				}else if(lat<-90 || lat>90){
+					JOptionPane.showMessageDialog(this, "Latitude must be greater than -90 and less than 90 inclusive. Station not saved!");
+
+				}else{
 					
 					try {
 						
-						longit = Double.parseDouble(addStationPanel.longitTxt.getText());
-						lat = Double.parseDouble(addStationPanel.latTxt.getText());
+						
 						LongDistStationsDatabase ldsd = new LongDistStationsDatabase();
 						ldsd.addNewLDStation(lat,longit,isGasSt,bsName);
 						ldsd.update();
@@ -483,13 +395,28 @@ public class NationalMainFrame extends JFrame{
 						
 						
 					} catch (Exception e1) {
-						e1.printStackTrace();
+						System.out.print("Didn't work");
 					}
 				}
 			}
 			
 		});
 		
+		JButton addConn = new JButton("Add Connection");
+		addConn.addActionListener(e->{
+			try {
+				LongDistStationsDatabase ldsd1 = new LongDistStationsDatabase();
+				int userStartCon = findStationNumber(this.start[0]);
+				int userEndCon = findStationNumber(this.end[0]);
+				
+				ldsd1.createConnection(userStartCon-1, userEndCon-1);
+				ldsd1.update();
+				
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		});
 		
 		JButton deleteBus = new JButton("Delete Bus");
 		
@@ -519,7 +446,7 @@ public class NationalMainFrame extends JFrame{
 				Double CS = Double.parseDouble(delBus[4]);
 				BusesDatabase bd = new BusesDatabase();
 				int index = 0;
-			for(int i = 0; i <= bd.longDistBuses().length; i++) {
+			for(int i = 0; i < bd.longDistBuses().length; i++) {
 				
 				String bus = bd.longDistBuses()[i][0];
 				 if(bus.equals(name)) {
@@ -528,7 +455,7 @@ public class NationalMainFrame extends JFrame{
 				 index++;
 				 
 			}
-				bd.delete(index+1);
+				bd.delete(index);
 				bd.update();
 				
 				}catch(Exception e2) {
@@ -592,12 +519,6 @@ public class NationalMainFrame extends JFrame{
 			//String[] options = new String[]{"View A", "View B", "View C", "Cancel"};
 			//JOptionPane.showOptionDialog(null, "Message", "Choose Preferred Route", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
 			
-		    if( this.start[0].equals( this.end[0] ) )
-            {
-                JOptionPane.showMessageDialog( null,
-                    "No route needed.\nDeparture and destination are the same!" );
-                return;
-            }
 			if( this.chosenBus == null )
 			{
 			    JOptionPane.showMessageDialog( null, "No bus selected!" );
@@ -769,8 +690,9 @@ public class NationalMainFrame extends JFrame{
 		leftConsole.add(userBus);
 		leftConsole.add(addBus);
 		leftConsole.add(deleteBus);
-		leftConsole.add(deleteStation);
 		leftConsole.add(addStation);
+		leftConsole.add(deleteStation);
+		
 		JPanel holdViews = new JPanel(new BorderLayout());
 		JPanel holdFinalPane = new JPanel(new BorderLayout());
 		JPanel holdBuses = new JPanel(new BorderLayout());
@@ -796,6 +718,7 @@ public class NationalMainFrame extends JFrame{
 	//console.add(userBus);
 		console.add(finalize);
 		console.add(city);
+		console.add(addConn);
 		master.add(leftConsole);
 		master.add(leftPanel);
 		master.add(console);
@@ -818,7 +741,7 @@ public class NationalMainFrame extends JFrame{
 		  //File file = new File("C:\\Users\\JRT12\\Desktop\\Bus Station\\CityStationsText.txt"); 	//Find the file with stations 
 		  //File file = new File( "E:\\USCA\\Spring 2019\\CSCI 240\\Project\\BusPlanningSystem\\"
 		  //		+ "BusPlanningSystem\\src\\CityStationsText.txt" );
-		    File file = new File( "C:\\Users\\JRT12\\Desktop\\BusStation\\BusStation\\src\\LongDistStationsText.txt" );
+		    File file = new File( "LongDistStationsText.txt" );
 			
 			BufferedReader cr = new BufferedReader(new FileReader(file));  						 	//user bufferedReader on the file
 			
@@ -891,53 +814,40 @@ public int findStationNumber(String station) throws IOException { 								//Meth
 	}
 	
 	class addBusPanel extends JPanel {
-		JPanel input = new JPanel();
-	    ;
-	    JTextField mAndm;
+		JTextField mAndm;
 		JTextField tank;
 		JTextField cruiseTxt;
 		JTextField CruiseSpd;
 		
 		addBusPanel(){
-		    this.setLayout(new BorderLayout());
-		    
-			input.setLayout(new GridLayout(4,2));
+			setLayout(new GridLayout(4,2));
 			JLabel MakeandModel = new JLabel("Make and Model: ");
-			mAndm = new JTextField();
+			 mAndm = new JTextField();
 			
 			JLabel tankSize = new JLabel("Tank Size: ");
 			tank = new JTextField();
 
+		
 			JLabel cruisCon = new JLabel("Cruising Consumption: ");
 			cruiseTxt = new JTextField();
 
 			JLabel CruiseSpeed = new JLabel("Cruising Speed: ");
 			CruiseSpd = new JTextField();
 			
-			input.add(MakeandModel);
-			input.add(mAndm);
-			input.add(tankSize);
-			input.add(tank);
-			input.add(cruisCon);
-			input.add(cruiseTxt);
-			input.add(CruiseSpeed);
-			input.add(CruiseSpd);
+			add(MakeandModel);
+			add(mAndm);
+			add(tankSize);
+			add(tank);
+			add(cruisCon);
+			add(cruiseTxt);
+			add(CruiseSpeed);
+			add(CruiseSpd);
 			
-			JPanel holdLatLong = new JPanel();
+		
+			//new Bus( MakeAndModel, BusType.longDistance, )
 			
-			String note = 
-			    "<html><br/><b>Note:</b><br/>Longitudes are positive in the east " +
-			    "but negative in the west.<br/>Latitudes are positive in the north " +
-			    "but negative in the south.<br/>That means all locations in the " +
-			    "continental USA will have positive<br/>" +
-	            "latitude but negative longitude!</html>";
 			
-			JLabel latLongNote = new JLabel( note );
-	            
-			holdLatLong.add(latLongNote);
 			
-			this.add(input,BorderLayout.NORTH);
-			this.add(latLongNote,BorderLayout.SOUTH);
 		}
 	}
 	
@@ -990,7 +900,7 @@ public int findStationNumber(String station) throws IOException { 								//Meth
 		
 		
 															//create 2-dim array to hold data
-		String[] busHeader= {"Name","Type","Tank Size","Cruise Consumption", "Cruise Speed", "Max Range"}; 
+		String[] busHeader= {"Name","Type","Tank Size","Cruise Consumption", "Cruise Speed"}; 
 		static JTable busTable;
 		
 		selectBus(){
