@@ -11,13 +11,26 @@ public class LongDistStationsDatabase
     private ArrayList<BusStation> lDStations;
     // ldStations can also store GasStations, since GasStation extends BusStation.
 
-    public void createConnection(int i0, int i1)
+    public void createConnection( int i0, int i1 )
     // Connects the (i0)th BusStation to the (i1)th BusStation
     {
         BusStation bs0 = this.lDStations.get( i0 );
         BusStation bs1 = this.lDStations.get( i1 );
         bs0.connect( bs1 );
         bs1.connect( bs0 );
+    }
+    
+    public void deleteConnection( int i0, int i1 )
+    {
+        BusStation bs0 = this.lDStations.get( i0 );
+        BusStation bs1 = this.lDStations.get( i1 );
+        bs0.disconnect( bs1 );
+        bs1.disconnect( bs0 );
+    }
+    
+    public boolean connected( int i0, int i1 )
+    {
+        return this.lDStations.get( i0 ).connectedTo( this.lDStations.get( i1 ) );
     }
 
     public LongDistStationsDatabase() throws Exception
@@ -101,6 +114,7 @@ public class LongDistStationsDatabase
     public ArrayList<BusStation> toArrayList()
     {
         return this.lDStations;
+        // LongDistTravel.implementTravel uses this method. Avoid using it unnecessarily.
     }
 
     public String[][] busStations()
@@ -117,6 +131,24 @@ public class LongDistStationsDatabase
     {
         return arrayListTo2dStringArray( this.lDStations );
     }
+    
+    public String connectionsString()
+    {
+        String s = "";
+        int indexLim = this.lDStations.size(); // Exclusive max station index
+        
+        for( int i = 0; i < indexLim; ++i )
+        {
+            BusStation ithStation = lDStations.get(i);
+            for( int j = i + 1; j < indexLim; ++j )
+            {
+                BusStation jthStation = lDStations.get(j);
+                if( ithStation.connectedTo( jthStation ) )
+                    s += ithStation.getName() + " <==> " + jthStation.getName() + "\n";
+            }
+        }
+        return s;
+    }
 
     public void update() throws Exception
     // Overwrites DATA_FILE with information from lDStations
@@ -131,13 +163,17 @@ public class LongDistStationsDatabase
         fw.write( "\n" );
 
         // Write second part of file:
-        for( int i = 0; i < this.lDStations.size(); ++i )
-            for( int j = i + 1; j < this.lDStations.size(); ++j )
-                if( this.lDStations.get( i ).connectedStations
-                        .contains( this.lDStations.get( j ) ) )
-                {
+        int indexLim = this.lDStations.size(); // Exclusive max station index
+        for( int i = 0; i < indexLim; ++i )
+        {
+            BusStation ithStation = lDStations.get(i);
+            for( int j = i + 1; j < indexLim; ++j )
+            {
+                BusStation jthStation = lDStations.get(j);
+                if( ithStation.connectedTo( jthStation ) )
                     fw.write( i + " " + j + "\n" );
-                }
+            }
+        }
 
         fw.close();
     }

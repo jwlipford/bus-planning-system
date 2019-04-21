@@ -34,3 +34,6 @@
    Statesville - Richmond
     Washington - New York
     Washington - Richmond    */
+    
+Between Columbia and Charlotte:
+	34.614999999999995, -80.92, Gas, Gas Station 1

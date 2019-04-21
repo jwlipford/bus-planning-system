@@ -47,9 +47,11 @@ public class NationalMainFrame extends JFrame{
 	String[] delBus = new String[5];
 	JButton finalize = new JButton("Finalize Travel"); 		// button to finalize the user's selection.
 	
-	Bus chosenBus = null; // Used in finalize.addActionListener  --Jeffrey
+	Bus chosenBus = null;
+	final LongDistStationsDatabase LDSDB;
 	
 	public NationalMainFrame() throws Exception {
+	    LDSDB = new LongDistStationsDatabase();
 		finalize.setEnabled(false);
 		setLayout(new BorderLayout()); 						// set layout of frame to BorderLayout.
 		JPanel titlePan = new JPanel(new GridBagLayout());
@@ -347,22 +349,20 @@ public class NationalMainFrame extends JFrame{
 					}
 				}
 				
-				try {
-					//used to determine if the name and type are the same and if they are reject request.
-					LongDistStationsDatabase ldsd1 = new LongDistStationsDatabase();
-					String[][] data = ldsd1.allStations();
-					for(int i = 0; i < data.length; i++) {
-								if(data[i][0].equalsIgnoreCase(bsName) && data[i][1].equalsIgnoreCase(addStationArr[1])) {	
-								same=true;
-								break;
-							
-						}
-						
+				
+				
+				//used to determine if the name and type are the same and if they are reject request.
+				String[][] data = LDSDB.allStations();
+				for(int i = 0; i < data.length; i++)
+				{
+					if(data[i][0].equalsIgnoreCase(bsName) && data[i][1].equalsIgnoreCase(addStationArr[1]))
+					{	
+						same=true;
+						break;
 					}
-					
-				} catch (Exception e2) {
-					e2.printStackTrace();
 				}
+					
+				
 				
 				longit = Double.parseDouble(addStationPanel.longitTxt.getText());
 				lat = Double.parseDouble(addStationPanel.latTxt.getText());
@@ -384,19 +384,12 @@ public class NationalMainFrame extends JFrame{
 					JOptionPane.showMessageDialog(this, "Latitude must be greater than -90 and less than 90 inclusive. Station not saved!");
 
 				}else{
-					
-					try {
-						
-						
-						LongDistStationsDatabase ldsd = new LongDistStationsDatabase();
-						ldsd.addNewLDStation(lat,longit,isGasSt,bsName);
-						ldsd.update();
-						
-						
-						
-					} catch (Exception e1) {
-						System.out.print("Didn't work");
-					}
+				    try {
+    					LDSDB.addNewLDStation(lat,longit,isGasSt,bsName);
+    					LDSDB.update();
+    				} catch( Exception e1 ){
+    				    e1.printStackTrace();
+				    }
 				}
 			}
 			
@@ -405,21 +398,47 @@ public class NationalMainFrame extends JFrame{
 		JButton addConn = new JButton("Add Connection");
 		addConn.addActionListener(e->{
 			try {
-				LongDistStationsDatabase ldsd1 = new LongDistStationsDatabase();
 				int userStartCon = findStationNumber(this.start[0]);
 				int userEndCon = findStationNumber(this.end[0]);
 				
-				ldsd1.createConnection(userStartCon-1, userEndCon-1);
-				ldsd1.update();
-				
+				if( LDSDB.connected( userStartCon, userEndCon ) )
+				    JOptionPane.showMessageDialog( null, "Already connected!" );
+				else
+				{
+    				LDSDB.createConnection(userStartCon-1, userEndCon-1);
+    				LDSDB.update();
+    				JOptionPane.showMessageDialog( null,
+    				    this.start[0] + " connected to " + this.end[0] );
+				}	
 			} catch (Exception e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		});
 		
-		JButton deleteBus = new JButton("Delete Bus");
+		JButton deleteConn = new JButton( "Delete Connection" );
+		deleteConn.addActionListener( e->{
+		    try
+		    {
+		        int userStartCon = findStationNumber(this.start[0]);
+                int userEndCon = findStationNumber(this.end[0]);
+                
+                if( !LDSDB.connected( userStartCon, userEndCon ) )
+                    JOptionPane.showMessageDialog( null, "Already not connected!" );
+                else
+                {
+                    LDSDB.deleteConnection( userStartCon, userEndCon );
+                    LDSDB.update();
+                    JOptionPane.showMessageDialog( null,
+                        this.start[0] + " disconnected from " + this.end[0] );
+                }     
+		    }
+		    catch( Exception xxx )
+		    {
+		        xxx.printStackTrace();
+		    }
+		});
 		
+		JButton deleteBus = new JButton("Delete Bus");
 		deleteBus.addActionListener(e->{
 		
 			selectBus sb = new selectBus();
@@ -490,11 +509,10 @@ public class NationalMainFrame extends JFrame{
 				
 				String name = deleteST[0];
 
-				LongDistStationsDatabase LD = new LongDistStationsDatabase();
 				int index = 0;
-			for(int i = 0; i <= LD.allStations().length; i++) {
+			for(int i = 0; i <= LDSDB.allStations().length; i++) {
 				
-				String station = LD.allStations()[i][0];
+				String station = LDSDB.allStations()[i][0];
 				 if(station.equals(name)) {
 					 break;
 				 }
@@ -502,8 +520,8 @@ public class NationalMainFrame extends JFrame{
 				 
 			}
 
-				LD.delete(index);
-				LD.update();
+				LDSDB.delete(index);
+				LDSDB.update();
 				
 				}catch(Exception e2) {
 					JOptionPane.showMessageDialog(this, "No value was selected! ");
@@ -538,7 +556,7 @@ public class NationalMainFrame extends JFrame{
 			
 			try
 			{
-				routes = LongDistTravel.implementTravel(new LongDistStationsDatabase(),this.userStart, this.userEnd);
+				routes = LongDistTravel.implementTravel( LDSDB, this.userStart, this.userEnd);
 				for( int i = 0; i < 3; ++i )
 				{
 					if( routes[i] == null )
@@ -640,39 +658,30 @@ public class NationalMainFrame extends JFrame{
 			holdButtons.add(approveWrap);
 			approve.addActionListener(c->{
 			    try {
-			        LongDistStationsDatabase ldsd = new LongDistStationsDatabase();
-    				if(optionA.isSelected())
-    				{
-    				    LongDistTravel.insertGasStations( ROUTES[0], this.chosenBus, ldsd );
-    				    this.chosen = ROUTES[0].display( this.chosenBus );
-    				}
-    				else if(optionB.isSelected())
-    				{
-    				    LongDistTravel.insertGasStations( ROUTES[1], this.chosenBus, ldsd );
-    				    this.chosen = ROUTES[1].display( this.chosenBus );
-    				}
-    				else if(optionC.isSelected())
-    				{
-    				    LongDistTravel.insertGasStations( ROUTES[2], this.chosenBus, ldsd );
-    				    this.chosen = ROUTES[2].display( this.chosenBus );
-    				}
+        			if(optionA.isSelected())
+        			{
+        			    LongDistTravel.insertGasStations( ROUTES[0], this.chosenBus, LDSDB );
+        			    this.chosen = ROUTES[0].display( this.chosenBus );
+        			}
+        			else if(optionB.isSelected())
+        			{
+        			    LongDistTravel.insertGasStations( ROUTES[1], this.chosenBus, LDSDB );
+        			    this.chosen = ROUTES[1].display( this.chosenBus );
+        			}
+        			else if(optionC.isSelected())
+        			{
+        			    LongDistTravel.insertGasStations( ROUTES[2], this.chosenBus, LDSDB );
+        			    this.chosen = ROUTES[2].display( this.chosenBus );
+        			}
+        			doc.insertString( 0, this.chosen, null );
+			    } catch( Exception e1 ) {
+			        e1.printStackTrace();
 			    }
-                catch( Exception x )
-                {
-                    System.out.println( "Error in approve.addActionListener" );
-                }
-				
-				//finalPane.setText(this.chosen);
-				try {
-    				finalPane.setText("");
-    				doc.insertString(0, this.chosen, null );
-				}catch(Exception e6) {
-					System.out.print("Something went wrong in finalizing JTextPane.");
-				}
-				
+    			
+    			finalPane.setText("");
 				JComponent comp = (JComponent) c.getSource();
-				  Window win = SwingUtilities.getWindowAncestor(comp);
-				  win.dispose();
+				Window win = SwingUtilities.getWindowAncestor(comp);
+				win.dispose();
 			});
 			JButton cancel = new JButton("Cancel");
 			cancelWrap.add(cancel);
@@ -719,6 +728,7 @@ public class NationalMainFrame extends JFrame{
 		console.add(finalize);
 		console.add(city);
 		console.add(addConn);
+		console.add(deleteConn);
 		master.add(leftConsole);
 		master.add(leftPanel);
 		master.add(console);
@@ -787,31 +797,27 @@ public class NationalMainFrame extends JFrame{
 			this.finalize.setEnabled(false);
 	}
 	
-public int findStationNumber(String station) throws IOException { 								//Method to return a number or position to get route started.
-	LongDistStationsDatabase stations;
-	int position = 0;
-	try{
-		stations = new LongDistStationsDatabase();
-		String[][] temp = stations.allStations();
-		String arrStat = "";
-		position = 0;
-		for(int i = 0; i<temp.length; i++) {
-			arrStat = temp[i][0];
-		//System.out.println(temp[i][0]);
-			if(arrStat.equals(station)) {
-				position = i+1;
-				break;
-			}	
-		}
-			
-	}catch(Exception e) {
-		
-	}
-	//System.out.print("this might be broken" + position);
-		return position;
-	
-
-	}
+    public int findStationNumber(String station) throws IOException { 								//Method to return a number or position to get route started.
+    	int position = 0;
+    	try{
+    		String[][] temp = LDSDB.allStations();
+    		String arrStat = "";
+    		position = 0;
+    		for(int i = 0; i<temp.length; i++) {
+    			arrStat = temp[i][0];
+    		//System.out.println(temp[i][0]);
+    			if(arrStat.equals(station)) {
+    				position = i+1;
+    				break;
+    			}	
+    		}
+    			
+    	}catch(Exception e) {
+    		
+    	}
+    	//System.out.print("this might be broken" + position);
+    		return position;
+    	}
 	
 	class addBusPanel extends JPanel {
 		JTextField mAndm;
@@ -972,13 +978,13 @@ public int findStationNumber(String station) throws IOException { 								//Meth
 	}
 	
 	static class setLocations extends JPanel{
-		LongDistStationsDatabase stations; 
+		String[][] data;
 		NationalMainFrame nmf;
 		static JTable table;
 		setLocations(){
 
 			try {
-				stations = new LongDistStationsDatabase();
+				data = (new LongDistStationsDatabase()).busStations();
 				nmf = new NationalMainFrame();
 			} catch (Exception e1) {
 				e1.printStackTrace();
@@ -993,8 +999,7 @@ public int findStationNumber(String station) throws IOException { 								//Meth
 			
 
 			
-			JLabel startHeader = new JLabel("Select Departure Location");
-			String [][]data = stations.busStations();									//create 2-dim array to hold data
+			JLabel startHeader = new JLabel("Select Departure Location");							//create 2-dim array to hold data
 			String[] header= {"Station","Type","Longitude","Latitude"}; 			//header for table
 			
 			
@@ -1029,13 +1034,13 @@ public int findStationNumber(String station) throws IOException { 								//Meth
 	}
 	
 	static class deleteStations extends JPanel{
-		LongDistStationsDatabase stations; 
+		String[][] data;
 		NationalMainFrame nmf;
 		static JTable table;
 		deleteStations(){
 
 			try {
-				stations = new LongDistStationsDatabase();
+				data = (new LongDistStationsDatabase()).allStations();
 				nmf = new NationalMainFrame();
 			} catch (Exception e1) {
 				e1.printStackTrace();
@@ -1051,7 +1056,6 @@ public int findStationNumber(String station) throws IOException { 								//Meth
 
 			
 			JLabel startHeader = new JLabel("Select Departure Location");
-			String [][]data = stations.allStations();									//create 2-dim array to hold data
 			String[] header= {"Station","Type","Longitude","Latitude"}; 			//header for table
 			
 			

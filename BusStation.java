@@ -24,6 +24,11 @@ public class BusStation extends Place
         connectedStations.add( station );
     }
     
+    public void disconnect( BusStation station )
+    {
+        connectedStations.remove( station );
+    }
+    
     @Override
     public String toString()
     {
@@ -35,5 +40,13 @@ public class BusStation extends Place
     {
     	return this.milesTo( place ) / bus.getCruisingSpeed();
     	// miles/(miles/hour) = miles*(hours/mile) = hours
-    }    
+    }
+    
+    public boolean connectedTo( BusStation station )
+    {
+        for( BusStation b : this.connectedStations )
+            if( b.equals( station ) ) // ¿ Do we need the equals method, or can we use == ?
+                return true;
+        return false;
+    }
 }

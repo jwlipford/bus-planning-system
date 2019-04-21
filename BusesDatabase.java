@@ -87,6 +87,7 @@ public class BusesDatabase
             array[i][4] = String.valueOf( b.getCruisingSpeed() );
             array[i][5] = String.valueOf( b.maxRange() );
 	    }
+	    return array;
 	}
 	
 	public void update() throws Exception
