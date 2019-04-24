@@ -923,7 +923,13 @@ public class NationalMainFrame extends JFrame{
 		
 		
 															//create 2-dim array to hold data
-		String[] busHeader= {"Name","Type","Tank Size","Cruise Consumption", "Cruise Speed"}; 
+		String[] busHeader =
+		    { "Name",
+		      "Type",
+		      "<html>Tank Size<br/>(gallons)</html>",
+		      "<html>Cruise<br/>Consumption<br/>(gallons/hour)</html>",
+		      "<html>Cruise Speed<br/>(mph)</html>",
+		      "<html>Range<br/>(miles)</html>" }; 
 		static JTable busTable;
 		
 		selectBus(){
@@ -938,7 +944,9 @@ public class NationalMainFrame extends JFrame{
 			
 			busTable = new JTable(busModel);				 				//Create JTable using model
 			busTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS); 		//Resize to fit columns
-			busTable.setPreferredScrollableViewportSize(new Dimension(300,100)); //set dimensions of scrollable
+			
+			busTable.setPreferredScrollableViewportSize(new Dimension(550, 150)); //set dimensions of scrollable
+			busTable.getTableHeader().setPreferredSize( new Dimension(550, 60));
 			
 			busTable.setRowSorter(busSorter);										//add sorter to table
 			
@@ -1009,7 +1017,7 @@ public class NationalMainFrame extends JFrame{
 			
 			table = new JTable(model);				 				//Create JTable using model
 			table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS); 		//Resize to fit columns
-			table.setPreferredScrollableViewportSize(new Dimension(300,100)); //set dimensions of scrollable
+			table.setPreferredScrollableViewportSize(new Dimension(300,130)); //set dimensions of scrollable
 			
 			table.setRowSorter(sorter);										//add sorter to table
 			
