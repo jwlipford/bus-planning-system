@@ -2,12 +2,12 @@
 
 // Name, type, tank size, consumption, speed
 
-Orion International (Canada) - Orion V, LD, 50, 10, 60
-General Motors Truck & Coach (USA) - Old Look, LD, 60, 10, 60
-Mercedes-Benz (Germany) - T2, LD, 70, 10, 60
-Isuzu (Japan) - Super Cruiser, LD, 80, 10, 60
-Ashok Leyland (India) - 12M, LD, 90, 10, 60
-Škoda Transportation (Czech Republic) - 21Ab, LD, 90, 10, 60
-Ikarus (Hungary), LD, 100, 60, 30
+Orion International (Canada) - Orion V, LD, 50.0, 10.0, 60.0
+General Motors Truck & Coach (USA) - Old Look, LD, 60.0, 10.0, 60.0
+Mercedes-Benz (Germany) - T2, LD, 70.0, 10.0, 60.0
+Isuzu (Japan) - Super Cruiser, LD, 80.0, 10.0, 60.0
+Ashok Leyland (India) - 12M, LD, 90.0, 10.0, 60.0
+Škoda Transportation (Czech Republic) - 21Ab, LD, 90.0, 10.0, 60.0
+Ikarus (Hungary), LD, 100.0, 60.0, 30.0
 
 // Ikarus has a terrible range since its consumption is 60 gal/hr!

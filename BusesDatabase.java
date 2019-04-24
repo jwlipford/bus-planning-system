@@ -120,25 +120,4 @@ public class BusesDatabase
 	{
 		this.buses.remove( index );
 	}
-	
-	
-	
-	// TESTING ONLY:
-	public static void main(String[] args) throws Exception
-	{
-		// Open BusesDatabase.txt and see how it changes during this method!
-		BusesDatabase bd = new BusesDatabase();
-		final Bus SUS = new Bus( "Sauce", BusType.longDistance,
-		                         Double.NaN, Double.NaN, Double.NaN );
-		bd.addBus( SUS );
-		bd.update();
-		final Bus ANTI_BUS = new Bus( "Anti-bus", BusType.city, Double.NEGATIVE_INFINITY,
-				                      Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY );
-		bd.addBus( ANTI_BUS );
-		bd.update();
-		bd.delete( bd.buses.size() - 1 ); // Delete ANTI_BUS
-		bd.update();
-		bd.delete( bd.buses.size() - 1 ); // Delete SUS
-		bd.update();
-	}
 }
