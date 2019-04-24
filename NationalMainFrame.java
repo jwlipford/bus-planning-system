@@ -11,7 +11,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.*;
 import java.util.regex.Pattern;
 
 import javax.imageio.ImageIO;
@@ -43,12 +42,12 @@ public class NationalMainFrame extends JFrame{
 	JTextPane finalPane = new JTextPane();
 	JTextPane chosenBusPane = new JTextPane();
 	StyledDocument docum = chosenBusPane.getStyledDocument();
-	StyledDocument doc = finalPane.getStyledDocument();
 	String[] delBus = new String[5];
 	JButton finalize = new JButton("Finalize Travel"); 		// button to finalize the user's selection.
 	
 	Bus chosenBus = null;
 	final LongDistStationsDatabase LDSDB;
+	Route[] routes;
 	
 	public NationalMainFrame() throws Exception {
 	    LDSDB = new LongDistStationsDatabase();
@@ -83,7 +82,7 @@ public class NationalMainFrame extends JFrame{
 		leftTop.add(holdButton,BorderLayout.SOUTH);
 		
 		finalSelectedDepart.addActionListener(e->{
-			setLocations sl = new setLocations();
+			setLocations sl = new setLocations( this );
 			int var = JOptionPane.showConfirmDialog(null, sl,
                     "Select a Departure", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 			
@@ -139,7 +138,7 @@ public class NationalMainFrame extends JFrame{
 		JPanel blah = new JPanel();
 		
 		finalSelectedDest.addActionListener(e->{
-			setLocations loc = new setLocations();
+			setLocations loc = new setLocations( this );
 			int var = JOptionPane.showConfirmDialog(null, loc,
                     "Select a Destination", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 			
@@ -317,9 +316,7 @@ public class NationalMainFrame extends JFrame{
 		
 		JButton addStation = new JButton("Add Station");
 		addStation.addActionListener(e->{
-			boolean isChar = false;
 			boolean empty = false;
-			String position = "";
 			String typeChose = "";
 			double longit;
 			double lat;
@@ -397,44 +394,53 @@ public class NationalMainFrame extends JFrame{
 		
 		JButton addConn = new JButton("Add Connection");
 		addConn.addActionListener(e->{
-			try {
-				int userStartCon = findStationNumber(this.start[0]);
-				int userEndCon = findStationNumber(this.end[0]);
-				
-				if( LDSDB.connected( userStartCon, userEndCon ) )
+			if( this.start[0] == null || this.end[0] == null )
+			{
+			    JOptionPane.showMessageDialog( null, "Stations not selected" );
+			    return;
+			}
+
+		    try {
+				int userStartCon0based = findStationNumber(this.start[0]) - 1;
+				int userEndCon0based   = findStationNumber(this.end[0]) - 1;
+				if( LDSDB.connected( userStartCon0based, userEndCon0based ) )
 				    JOptionPane.showMessageDialog( null, "Already connected!" );
 				else
 				{
-    				LDSDB.createConnection(userStartCon-1, userEndCon-1);
+    				LDSDB.createConnection( userStartCon0based, userEndCon0based );
     				LDSDB.update();
     				JOptionPane.showMessageDialog( null,
     				    this.start[0] + " connected to " + this.end[0] );
 				}	
-			} catch (Exception e1) {
-				e1.printStackTrace();
+			} catch (Exception e2) {
+				e2.printStackTrace();
 			}
 		});
 		
 		JButton deleteConn = new JButton( "Delete Connection" );
 		deleteConn.addActionListener( e->{
-		    try
-		    {
-		        int userStartCon = findStationNumber(this.start[0]);
-                int userEndCon = findStationNumber(this.end[0]);
-                
-                if( !LDSDB.connected( userStartCon, userEndCon ) )
+		    if( this.start[0] == null || this.end[0] == null )
+            {
+                JOptionPane.showMessageDialog( null, "Stations not selected" );
+                return;
+            }
+
+            try {
+                int userStartCon0based = findStationNumber(this.start[0]) - 1;
+                int userEndCon0based   = findStationNumber(this.end[0]) - 1;
+                if( !LDSDB.connected( userStartCon0based, userEndCon0based ) )
                     JOptionPane.showMessageDialog( null, "Already not connected!" );
                 else
                 {
-                    LDSDB.deleteConnection( userStartCon, userEndCon );
+                    LDSDB.deleteConnection( userStartCon0based, userEndCon0based );
                     LDSDB.update();
                     JOptionPane.showMessageDialog( null,
                         this.start[0] + " disconnected from " + this.end[0] );
                 }     
 		    }
-		    catch( Exception xxx )
+		    catch( Exception e3 )
 		    {
-		        xxx.printStackTrace();
+		        e3.printStackTrace();
 		    }
 		});
 		
@@ -459,10 +465,6 @@ public class NationalMainFrame extends JFrame{
 				}
 				
 				String name = delBus[0];
-				String type = delBus[1];
-				Double tank = Double.parseDouble(delBus[2]);
-				Double CC = Double.parseDouble(delBus[3]);
-				Double CS = Double.parseDouble(delBus[4]);
 				BusesDatabase bd = new BusesDatabase();
 				int index = 0;
 			for(int i = 0; i < bd.longDistBuses().length; i++) {
@@ -489,7 +491,7 @@ public class NationalMainFrame extends JFrame{
 		JButton deleteStation = new JButton("Delete Station");
 		deleteStation.addActionListener(e->{
 
-			deleteStations sl = new deleteStations();
+			deleteStations sl = new deleteStations( this );
 			String []deleteST = new String[4];
 			int var = JOptionPane.showConfirmDialog(null, sl,
                     "Delete a Station", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
@@ -547,12 +549,12 @@ public class NationalMainFrame extends JFrame{
 				this.userStart = findStationNumber(this.start[0]);
 				this.userEnd = findStationNumber(this.end[0]);
 	
-			} catch (IOException e5) {
+			} catch (Exception e5) {
 
 				JOptionPane.showMessageDialog(null, "One of the selections are null or empty", "Alert!", getDefaultCloseOperation());
 			} 																	//retrieve the position of the station for start location
 			
-			Route[] routes = null;
+			
 			
 			try
 			{
@@ -575,8 +577,6 @@ public class NationalMainFrame extends JFrame{
 			{
 				System.out.print(this.userStart + " " + this.userEnd);
 			}
-			
-			final Route[] ROUTES = routes;
 			
 			
 			JFrame showOptions = new JFrame();
@@ -660,25 +660,24 @@ public class NationalMainFrame extends JFrame{
 			    try {
         			if(optionA.isSelected())
         			{
-        			    LongDistTravel.insertGasStations( ROUTES[0], this.chosenBus, LDSDB );
-        			    this.chosen = ROUTES[0].display( this.chosenBus );
+        			    LongDistTravel.insertGasStations( routes[0], this.chosenBus, LDSDB );
+        			    this.chosen = routes[0].display( this.chosenBus );
         			}
         			else if(optionB.isSelected())
         			{
-        			    LongDistTravel.insertGasStations( ROUTES[1], this.chosenBus, LDSDB );
-        			    this.chosen = ROUTES[1].display( this.chosenBus );
+        			    LongDistTravel.insertGasStations( routes[1], this.chosenBus, LDSDB );
+        			    this.chosen = routes[1].display( this.chosenBus );
         			}
         			else if(optionC.isSelected())
         			{
-        			    LongDistTravel.insertGasStations( ROUTES[2], this.chosenBus, LDSDB );
-        			    this.chosen = ROUTES[2].display( this.chosenBus );
+        			    LongDistTravel.insertGasStations( routes[2], this.chosenBus, LDSDB );
+        			    this.chosen = routes[2].display( this.chosenBus );
         			}
-        			doc.insertString( 0, this.chosen, null );
 			    } catch( Exception e1 ) {
 			        e1.printStackTrace();
 			    }
     			
-    			finalPane.setText("");
+    			finalPane.setText( this.chosen );
 				JComponent comp = (JComponent) c.getSource();
 				Window win = SwingUtilities.getWindowAncestor(comp);
 				win.dispose();
@@ -762,7 +761,7 @@ public class NationalMainFrame extends JFrame{
 				n++;
 			
 			String [][] array = new String[n][4];														//Create two dimensional array with n being the number lines to count number of positions
-			String temp,name,lat,longit,type;																// create variables for name, longitude, latitude, and temp
+			String name,lat,longit,type;																// create variables for name, longitude, latitude, and temp
 			
 			cr.close();
 			cr = new BufferedReader(new FileReader(file)); 											//Have to create another BufferedReader because can't use twice
@@ -797,27 +796,19 @@ public class NationalMainFrame extends JFrame{
 			this.finalize.setEnabled(false);
 	}
 	
-    public int findStationNumber(String station) throws IOException { 								//Method to return a number or position to get route started.
-    	int position = 0;
-    	try{
-    		String[][] temp = LDSDB.allStations();
-    		String arrStat = "";
-    		position = 0;
-    		for(int i = 0; i<temp.length; i++) {
-    			arrStat = temp[i][0];
-    		//System.out.println(temp[i][0]);
-    			if(arrStat.equals(station)) {
-    				position = i+1;
-    				break;
-    			}	
-    		}
-    			
-    	}catch(Exception e) {
-    		
-    	}
-    	//System.out.print("this might be broken" + position);
-    		return position;
-    	}
+    public int findStationNumber(String station) throws Exception
+    //Method to return a number or position to get route started.
+    { 								
+		String[][] temp = LDSDB.allStations();
+		String arrStat = "";
+		for(int i = 0; i<temp.length; i++) {
+			arrStat = temp[i][0];
+			if(arrStat.equals(station))
+				return i+1;
+		}
+		throw new Exception( "Station not found" );
+    }
+    	
 	
 	class addBusPanel extends JPanel {
 		JTextField mAndm;
@@ -986,17 +977,12 @@ public class NationalMainFrame extends JFrame{
 	}
 	
 	static class setLocations extends JPanel{
-		String[][] data;
-		NationalMainFrame nmf;
+		
 		static JTable table;
-		setLocations(){
+		
+		setLocations( NationalMainFrame nmf ){
 
-			try {
-				data = (new LongDistStationsDatabase()).busStations();
-				nmf = new NationalMainFrame();
-			} catch (Exception e1) {
-				e1.printStackTrace();
-			}
+			String[][] data = nmf.LDSDB.busStations();
 				 
 			nmf.finalize.setEnabled(false); 							  //disable finalize button
 			JPanel master = new JPanel(new FlowLayout(FlowLayout.LEFT)); //Create panel inside Frame 
@@ -1042,17 +1028,12 @@ public class NationalMainFrame extends JFrame{
 	}
 	
 	static class deleteStations extends JPanel{
-		String[][] data;
-		NationalMainFrame nmf;
+	    
 		static JTable table;
-		deleteStations(){
+		
+		deleteStations( NationalMainFrame nmf ){
 
-			try {
-				data = (new LongDistStationsDatabase()).allStations();
-				nmf = new NationalMainFrame();
-			} catch (Exception e1) {
-				e1.printStackTrace();
-			}
+			String[][] data = nmf.LDSDB.allStations();
 				 
 			nmf.finalize.setEnabled(false); 							  //disable finalize button
 			JPanel master = new JPanel(new FlowLayout(FlowLayout.LEFT)); //Create panel inside Frame 
