@@ -34,6 +34,7 @@ public class NationalMainFrame extends JFrame{
 	String chosen = "";
 	boolean isStart = false;
 	boolean isEnd = false;
+	boolean isBus = false;
 	String selectStart =" ";
 	String selectEnd = " ";
 	JTextArea userSelectionStart = new JTextArea("");
@@ -102,11 +103,8 @@ public class NationalMainFrame extends JFrame{
 				
 				userSelectionStart.setText(this.selectStart);
 				this.isStart = true;
+				changeFinal();
 				
-				changeFinal(this.isStart,this.isEnd);
-				for(int i = 0; i<this.start.length; i++) {
-					//System.out.println(this.start[i]);
-				}
 				}catch(Exception e2) {
 					JOptionPane.showMessageDialog(this, "No value was selected! ");
 				}
@@ -158,8 +156,8 @@ public class NationalMainFrame extends JFrame{
 				
 				userSelectionEnd.setText(this.selectEnd);
 				this.isEnd = true;
+				changeFinal();
 				
-				changeFinal(this.isStart,this.isEnd);
 				//System.out.print("Test" + this.end[0]);
 				}catch(Exception e2) {
 					JOptionPane.showMessageDialog(this, "No value was selected! ");
@@ -196,17 +194,24 @@ public class NationalMainFrame extends JFrame{
     
     				for(int i = 0; i <= 4; i++) {
     				
-        				String value = selectBus.busTable.getModel().getValueAt(selectBus.busTable.convertRowIndexToModel(row), i).toString();
+        				String value = selectBus.busTable.getModel()
+        				    .getValueAt(selectBus.busTable.convertRowIndexToModel(row), i)
+        				    .toString();
         				NationalMainFrame.this.selectedBus[i]=value;
         				//JOptionPane.showMessageDialog(this, arr[i]);
         				
     				}
-    				String userChosenBus = "Bus Name: " + this.selectedBus[0] + "\nTank Size: " + this.selectedBus[2] + "\nCruise Consumption: " + this.selectedBus[3] + "\nCruise Speed: " + this.selectedBus[4];
+    				String userChosenBus =
+    				    "Bus Name: " + this.selectedBus[0] +
+    				    "\nTank Size: " + this.selectedBus[2] +
+    				    "\nCruise Consumption: " + this.selectedBus[3] +
+    				    "\nCruise Speed: " + this.selectedBus[4];
     				chosenBusPane.setText("");//resets pre-existing text
     				docum.insertString(0, userChosenBus, null );
-    				/*used to see if bus array worked for(int i = 0; i<this.selectedBus.length; i++) {
-    					System.out.println(this.selectedBus[i]);
-    				}*/
+    				
+    				this.isBus = true;
+    				this.changeFinal();
+    				
 				}catch(Exception e2) {
 					JOptionPane.showMessageDialog(this, "No value was selected! ");
 				}
@@ -539,9 +544,10 @@ public class NationalMainFrame extends JFrame{
 			//String[] options = new String[]{"View A", "View B", "View C", "Cancel"};
 			//JOptionPane.showOptionDialog(null, "Message", "Choose Preferred Route", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
 			
-			if( this.chosenBus == null )
+			if( this.start[0].equals( this.end[0] ) )
 			{
-			    JOptionPane.showMessageDialog( null, "No bus selected!" );
+			    JOptionPane.showMessageDialog( null,
+			        "Departure is same as destination.\nNo route needed." );
 			    return;
 			}
 		    
@@ -745,52 +751,8 @@ public class NationalMainFrame extends JFrame{
 		return "Bus Station: " + arr[0]  +"\nType: " + arr[1] +"\n Longitude: " + arr[2] + "\n Latitude: " + arr[3];
 	}
 	
-	public String[][] stations() throws IOException {
-		
-		  //File file = new File("C:\\Users\\JRT12\\Desktop\\Bus Station\\CityStationsText.txt"); 	//Find the file with stations 
-		  //File file = new File( "E:\\USCA\\Spring 2019\\CSCI 240\\Project\\BusPlanningSystem\\"
-		  //		+ "BusPlanningSystem\\src\\CityStationsText.txt" );
-		    File file = new File( "LongDistStationsText.txt" );
-			
-			BufferedReader cr = new BufferedReader(new FileReader(file));  						 	//user bufferedReader on the file
-			
-			int n = 0; 																				//initialize n which will determine the space required for array
-			while( !cr.readLine().isEmpty() )															//count number of lines for reference to dynamically add more later.
-				
-			
-				n++;
-			
-			String [][] array = new String[n][4];														//Create two dimensional array with n being the number lines to count number of positions
-			String name,lat,longit,type;																// create variables for name, longitude, latitude, and temp
-			
-			cr.close();
-			cr = new BufferedReader(new FileReader(file)); 											//Have to create another BufferedReader because can't use twice
-			  
-			String st; 																				//attribute to hold line
-			int x = 1;																				//Used to determine array position		
-			while (!(st = cr.readLine()).isEmpty()) 														//Used to retrieve the information from file.
-			{
-				lat = st.split(",")[0];																//assign latitude
-				longit = st.split(",")[1];															//assign longit
-				type = st.split(",")[2];
-				name = st.split(",")[3];														//Assign non-Quotation value to name.
-
-				//temp = st.split(",")[3];
-				//The information is seperate by comma to get a temporary name value;
-				
-				array[x-1][0] = name;																	//position x-1 in array create an object at 0,1,2
-				array[x-1][1] = type;
-				array[x-1][2] = lat;																	// assign lat to position in array
-				array[x-1][3] = longit;																// assign longit in array
-				x++;  																					// increase x to position next object
-			}
-			cr.close();
-			return array;																				//return newly create array of stations
-		}
-		
-	
-	public void changeFinal(boolean a, boolean b) {
-	if(a == true && b == true) {
+	public void changeFinal() {
+	    if( this.isStart && this.isEnd && this.isBus ) {
 			this.finalize.setEnabled(true);
 		}else
 			this.finalize.setEnabled(false);
