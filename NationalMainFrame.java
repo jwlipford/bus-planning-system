@@ -45,7 +45,7 @@ public class NationalMainFrame extends JFrame{
 	StyledDocument docum = chosenBusPane.getStyledDocument();
 	String[] delBus = new String[5];
 	JButton finalize = new JButton("Finalize Travel"); 		// button to finalize the user's selection.
-	
+	String userChosenBus = "";
 	Bus chosenBus = null;
 	final LongDistStationsDatabase LDSDB;
 	Route[] routes;
@@ -201,7 +201,7 @@ public class NationalMainFrame extends JFrame{
         				//JOptionPane.showMessageDialog(this, arr[i]);
         				
     				}
-    				String userChosenBus =
+    				this.userChosenBus =
     				    "Bus Name: " + this.selectedBus[0] +
     				    "\nTank Size: " + this.selectedBus[2] +
     				    "\nCruise Consumption: " + this.selectedBus[3] +
@@ -701,11 +701,55 @@ public class NationalMainFrame extends JFrame{
 			
 		});//end of finalize
 		
-		leftConsole.add(userBus);
+		JButton showConnections = new JButton("Show Connections");
+		showConnections.addActionListener(e->{
+			viewCon s1 = new viewCon(this);											//Although not deleting stations, it will generate the stations for viewing.
+			JOptionPane.showMessageDialog(null,s1);									//Use JOptionPane to add the object and ensure main frame is unselectable.
+
+			
+			
+		});
+
+		JButton showAllStations = new JButton("View Stations");
+		showAllStations.addActionListener(e->{
+			deleteStations s1 = new deleteStations(this);				//Although not deleting stations, it will generate the stations for viewing.
+			JOptionPane.showMessageDialog(null,s1);					//Use JOptionPane to add the object and ensure main frame is unselectable.
+
+			
+		});
+		
+		
+		JButton clear = new JButton("Clear All");
+		clear.addActionListener(e->{
+			if(!this.chosen.equals("") || !userSelectionStart.equals("") || !userSelectionStart.equals("") || !userChosenBus.equals("")){
+				this.chosen="";
+				userSelectionStart.setText("");;
+				userSelectionEnd.setText("");
+				finalPane.setText("");
+				chosenBusPane.setText("");
+				userChosenBus = "";
+				selectEnd = "";
+				selectStart="";
+				this.isStart = false;
+				this.isEnd = false;
+				this.isBus = false;
+				JOptionPane.showMessageDialog(null, "All selections cleared.", "Success!", getDefaultCloseOperation());
+				changeFinal();
+			}else {
+				JOptionPane.showMessageDialog(null, "Selection is already empty!", "Alert!", getDefaultCloseOperation());
+				
+			}
+		});
+		
+		//leftConsole.add(userBus);
 		leftConsole.add(addBus);
 		leftConsole.add(deleteBus);
 		leftConsole.add(addStation);
 		leftConsole.add(deleteStation);
+		leftConsole.add(showAllStations);
+		
+		JPanel holdBusBt = new JPanel();
+		holdBusBt.add(userBus);
 		
 		JPanel holdViews = new JPanel(new BorderLayout());
 		JPanel holdFinalPane = new JPanel(new BorderLayout());
@@ -721,7 +765,9 @@ public class NationalMainFrame extends JFrame{
 		chosenBusPane.setPreferredSize(new Dimension(200,150));
 		holdBuses.add(buses,BorderLayout.NORTH);
 		holdBuses.add(chosenBusPane,BorderLayout.CENTER);
-		
+		holdBuses.add(holdBusBt,BorderLayout.SOUTH);
+		holdBusBt.setBorder(BorderFactory.createLineBorder(Color.black));
+		holdBuses.setBorder(BorderFactory.createLineBorder(Color.black));
 		
 
 		showFinalSelection.add(holdFinalPane);
@@ -731,9 +777,11 @@ public class NationalMainFrame extends JFrame{
 		
 	//console.add(userBus);
 		console.add(finalize);
-		console.add(city);
+		console.add(showConnections);
 		console.add(addConn);
 		console.add(deleteConn);
+		console.add(clear);
+		console.add(city);
 		master.add(leftConsole);
 		master.add(leftPanel);
 		master.add(console);
@@ -1040,7 +1088,16 @@ public class NationalMainFrame extends JFrame{
 		}
 	}
 	
-	
-	
+	static class viewCon extends JPanel{
+		JTextArea holdCons = new JTextArea();
+		public viewCon(NationalMainFrame frame){
+				
+			holdCons.setText(frame.LDSDB.connectionsString());
+			holdCons.setEditable(false);
+			holdCons.setBorder(BorderFactory.createLineBorder(Color.black));
+			add(holdCons);
+			
+		}
+	}
 	
 }

@@ -448,23 +448,30 @@ public class BusStationMain extends JFrame{
 			
 			});//end of finalize
 			
-		JButton addBusSt= new JButton("+ Bus Station");
+		JButton goToNat= new JButton("National Transit");
 		
-		addBusSt.addActionListener(t->{
-			JOptionPane.showMessageDialog(null, "Coming Soon!", "Alert!", getDefaultCloseOperation());
+		goToNat.addActionListener(e->{
+			int warn = JOptionPane.showConfirmDialog(null, "Are you sure you want to leave?", "Leave City Routing",JOptionPane.YES_NO_OPTION);
+			if(warn == JOptionPane.YES_OPTION) {
+				try {
+					NationalMainFrame frame = new NationalMainFrame();
+					frame.setTitle("National Bus Routing System");
+					frame.setSize(1000,600);
+					frame.setLocationRelativeTo(null);
+					frame.setResizable(false);
+					frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+					frame.setVisible(true);	
+					this.dispose();
+				} catch (Exception e1) {
+				
+					e1.printStackTrace();
+				}			
 
-		});
-		
-		
-		JButton addBus = new JButton("+ Bus");
-		addBus.addActionListener(t->{
-			JOptionPane.showMessageDialog(null, "Coming Soon!", "Alert!", getDefaultCloseOperation());
-
-		});
+			}
+			});
 		
 		console.add(finalize);
-		console.add(addBusSt);
-		console.add(addBus);
+		console.add(goToNat);
 		master.add(console);
 		
 		JPanel titlePan = new JPanel(new GridBagLayout());
@@ -531,7 +538,7 @@ public class BusStationMain extends JFrame{
 	  //File file = new File("C:\\Users\\JRT12\\Desktop\\Bus Station\\CityStationsText.txt"); 	//Find the file with stations 
 	  //File file = new File( "E:\\USCA\\Spring 2019\\CSCI 240\\Project\\BusPlanningSystem\\"
 	  //		+ "BusPlanningSystem\\src\\CityStationsText.txt" );
-	    File file = new File( "C:\\Users\\JRT12\\Desktop\\BusStation\\BusStation\\src\\CityStationsText.txt" );
+	    File file = new File( "CityStationsText.txt" );
 		
 		BufferedReader cr = new BufferedReader(new FileReader(file));  						 	//user bufferedReader on the file
 		
