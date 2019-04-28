@@ -73,4 +73,13 @@ public class Route extends ArrayList<BusStation>
 				return false;
 		return true;
 	}
+	
+	public boolean containsGasStations()
+	// Returns whether this Route contains at least one GasStation
+	{
+	    for( BusStation bs : this )
+	        if( bs.getClass() == GasStation.class )
+	            return true;
+	    return false;
+	}
 }
