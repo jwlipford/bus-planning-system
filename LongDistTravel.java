@@ -11,37 +11,6 @@ import java.util.ArrayList;
 
 public class LongDistTravel
 {
-    private static Route[] possiblyRearrange( Route[] routes )
-    // Rearranges Routes, putting those with gas stations first.
-    {
-        ArrayList<Route> withGasStations = new ArrayList<Route>();
-        ArrayList<Route> sansGasStations = new ArrayList<Route>();
-        
-        for( Route r : routes )
-        {
-            if( r.containsGasStations() )
-                withGasStations.add( r );
-            else
-                sansGasStations.add( r );
-        }
-        
-        Route[] rearranged = new Route[ routes.length ];
-        
-        int i = 0;
-        for( int j = 0; j < withGasStations.size(); ++j )
-        {
-            rearranged[i] = withGasStations.get(j);
-            ++i;
-        }
-        for( int j = 0; j < sansGasStations.size(); ++j )
-        {
-            rearranged[i] = sansGasStations.get(j);
-            ++i;
-        }
-        
-        return rearranged;
-    }
-    
     public static Route[] implementTravel(
         LongDistStationsDatabase ldsdb, int begin, int end ) throws Exception
     /* This method is almost exactly the same as CityDefaultInitialization
@@ -159,12 +128,6 @@ public class LongDistTravel
             station.connect( dest );
             dest.connect( station );
         }
-        
-        BusStation departure = route.get(0);
-        BusStation finalDest = route.get( route.size() - 1 );
-        departure.disconnect( finalDest );
-        finalDest.disconnect( departure );
-        
         ldsdb.update();
     }
 }
