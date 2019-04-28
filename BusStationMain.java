@@ -20,27 +20,27 @@ import javax.swing.table.*;
  * */
 public class BusStationMain extends JFrame{
 
-	int userStart, userEnd;
-	String[] start = new String[3];
-	String[] end = new String[3];
-	String[] travelPlans = new String[3];
-	String[] planTotals  = new String[3];
-	String chosen = "";
-	boolean isStart = false;
-	boolean isEnd = false;
-	String selectStart, selectEnd;
-	JTextArea userSelectionStart = new JTextArea("");
-	JTextArea userSelectionEnd = new JTextArea("");
+	int userStart, userEnd;																											//index for userstart and userEnd
+	String[] start = new String[3];																									//string to hold start location
+	String[] end = new String[3];																									//string to hold end location
+	String[] travelPlans = new String[3];																							//create chosen travel plans
+	String[] planTotals  = new String[3];																							//Plan totals information in array
+	String chosen = "";																												//Empty string to hold chosen routes
+	boolean isStart = false;																										//determine if departure selected
+	boolean isEnd = false;																											//determine if destination selected
+	String selectStart, selectEnd;																									//set select start and select end to departure and destination
+	JTextArea userSelectionStart = new JTextArea("");																				//Show user their departure
+	JTextArea userSelectionEnd = new JTextArea("");																					//Show user their destination
 
-	JButton finalize = new JButton("Finalize Travel"); // button to finalize the user's selection.
+	JButton finalize = new JButton("Finalize Travel"); 																				// button to finalize the user's selection.										
 	
-	Bus CITY_BUS; // The single Bus used in the city, assigned in constructor
+	Bus CITY_BUS; 																													// The single Bus used in the city, assigned in constructor
 	
 	public BusStationMain() throws Exception{	    
 		setLayout(new BorderLayout());
 		
 		try {
-		    setIconImage(ImageIO.read(getClass().getResource("busIcon.jpg")));
+		    setIconImage(ImageIO.read(getClass().getResource("busIcon.jpg")));														//set icon
 		    CITY_BUS =
 		        new Bus( "CITY BUS: General Motors Truck & Coach (USA) - Old Look",
 		                 BusType.city, 60, 10, 60 );
@@ -48,8 +48,8 @@ public class BusStationMain extends JFrame{
 	        e.printStackTrace();
 	    }
 		
-		this.finalize.setEnabled(false);
-		JPanel master = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		this.finalize.setEnabled(false);																							//disable finalize button
+		JPanel master = new JPanel(new FlowLayout(FlowLayout.LEFT));	
 		
 		GridBagConstraints gbc = new GridBagConstraints();
 		
@@ -64,11 +64,11 @@ public class BusStationMain extends JFrame{
 		
 		lowInnerLeft.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		
-		String[][] data = stations(); //get the array of stations that is read from a file and assign it.
+		String[][] data = stations(); 																								//get the array of stations that is read from a file and assign it.
 		
-		//textConverter(data);
 		
-		String[] header= {"Station","Longitude","Latitude"};
+		
+		String[] header= {"Station","Longitude","Latitude"};																		//header for JTable
 		
 		JLabel startHeader = new JLabel("Select Departure Location");
 		gbc.anchor = GridBagConstraints.NORTHWEST;
@@ -82,7 +82,7 @@ public class BusStationMain extends JFrame{
 		
 		TableRowSorter<TableModel> sorter = new TableRowSorter<>(model);
 		
-		JTable table = new JTable(model);
+		JTable table = new JTable(model);																						//create JTable base on date and header that is in model
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		table.setPreferredScrollableViewportSize(new Dimension(300,100));
 		
@@ -103,11 +103,11 @@ public class BusStationMain extends JFrame{
 		
 		innerLeft.add(scroll,gbc);
 		
-		JTextField searchBox = new JTextField(20);
+		JTextField searchBox = new JTextField(20);																			
 		
-		searchBox.addActionListener(e -> {
-			String text = "(?i)" + Pattern.quote(searchBox.getText()); // (?i) = case-insensitive
-			sorter.setRowFilter(RowFilter.regexFilter(text));
+		searchBox.addActionListener(e -> {																					//action for search box
+			String text = "(?i)" + Pattern.quote(searchBox.getText()); 														// (?i) = case-insensitive
+			sorter.setRowFilter(RowFilter.regexFilter(text));																//filter text
 		});
 		
 		gbc.anchor = GridBagConstraints.NORTHWEST;
@@ -157,9 +157,9 @@ public class BusStationMain extends JFrame{
 		
 		JTextField searchBox2 = new JTextField(20);
 		
-		searchBox2.addActionListener(e -> {
-			String text = "(?i)" + Pattern.quote(searchBox2.getText());
-			sorter2.setRowFilter(RowFilter.regexFilter(text));
+		searchBox2.addActionListener(e -> {																					//action for sorting text for second table
+			String text = "(?i)" + Pattern.quote(searchBox2.getText());														
+			sorter2.setRowFilter(RowFilter.regexFilter(text));																//filter text
 		});
 		
 		gbc.anchor = GridBagConstraints.NORTHWEST;
@@ -185,27 +185,23 @@ public class BusStationMain extends JFrame{
 		userSelectionStart.setEditable(false);
 		userSelectionStart.setBorder(BorderFactory.createLineBorder(Color.black));
 		
-		arrowRightStart.addActionListener(e ->{	
-			//arrows to select values
-			//JOptionPane.showMessageDialog(null, "No Selection Made!", "Alert!", getDefaultCloseOperation());
-			
-			int row = table.getSelectedRow(); //get user selected row
-			String value;
+		arrowRightStart.addActionListener(e ->{																				//set action to arrows for departure
+			int row = table.getSelectedRow(); 																				//get user selected row
+			String value;																									//value to be overwritten to obtain column values
 			try {
 			for(int i = 0; i <=2; i++) {
 				
-			value = table.getModel().getValueAt(table.convertRowIndexToModel(row), i).toString();
-			this.start[i]=value; //assign to global variable
-			//JOptionPane.showMessageDialog(this, arr[i]);
+			value = table.getModel().getValueAt(table.convertRowIndexToModel(row), i).toString();							//get value from selected row columns
+			this.start[i]=value; 																							//assign to global variable
 			
 			}
-			this.selectStart = convertToString(this.start);
-			userSelectionStart.setText(this.selectStart);
-			this.isStart = true;
+			this.selectStart = convertToString(this.start);																	//set start to string
+			userSelectionStart.setText(this.selectStart);																	//set JTextArea to start string
+			this.isStart = true;																							//boolean to state that info was inputed
 			
-			changeFinal(this.isStart,this.isEnd);
+			changeFinal(this.isStart,this.isEnd);																			//check if finalize should be enabled
 			}catch(IndexOutOfBoundsException g) {
-				JOptionPane.showMessageDialog(null, "No departure location selected!", "Alert!", getDefaultCloseOperation());
+				JOptionPane.showMessageDialog(null, "No departure location selected!", "Alert!", getDefaultCloseOperation());// alert user that no selection made
 			}
 		});
 		
@@ -232,27 +228,26 @@ public class BusStationMain extends JFrame{
 		
 	
 
-		arrowRightEnd.addActionListener(e ->{
-			int row = table2.getSelectedRow();
-			String value;
-			//String[] arr = new String[3];
+		arrowRightEnd.addActionListener(e ->{																				//action for arrow destination
+			int row = table2.getSelectedRow();																				//get row from second table
+			String value;																									//string to hold values
 			try {
 			for(int i = 0; i <= 2; i++) {
 			
-			value = table2.getModel().getValueAt(table2.convertRowIndexToModel(row), i).toString();
-			this.end[i]=value;
+			value = table2.getModel().getValueAt(table2.convertRowIndexToModel(row), i).toString();							//get value of columns
+			this.end[i]=value;																								//set values to array
 			//JOptionPane.showMessageDialog(this, arr[i]);
-			this.selectEnd = convertToString(this.end);
+			this.selectEnd = convertToString(this.end);																		//convert array to string
 
-			userSelectionEnd.setText(this.selectEnd);
+			userSelectionEnd.setText(this.selectEnd);																		//set JTextArea to user's selection
 			}
-			this.isEnd = true;
-			if(this.userSelectionStart.equals("")) {
+			this.isEnd = true;																								//set to true to determine if input 
+			if(this.userSelectionStart.equals("")) {																		//if empty for JTextArea, set start to false
 				this.isStart = false;
 			}
-			changeFinal(this.isStart,this.isEnd);
+			changeFinal(this.isStart,this.isEnd);																			//determine if finalize should be enabled
 			}catch(IndexOutOfBoundsException g) {
-				JOptionPane.showMessageDialog(null, "No destination selected!", "Alert!", getDefaultCloseOperation());
+				JOptionPane.showMessageDialog(null, "No destination selected!", "Alert!", getDefaultCloseOperation());		//warn user if no selection made
 			}
 				
 			
@@ -305,27 +300,24 @@ public class BusStationMain extends JFrame{
 		
 		JPanel console = new JPanel(gridLayout);
 		
-		//JButton finalize = new JButton("Finalize Travel"); // button to finalize the user's selection.
-		finalize.addActionListener(e ->{
-			//String[] options = new String[]{"View A", "View B", "View C", "Cancel"};
-			//JOptionPane.showOptionDialog(null, "Message", "Choose Preferred Route", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
-			
+		
+		finalize.addActionListener(e ->{																										// action to finalize the user's selection.
 
 				try {
-					this.userStart = findStationNumber(this.start[0]);
-					this.userEnd = findStationNumber(this.end[0]);
+					this.userStart = findStationNumber(this.start[0]);																			//find station number in database
+					this.userEnd = findStationNumber(this.end[0]);																				//find station number end in database
 				} catch (IOException e5) {
 
-					JOptionPane.showMessageDialog(null, "One of the selections are null or empty", "Alert!", getDefaultCloseOperation());
-				} 																	//retrieve the position of the station for start location
+					JOptionPane.showMessageDialog(null, "One of the selections are null or empty", "Alert!", getDefaultCloseOperation());		//determine if a selection is empty warn user
+				} 																	
 				
 				
 			
 			
 			try
 			{
-				Route[] routes = CityDefaultInitialization.implementTravel(this.userStart, this.userEnd);
-				for( int i = 0; i < 3; ++i )
+				Route[] routes = CityDefaultInitialization.implementTravel(this.userStart, this.userEnd);										//implement the travel based on indexes within database
+				for( int i = 0; i < 3; ++i )																									//search for alternative routes
 				{
 					if( routes[i] == null )
 					{
@@ -365,12 +357,12 @@ public class BusStationMain extends JFrame{
 			
 			ButtonGroup optionGroup = new ButtonGroup();
 			
-			JRadioButton optionA = new JRadioButton("Option A: ");
+			JRadioButton optionA = new JRadioButton("Option A: ");																						//create radiobuttons for options A,B,C
 			optionA.setSelected(true);
 			JRadioButton optionB = new JRadioButton("Option B: ");
 			JRadioButton optionC = new JRadioButton("Option C: ");
 			
-			optionGroup.add(optionA);
+			optionGroup.add(optionA);																													//add radiobuttons to a group
 			optionGroup.add(optionB);
 			optionGroup.add(optionC);
 			
@@ -378,13 +370,13 @@ public class BusStationMain extends JFrame{
 			wrapA.add(viewA);
 			first.add(optionA, BorderLayout.NORTH);
 			first.add(wrapA,BorderLayout.SOUTH);
-			viewA.addActionListener(e2->   {
+			viewA.addActionListener(e2->   {																											//action to view option A
 
-				JTextArea bestRoute = new JTextArea(this.travelPlans[0]);
+				JTextArea bestRoute = new JTextArea(this.travelPlans[0]);																				//Create JTextArea to view first optional route
 				
 				JScrollPane paneOne = new JScrollPane(bestRoute);
 				paneOne.setPreferredSize(new Dimension(400,600));
-				JOptionPane.showMessageDialog(null,paneOne,"Option A",JOptionPane.PLAIN_MESSAGE);
+				JOptionPane.showMessageDialog(null,paneOne,"Option A",JOptionPane.PLAIN_MESSAGE);														//set to JOptionPane
 				
 			});
 			holdOps.add(first);
@@ -393,12 +385,12 @@ public class BusStationMain extends JFrame{
 			wrapB.add(viewB);
 			second.add(optionB,BorderLayout.NORTH);
 			second.add(wrapB,BorderLayout.SOUTH);
-			viewB.addActionListener(e3->{
-				JTextArea secondRoute = new JTextArea(this.travelPlans[1]);
+			viewB.addActionListener(e3->{																												//Action to view option B
+				JTextArea secondRoute = new JTextArea(this.travelPlans[1]);																				//Create JTextArea to view first optional route
 
 				JScrollPane paneTwo = new JScrollPane(secondRoute);
 				paneTwo.setPreferredSize(new Dimension(400,600));
-				JOptionPane.showMessageDialog(null,paneTwo,"Option B",JOptionPane.PLAIN_MESSAGE);
+				JOptionPane.showMessageDialog(null,paneTwo,"Option B",JOptionPane.PLAIN_MESSAGE);														//set to JOptionPane
 				});
 
 			holdOps.add(second);
@@ -407,13 +399,13 @@ public class BusStationMain extends JFrame{
 			wrapC.add(viewC);
 			three.add(optionC,BorderLayout.NORTH);
 			three.add(wrapC,BorderLayout.SOUTH);
-			viewC.addActionListener(e4->{
+			viewC.addActionListener(e4->{																												//Action to view option C
 				
-				JTextArea thirdRoute = new JTextArea(this.travelPlans[2]);
+				JTextArea thirdRoute = new JTextArea(this.travelPlans[2]);																				//Create JTextArea to view first optional route
 
 				JScrollPane paneThree = new JScrollPane(thirdRoute);
 				paneThree.setPreferredSize(new Dimension(400,600));
-				JOptionPane.showMessageDialog(null,paneThree,"Option C",JOptionPane.PLAIN_MESSAGE);
+				JOptionPane.showMessageDialog(null,paneThree,"Option C",JOptionPane.PLAIN_MESSAGE);														//set to JOptionPane
 			});
 			holdOps.add(three);
 			showOptions.add(holdOps,BorderLayout.CENTER);
@@ -425,37 +417,37 @@ public class BusStationMain extends JFrame{
 			JButton approve = new JButton("OK");
 			approveWrap.add(approve);
 			holdButtons.add(approveWrap);
-			approve.addActionListener(c->{
-				if(optionA.isSelected())
+			approve.addActionListener(c->{																												//ok button used to approve chosen route
+				if(optionA.isSelected())																												//if A is selected set chosen to selected string
 			{	
 				this.chosen = this.travelPlans[0];
-			}else if(optionB.isSelected()) {
+			}else if(optionB.isSelected()) {																											//if B is selected set chosen to selected string			
 				this.chosen = this.travelPlans[1];
 			}else if(optionC.isSelected()) {
-				this.chosen = this.travelPlans[2];
+				this.chosen = this.travelPlans[2];																										//if C is selected set chosen to selected string		
 			}
 				
 				JComponent comp = (JComponent) c.getSource();
 				  Window win = SwingUtilities.getWindowAncestor(comp);
-				  win.dispose();
+				  win.dispose();																														//close window
 			});
 			JButton cancel = new JButton("Cancel");
 			cancelWrap.add(cancel);
 			holdButtons.add(cancelWrap);
 			showOptions.add(holdButtons,BorderLayout.SOUTH);
-			cancel.addActionListener(f1->{
+			cancel.addActionListener(f1->{																												//cancel finalize and set chosen to empty string
 				this.chosen = "";
 				JComponent comp = (JComponent) f1.getSource();
 				  Window win = SwingUtilities.getWindowAncestor(comp);
-				  win.dispose();
+				  win.dispose();																														//close window
 			});
 			
 			});//end of finalize
 			
 		JButton goToNat= new JButton("National Transit");
 		
-		goToNat.addActionListener(e->{
-			int warn = JOptionPane.showConfirmDialog(null, "Are you sure you want to leave?", "Leave City Routing",JOptionPane.YES_NO_OPTION);
+		goToNat.addActionListener(e->{																													//action to change from city to national routing system
+			int warn = JOptionPane.showConfirmDialog(null, "Are you sure you want to leave?", "Leave City Routing",JOptionPane.YES_NO_OPTION);			//confirm user's action to leave
 			if(warn == JOptionPane.YES_OPTION) {
 				try {
 					NationalMainFrame frame = new NationalMainFrame();
@@ -497,35 +489,35 @@ public class BusStationMain extends JFrame{
 		result.add(clear);
 		add(result,BorderLayout.SOUTH);
 		
-		clear.addActionListener(j->{
+		clear.addActionListener(j->{																														//set action for clear button
 
-			if(!this.chosen.equals("") || !userSelectionStart.equals("") || !userSelectionStart.equals("")){
+			if(!this.chosen.equals("") || !userSelectionStart.equals("") || !userSelectionStart.equals("")){												//if chosen, start or end panels are not empty clear them
 				this.chosen="";
 				userSelectionStart.setText("");;
 				userSelectionEnd.setText("");
-				this.isStart = false;
+				this.isStart = false;																														//reset booleans for start and end to disable finalize buton
 				this.isEnd = false;
 				JOptionPane.showMessageDialog(null, "All selections cleared.", "Success!", getDefaultCloseOperation());
-				changeFinal(this.isStart,this.isEnd);
+				changeFinal(this.isStart,this.isEnd);																										//use constructor to disable finalize button
 			}else {
-				JOptionPane.showMessageDialog(null, "Selection is already empty!", "Alert!", getDefaultCloseOperation());
+				JOptionPane.showMessageDialog(null, "Selection is already empty!", "Alert!", getDefaultCloseOperation());									//warn user that all values are empty
 				
 			}
 			
 		});
 		
-		view.addActionListener(b->{ //used to get view for selected items.
+		view.addActionListener(b->{ 																														//used to get view for selected items.
 	
-			if(this.chosen.equals("")) {
+			if(this.chosen.equals("")) {																													//if chosen is empty warn user
 				JOptionPane.showMessageDialog(null, "No Selection Made!", "Alert!", getDefaultCloseOperation());
 				
 			}else {
 
 				
-				JTextArea finalSelection = new JTextArea(this.chosen);
+				JTextArea finalSelection = new JTextArea(this.chosen);																						//set chosen to user's selected route
 				JScrollPane scl = new JScrollPane(finalSelection);
 				scl.setPreferredSize(new Dimension(400,600));
-				JOptionPane.showMessageDialog(null,scl,"Final Selection",JOptionPane.PLAIN_MESSAGE);
+				JOptionPane.showMessageDialog(null,scl,"Final Selection",JOptionPane.PLAIN_MESSAGE);														//add to JOptionPane for final selection
 			
 				
 			}
@@ -533,74 +525,71 @@ public class BusStationMain extends JFrame{
 		
 	}
 	
-	public String convertToString(String[] arr) {
+	public String convertToString(String[] arr) {																											//convert array to string
 		return "Bus Station: " + arr[0]  + "\n Longitude: " + arr[1] + "\n Latitude: " + arr[2];
 	}
 	
 	public String[][] stations() throws IOException{
-		
-	  //File file = new File("C:\\Users\\JRT12\\Desktop\\Bus Station\\CityStationsText.txt"); 	//Find the file with stations 
-	  //File file = new File( "E:\\USCA\\Spring 2019\\CSCI 240\\Project\\BusPlanningSystem\\"
-	  //		+ "BusPlanningSystem\\src\\CityStationsText.txt" );
+
 	    File file = new File( "CityStationsText.txt" );
 		
-		BufferedReader cr = new BufferedReader(new FileReader(file));  						 	//user bufferedReader on the file
+		BufferedReader cr = new BufferedReader(new FileReader(file));  						 																//user bufferedReader on the file
 		
-		int n = 0; 																				//initialize n which will determine the space required for array
-		while( !cr.readLine().isEmpty() )															//count number of lines for reference to dynamically add more later.
+		int n = 0; 																																			//initialize n which will determine the space required for array
+		while( !cr.readLine().isEmpty() )																													//count number of lines for reference to dynamically add more later.
 			n++;
 		
-		String [][] array = new String[n][3];														//Create two dimensional array with n being the number lines 
-		String temp,name,lat,longit;																// create variables for name, longitude, latitude, and temp
+		String [][] array = new String[n][3];																												//Create two dimensional array with n being the number lines 
+		String temp,name,lat,longit;																														// create variables for name, longitude, latitude, and temp
 		
 		cr.close();
-		cr = new BufferedReader(new FileReader(file)); 											//Have to create another BufferedReader because can't use twice
+		cr = new BufferedReader(new FileReader(file)); 																										//Have to create another BufferedReader because can't use twice
 		  
-		String st; 																				//attribute to hold line
-		int x = 1;																				//Used to determine array position		
-		while (!(st = cr.readLine()).isEmpty()) 														//Used to retrieve the information from file.
+		String st; 																																			//attribute to hold line
+		int x = 1;																																			//Used to determine array position		
+		while (!(st = cr.readLine()).isEmpty()) 																											//Used to retrieve the information from file.
 		{
-			temp = st.split(",")[2];																//The information is seperate by comma to get a temporary name value;
-			name = temp.replaceAll("\"", "");														//Assign non-Quotation value to name.
-			lat = st.split(",")[0];																//assign latitude
-			longit = st.split(",")[1];															//assign longit
+			temp = st.split(",")[2];																														//The information is seperate by comma to get a temporary name value;
+			name = temp.replaceAll("\"", "");																												//Assign non-Quotation value to name.
+			lat = st.split(",")[0];																															//assign latitude
+			longit = st.split(",")[1];																														//assign longit
 
-			array[x-1][0] = name;																	//position x-1 in array create an object at 0,1,2
-			array[x-1][1] = lat;																	// assign lat to position in array
-			array[x-1][2] = longit;																// assign longit in array
-			x++;  																					// increase x to position next object
+			array[x-1][0] = name;																															//position x-1 in array create an object at 0,1,2
+			array[x-1][1] = lat;																															// assign lat to position in array
+			array[x-1][2] = longit;																															// assign longit in array
+			x++;  																																			// increase x to position next object
 		}
 		cr.close();
-		return array;																				//return newly create array of stations
+		return array;																																		//return newly create array of stations
 	}
 	
 	
-	public int findStationNumber(String station) throws IOException { 								//Method to return a number or position to get route started.
+	public int findStationNumber(String station) throws IOException { 																						//Method to return a number or position to get route started.
 		
-		String[][] temp = stations();
-		String arrStat = "";
-		int position = 0;
+		String[][] temp = stations();																														//create a temp two dimensional array to hold stations
+		String arrStat = "";																																//Create a string for station
+		int position = 0;																																	//integer for position in database
 		for(int i = 0; i<temp.length; i++) {
-			arrStat = temp[i][0];
-		//System.out.println(temp[i][0]);
-			if(arrStat.equals(station)) {
+			arrStat = temp[i][0];																															//iterate through first index in array 
+
+			if(arrStat.equals(station)) {																													//if the stations are the same set the position
 				position = i+1;
 				break;
 			}
 			
 			
 		}
-		return position;
+		return position;																																	//return the position
 
 	}
 	
-	public String Routes() {
+	public String Routes() {																																//set string
 		String a = "";
 		
 		return a;
 	}
 		
-	public void changeFinal(boolean a, boolean b) {
+	public void changeFinal(boolean a, boolean b) {																											//determine if finalize should be enabled or disabled 
 	if(a == true && b == true) {
 			this.finalize.setEnabled(true);
 		}else
@@ -612,19 +601,20 @@ public class BusStationMain extends JFrame{
 		  // Sets the L&F theme.
         try {
             for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
+                if ("Nimbus".equals(info.getName())) {																										//sets style of GUI to Nimbus
                     UIManager.setLookAndFeel(info.getClassName());
                   //  break;
                 }
             }
         } catch (Exception e) {
         }
-		JOptionPane.showMessageDialog(null, "SOFTWARE IS NOT TO BE USED FOR ROUTE PLANNING PURPOSE.");
+		JOptionPane.showMessageDialog(null, "SOFTWARE IS NOT TO BE USED FOR ROUTE PLANNING PURPOSE.");														//disclaimer 
 		
-		Object[] options = {"City Transit","National Transit"};
-		int n = JOptionPane.showOptionDialog(null,"Please choose an option.", "Travel Plans", JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.INFORMATION_MESSAGE,null,options,options[1]);
+		Object[] options = {"City Transit","National Transit"};																								//Create an object array
+		int n = JOptionPane.showOptionDialog(null,"Please choose an option.", "Travel "
+				+ "Plans", JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.INFORMATION_MESSAGE,null,options,options[1]);										//put object into JOptionPane
 		
-		if(n == 0) {
+		if(n == 0) {																																		//if n is 0 than go to city
 			BusStationMain frame = new BusStationMain();
 			frame.setTitle("City Bus Routing System");
 			frame.setSize(1000,550);
@@ -633,7 +623,7 @@ public class BusStationMain extends JFrame{
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			frame.setVisible(true);	
 			
-		}else if(n==1){
+		}else if(n==1){																																		//if n is 1 than go to national
 			NationalMainFrame frame = new NationalMainFrame();
 			frame.setTitle("National Bus Routing System");
 			frame.setSize(1000,600);
