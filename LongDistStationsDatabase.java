@@ -265,4 +265,18 @@ public class LongDistStationsDatabase
             }
         }
     }
+    
+    public BusStation stationAtLocation( double lat, double lng )
+    // If a station exists in the database at (lat, lng), returns that station.
+    // If no such station exists, returns null. This method can be and is used
+    // to check whether a station exists at the location by checking whether
+    // this method returns null.
+    {
+        for( BusStation b : lDStations )
+        {
+            if( b.getLatitude() == lat && b.getLongitude() == lng )
+                return b;
+        }
+        return null;
+    }
 }

@@ -95,10 +95,11 @@ public class LongDistTravel
             
             double legDist = start.milesTo( dest );
             int numGasStationsNeeded = (int)(legDist / maxDist); // rounding down
+            
             if( numGasStationsNeeded == 0)
                 continue;
-            int numSubsectionsOfLeg = numGasStationsNeeded + 1;
             
+            int numSubsectionsOfLeg = numGasStationsNeeded + 1;
             double latChangePerSubsection =
                 (dest.getLatitude() - start.getLatitude()) / numSubsectionsOfLeg;
             double lngChangePerSubsection =
@@ -107,26 +108,47 @@ public class LongDistTravel
             int numGasStationsInDatabase = ldsdb.gasStations().length;
                 // Used to generate names for new GasStations
             
-            BusStation station = start;
+            start.disconnect( dest );
+            dest.disconnect( start );
+            
+            BusStation current = start;
             for( int j = 0; j < numGasStationsNeeded; ++j )
             {
-                double newLat = station.getLatitude()  + latChangePerSubsection;
-                double newLng = station.getLongitude() + lngChangePerSubsection;
-                String newName = "Gas Station " + (numGasStationsInDatabase + 1);
+                double newLat = current.getLatitude()  + latChangePerSubsection;
+                double newLng = current.getLongitude() + lngChangePerSubsection;
                 
-                GasStation newGS = new GasStation( newLat, newLng, newName );
-                newGS.connect( station );
-                station.connect( newGS );
-                station = newGS;
+                // Check whether a station already exists at the needed location.
+                // If not, create one and add it to ldsdb and route. If so, just
+                // add the preexisting one to route.
+                
+                BusStation preexisting = ldsdb.stationAtLocation( newLat, newLng );
+                
+                if( preexisting == null ) // Should be the case most of the time
+                {
+                    String newName = "Gas Station " + (numGasStationsInDatabase + 1);
+                    
+                    GasStation newGS = new GasStation( newLat, newLng, newName );
+                    newGS.connect( current );
+                    current.connect( newGS );
+                    
+                    ldsdb.addLDStation( newGS );
+                    ++numGasStationsInDatabase;
+                    
+                    current = newGS;
+                }
+                else
+                {
+                    current = preexisting;
+                }
                 
                 ++i;
-                route.add( i, newGS );
-                
-                ldsdb.addLDStation( newGS );
-                ++numGasStationsInDatabase;
+                route.add( i, current );
             }
-            station.connect( dest );
-            dest.connect( station );
+            if( !current.connectedTo( dest ) )
+            {
+                current.connect( dest );
+                dest.connect( current );
+            }
         }
         ldsdb.update();
     }
