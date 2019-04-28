@@ -1,4 +1,14 @@
-/* Two methods in this class use information found at
+/* Place:
+ * 
+ * A location on the surface of the earth, identified by a latitude and a
+ * longitude. This class is abstract, so it cannot be used directly, but
+ * BusStation (and GasStation, which extends BusStation) extends this class.
+ * Methods in this class find the distance to another place, find the direction
+ * to another place (numerically, the "bearing," or as a String, the
+ * "heading"), and find whether this station is equivalent ("equal") to another
+ * Place.
+ * 
+ * Two methods in this class use information found at
  * https://www.movable-type.co.uk/scripts/latlong.html.
  * These methods' comments contain more information.
  */
@@ -30,16 +40,15 @@ public abstract class Place
     }
     
     public boolean equals( Place place )
-    // Returns a boolean representing whether this object has the same
-    // coordinates as place
+    // Returns whether this object has the same coordinates as the place
     {
         return   (this.latitude  == place.latitude
                && this.longitude == place.longitude);
     }
     
     public double milesTo( Place place )
-    /* This method returns the number of miles between this object and place
-     * along the surface of the earth, taking into account its curvature.
+    /* Returns the number of miles between this object and place along
+     * the surface of the earth, taking into account its curvature.
      * 
      * This method uses formulas found in the Distance section of
      * https://www.movable-type.co.uk/scripts/latlong.html.
@@ -62,13 +71,15 @@ public abstract class Place
     }
     
     public double bearingTo( Place place )
-    /* This method returns the direction (at the start of travel -- direction
-     * may change during travel over long distances) in degrees (0° to 360°;
-     * clockwise from North, as in Geography) from this object to another place.
+    /* Returns the direction (at the start of travel -- direction may change
+     * during travel over long distances) in degrees (0° to 360°; clockwise
+     * from North, as in Geography) from this object to another place.
      * 
      * This method, like milesTo, uses a formula found in the Bearing section
-	 * of https://www.movable-type.co.uk/scripts/latlong.html, though I applied
-     * a modulus since the given formula sometimes produces negative numbers.
+	 * of https://www.movable-type.co.uk/scripts/latlong.html, though I modified
+	 * it such that it returns positive numbers rather than numbers in range
+	 * [-180, 180]. Like milesTo, I have no idea how it works, but I have
+	 * verified that it does.
      */
     {
         double thisLatRad   = Math.toRadians(  this.getLatitude()  );

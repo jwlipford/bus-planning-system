@@ -1,10 +1,18 @@
-/* DijkstraStation: A BusStation with additional attributes for use in
- * Dijkstra's Algorithm, a path-finding algorithm
+/* DijkstraStation:
+ * 
+ * A BusStation with two additional fields, dist and visited, used in
+ * Dijkstra's Algorithm, a path-finding algorithm. This class also contains two
+ * other fields, correspondingStation and connectedDStations, necessary because
+ * new DijkstraStations are constructed from preexisting BusStations.
+ * 
+ * Several of this class's methods, though public, are not used outside this
+ * method. Important methods used in other classes are
+ * busStationsToDijkstraStations and dijkstraRoute (both of which are static).
  * 
  * The design of this class is based on Wikipedia's description of Dijkstra's
  * Algorithm. See https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm.
  * Retrieved 08-Feb-2019. See especially section 2, "Algorithm".
- */ 
+ */
 
 
 import java.util.ArrayList;
@@ -12,18 +20,26 @@ import java.util.ArrayList;
 public class DijkstraStation extends BusStation
 {
 	private double dist;
-	// A non-constant variable that will eventually equal the distance (in
-	// miles) along existing connections to a certain starting station
+	    // A non-constant variable that will eventually equal the distance (in
+	    // miles) along existing connections to a certain starting station
 	
 	private boolean visited;
-	// A non-constant variable indicating whether this station has been visited
-	// in the algorithm
+	    // A non-constant variable indicating whether this station has been
+	    // visited in the algorithm
 	
 	private BusStation correspondingStation;
+	    // The BusStation used to generate this DijkstraStation
 	
-	public ArrayList<DijkstraStation> connectedDStations;
+	private ArrayList<DijkstraStation> connectedDStations;
+	    // A list of DijkstraStations "connected" to this station. This field
+	    // parallels the connectedStations field such that each connected
+	    // DijkstraStation corresponds to a connected normal BusStation.
 	
 	public DijkstraStation( BusStation station ) throws Exception
+	// Initializes fields latitude, longitude, name, correspondingStation, and
+	// connectedStations based on the station argument. Initializes fields
+	// connectedDStations, dist, and visited to their initial values of null,
+	// infinity, and false, all of which can change later.
 	{
 		super( station.getLatitude(), station.getLongitude(), station.getName() );
 		correspondingStation = station;
@@ -34,7 +50,11 @@ public class DijkstraStation extends BusStation
 	}
 	
 	@Override
-	public String toString() // This method is useful in debugging at least
+	public String toString()
+	// Returns a String of the form
+	//     "name at (lat, long) with dist = d from start".
+	// The system does not currently use this method, but it is useful for
+	// debugging.
 	{
 		return super.toString() + " with dist = " + dist + " from start";
 	}
@@ -43,6 +63,9 @@ public class DijkstraStation extends BusStation
 	
 	
 	public static DijkstraStation best( ArrayList<DijkstraStation> dStations )
+	// Of the stations in the argument, returns the one with the lowest dist
+	// value (the one closest to the start station) or null if the argument is
+	// empty
 	{
 		if( dStations.isEmpty() )
 		    return null;
@@ -92,7 +115,7 @@ public class DijkstraStation extends BusStation
 	) throws Exception
 	// Returns an ArrayList of DijkstraStations parallel to bStations, each
 	// DijkstraStation with the same connections as the corresponding BusStation,
-	// and each DijkstraStation with dist from start calculated
+	// and each DijkstraStation with dist from start calculated.
 	{
 		ArrayList<DijkstraStation> dStations = new ArrayList<DijkstraStation>();
 		ArrayList<DijkstraStation> unvisited = new ArrayList<DijkstraStation>();
@@ -156,6 +179,10 @@ public class DijkstraStation extends BusStation
 	{
 		DijkstraStation start       = null;
 		DijkstraStation backtracker = null;
+		    // backtracker backtracks from destination to start
+		
+		// Find start and find backtracker's initial station:
+		
 		for( DijkstraStation ds : dStations )
 		{
 			if( ds.correspondingStation == destination )
@@ -165,6 +192,8 @@ public class DijkstraStation extends BusStation
 			if( start != null && backtracker != null )
 				break;
 		}
+		
+		// Backtrack to start to create route:
 		
 		Route route = new Route();
 		route.add( destination );
@@ -179,6 +208,8 @@ public class DijkstraStation extends BusStation
 			if( backtracker != null )
 			    route.add( 0, backtracker.correspondingStation );
 			else
+			    // For some reason, no suitable station exists to go to next.
+			    // Therefore, no route can be generated.
 			    return null;
 		}
 		

@@ -1,22 +1,33 @@
+/* LongDistTravel:
+ * A class containing two static methods related to travel in Long-Distance Mode.
+ * Method implementTravel creates a set of three possible Routes between two
+ * stations in the LongDistStationsDatabase.
+ * Method insertGasStations changes both a Route and the LongDistStationsDatabase
+ * by creating GasStations in legs of the route that are too long for a chosen
+ * Bus to traverse.
+ */
+
 import java.util.ArrayList;
 
 public class LongDistTravel
 {
     public static Route[] implementTravel(
         LongDistStationsDatabase ldsdb, int begin, int end ) throws Exception
-    // Copied almost exactly from CityDefaultInitialization.implementTravel!
-    // That method reads from the wrong text file, though, so we can't use it
-    // for Long Distance Mode. This is lazy code design, but I didn't bother to
-    // redo that method.
-    // In this method, begin and end are numbered starting at 1, not 0.
+    /* This method is almost exactly the same as CityDefaultInitialization
+     * .implementTravel! That method reads from the wrong text file, though, so
+     * we can't use it for Long Distance Mode. Instead we read from the
+     * LongDistStationsDatabase.
+     * This method's arguments begin and end are indices numbered from 1, not 0.
+     * This method ___
+     */
     {
         ArrayList<BusStation> stations = ldsdb.toArrayList();
         
-        int s = begin - 1;
+        int s = begin - 1; // Convert to a 0-based index
         if( s < 0 || s >= stations.size() )
             throw new Exception();
         
-        int d = end - 1;
+        int d = end - 1;   // Convert to a 0-based index
         if( d < 0 || d >= stations.size() )
             throw new Exception();
         
@@ -26,14 +37,18 @@ public class LongDistTravel
         ArrayList<DijkstraStation> dStations =
                 DijkstraStation.busStationsToDijkstraStations( stations, start );
         
+        // Find first, best Route:
+        
         Route bestRoute = DijkstraStation.dijkstraRoute( dStations, dest, false );
         if( bestRoute == null )
             return new Route[] { null, null, null };
         
-        // Number of tries to find a new Route different from previous ones
-        final int MAX_TRIES = 8;
+        // Find second, semirandom Route, if possible:
         
+        final int MAX_TRIES = 8;
+            // Number of tries to find a new Route different from previous ones
         int numTries = 0;
+            // Number of tries used
         Route secondRoute;
         while( true ) // until broken
         {
@@ -46,6 +61,8 @@ public class LongDistTravel
                 break; // secondRoute found!
             ++numTries;
         }
+        
+        // Find third, semirandom Route, if possible:
         
         numTries = 0;
         Route thirdRoute;

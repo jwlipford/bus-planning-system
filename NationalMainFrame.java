@@ -3,26 +3,19 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Window;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.regex.Pattern;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 import javax.swing.text.StyledDocument;
 
+
 public class NationalMainFrame extends JFrame{
-	
-	
 	
 	String[] addBusArr = new String[4];      //Used to get bus from addBusPanel
 	String[] addStationArr = new String[4];  //Used to get Station from addStationPanel
@@ -232,7 +225,7 @@ public class NationalMainFrame extends JFrame{
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				frame.setVisible(true);		
 				this.dispose();
-			} catch (IOException e1) {
+			} catch (Exception e1) {
 			
 				e1.printStackTrace();
 			}			
@@ -712,7 +705,7 @@ public class NationalMainFrame extends JFrame{
 
 		JButton showAllStations = new JButton("View Stations");
 		showAllStations.addActionListener(e->{
-			deleteStations s1 = new deleteStations(this);				//Although not deleting stations, it will generate the stations for viewing.
+			deleteStations s1 = new deleteStations(this);		    //Although not deleting stations, it will generate the stations for viewing.
 			JOptionPane.showMessageDialog(null,s1);					//Use JOptionPane to add the object and ensure main frame is unselectable.
 
 			
@@ -1045,12 +1038,12 @@ public class NationalMainFrame extends JFrame{
 
 			String[][] data = nmf.LDSDB.allStations();
 				 
-			nmf.finalize.setEnabled(false); 							  //disable finalize button
+			nmf.finalize.setEnabled(false); 							 //disable finalize button
 			JPanel master = new JPanel(new FlowLayout(FlowLayout.LEFT)); //Create panel inside Frame 
 			
-			JPanel leftPanel = new JPanel(new BorderLayout()); 				//set left Panel in master
-			JPanel startPanel = new JPanel(); 				   				//set start panel to hold JTable departure
-			JPanel endPanel = new JPanel();					   				//set end panel to hold JTable Destination
+			JPanel leftPanel = new JPanel(new BorderLayout()); 			 //set left Panel in master
+			JPanel startPanel = new JPanel(); 				   			 //set start panel to hold JTable departure
+			JPanel endPanel = new JPanel();					   			 //set end panel to hold JTable Destination
 			
 
 			

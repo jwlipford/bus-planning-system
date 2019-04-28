@@ -1,9 +1,28 @@
+/* Route:
+ * 
+ * A list of BusStations in order from a departure station to a destination
+ * station. This class extends ArrayList.
+ * 
+ * New Routes are created only in method DijkstraStation.dijkstraRoute. This
+ * class contains no method for calculating a new Route and also contains no
+ * unique fields; rather, it focuses on outputting information about itself
+ * as text. This class also contains a method that checks equality with another
+ * Route; this method is used when other classes attempt to generate multiple
+ * unique routes between the same locations.
+ */
+
 import java.util.ArrayList;
 
 public class Route extends ArrayList<BusStation>
 {    
 	@Override
-    public String toString() // Mostly for debugging, not for actual display
+    public String toString()
+    // Displays a String of the form
+    //     "A Route with n stations:
+    //       station1
+    //       station2
+    //       ..."
+    // This method is not used in the system but is still useful for debugging. ___
     {
         String s = "A Route with " + this.size() + " stations:\n";
         for( BusStation bs : this )
@@ -12,6 +31,7 @@ public class Route extends ArrayList<BusStation>
     }
 	
 	public String display( Bus bus ) // For display in one of the 3 windows
+	// ___
     {
     	String s = "";
         for( int i = 1; i < this.size(); ++i )
@@ -29,7 +49,7 @@ public class Route extends ArrayList<BusStation>
     }
     
 	public String totals( Bus bus )
-	// A 2-line String containing the total distance and total time
+	// Returns a two-line String containing the total distance and total time.
 	{
 		double totalMiles = 0,
 			   totalHours = 0;
@@ -44,6 +64,7 @@ public class Route extends ArrayList<BusStation>
 	
 	public boolean equals( Route route )
 	// Overrides super.equals, but only when the argument is a Route
+	// ___
 	{
 		if( this.size() != route.size() )
 			return false;

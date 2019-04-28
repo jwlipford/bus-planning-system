@@ -6,15 +6,39 @@
 38.9, -77.04, City, Washington DC
 40.67, -73.94, City, New York City NY
 37.54, -77.43, City, Richmond VA
+34.614999999999995, -80.92, Gas, Gas Station 1
+35.692, -80.158, Gas, Gas Station 2
+36.154, -79.476, Gas, Gas Station 3
+36.61600000000001, -78.794, Gas, Gas Station 4
+37.07800000000001, -78.112, Gas, Gas Station 5
+38.22, -77.23500000000001, Gas, Gas Station 6
+39.254, -76.42, Gas, Gas Station 7
+39.608, -75.8, Gas, Gas Station 8
+39.961999999999996, -75.17999999999999, Gas, Gas Station 9
+40.315999999999995, -74.55999999999999, Gas, Gas Station 10
 
 0 1
 0 3
+0 8
 1 2
 2 3
 3 4
 3 5
 3 7
+3 8
+3 9
 4 5
 4 7
 5 6
 5 7
+5 13
+5 14
+6 17
+7 12
+7 13
+9 10
+10 11
+11 12
+14 15
+15 16
+16 17

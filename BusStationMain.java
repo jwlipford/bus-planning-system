@@ -2,7 +2,6 @@ import java.util.regex.Pattern;
 import java.awt.*;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
@@ -35,14 +34,19 @@ public class BusStationMain extends JFrame{
 
 	JButton finalize = new JButton("Finalize Travel"); // button to finalize the user's selection.
 	
-	public BusStationMain() throws IOException{
+	Bus CITY_BUS; // The single Bus used in the city, assigned in constructor
+	
+	public BusStationMain() throws Exception{	    
 		setLayout(new BorderLayout());
 		
-		  try {
-	            setIconImage(ImageIO.read(getClass().getResource("busIcon.jpg")));
-	        } catch (IOException e) {
-	            e.printStackTrace();
-	        }
+		try {
+		    setIconImage(ImageIO.read(getClass().getResource("busIcon.jpg")));
+		    CITY_BUS =
+		        new Bus( "CITY BUS: General Motors Truck & Coach (USA) - Old Look",
+		                 BusType.city, 60, 10, 60 );
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
 		
 		this.finalize.setEnabled(false);
 		JPanel master = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -330,8 +334,8 @@ public class BusStationMain extends JFrame{
 					}
 					else
 					{
-						this.travelPlans[i] = routes[i].display( Bus.DEFAULT_BUS );
-						this.planTotals[i]  = routes[i].totals( Bus.DEFAULT_BUS );
+						this.travelPlans[i] = routes[i].display( CITY_BUS );
+						this.planTotals[i]  = routes[i].totals( CITY_BUS );
 					}
 				}
 			}
