@@ -66,10 +66,13 @@ public class LongDistStationsDatabase
         this.lDStations = new ArrayList<BusStation>();
         
         // First part of file, stations:
-        while( !line.isEmpty() ) // until line.Equals("")
+        
+        while( !line.isEmpty() ) // Until line.equals("")
         {
             String[] splitLine = line.split( ", " );
-
+                // Should have 4 elements, 3 corresponding to BusStation's 3
+                // fields and one specifying whether it is a GasStation.
+            
             double lat = Double.parseDouble( splitLine[0] );
             double lng = Double.parseDouble( splitLine[1] );
             String name = splitLine[3];
@@ -95,6 +98,7 @@ public class LongDistStationsDatabase
         line = br.readLine();
         
         // Second part of file, connections:
+        
         while( line != null && !line.isEmpty() )
         {
             String[] splitLine = line.split( " " );
@@ -107,6 +111,42 @@ public class LongDistStationsDatabase
         }
         
         br.close();
+    }
+    
+    public void update() throws Exception
+    // Overwrites the text file with information from lDStations. This method
+    // is the only way to save changes made using other methods into the actual
+    // text file; without using this method, changes will be lost upon closing
+    // the program.
+    {
+        FileWriter fw = new FileWriter( DATA_FILE );
+
+        // Write first part of file, stations:
+        
+        for( BusStation bs : this.lDStations )
+            fw.write( bs.getLatitude() + ", " + bs.getLongitude() + ", "
+                    + (bs.getClass() == GasStation.class ? "Gas, " : "City, ") +
+                    bs.getName() + "\n" );
+        fw.write( "\n" );
+
+        // Write second part of file:
+        
+        int indexLim = this.lDStations.size(); // Exclusive max station index
+        
+        // Loops through all stations, checking for each one whether that one
+        // is connected to any with higher indices than it
+        for( int i = 0; i < indexLim; ++i )
+        {
+            BusStation ithStation = lDStations.get(i);
+            for( int j = i + 1; j < indexLim; ++j )
+            {
+                BusStation jthStation = lDStations.get(j);
+                if( ithStation.connectedTo( jthStation ) )
+                    fw.write( i + " " + j + "\n" );
+            }
+        }
+
+        fw.close();
     }
 
     private String[][] arrayListTo2dStringArray(ArrayList<BusStation> arrayList)
@@ -183,8 +223,8 @@ public class LongDistStationsDatabase
         String s = "";
         int indexLim = this.lDStations.size(); // Exclusive max station index
         
-        // Loops through all stations, checking for each one whether it is
-        // connected to any of those with higher indices than it
+        // Loops through all stations, checking for each one whether that one
+        // is connected to any with higher indices than it
         for( int i = 0; i < indexLim; ++i )
         {
             BusStation ithStation = lDStations.get(i);
@@ -196,37 +236,6 @@ public class LongDistStationsDatabase
             }
         }
         return s;
-    }
-
-    public void update() throws Exception
-    // Overwrites the text file with information from lDStations. This method
-    // is the only way to save changes made using other methods into the actual
-    // text file; without using this method, changes will be lost upon closing
-    // the program.
-    {
-        FileWriter fw = new FileWriter( DATA_FILE );
-
-        // Write first part of file:
-        for( BusStation bs : this.lDStations )
-            fw.write( bs.getLatitude() + ", " + bs.getLongitude() + ", "
-                    + (bs.getClass() == GasStation.class ? "Gas, " : "City, ") +
-                    bs.getName() + "\n" );
-        fw.write( "\n" );
-
-        // Write second part of file:
-        int indexLim = this.lDStations.size(); // Exclusive max station index
-        for( int i = 0; i < indexLim; ++i )
-        {
-            BusStation ithStation = lDStations.get(i);
-            for( int j = i + 1; j < indexLim; ++j )
-            {
-                BusStation jthStation = lDStations.get(j);
-                if( ithStation.connectedTo( jthStation ) )
-                    fw.write( i + " " + j + "\n" );
-            }
-        }
-
-        fw.close();
     }
 
     public void addLDStation(BusStation lDStation) throws Exception
@@ -254,16 +263,16 @@ public class LongDistStationsDatabase
     // Deletes the BusStation at the index from lDStations, but does not update
     // the text file (call update() to do so)
     {
-        String name = this.lDStations.get( index ).getName();
+        // First, disconnects all stations currently connected to the station
+        // that will be removed:
+        
+        BusStation toDelete = lDStations.get( index );
+        for( BusStation connected : toDelete.connectedStations )
+            connected.disconnect( toDelete );
+        
+        // Then, removes the station from lDStations:
+        
         this.lDStations.remove( index );
-        for( BusStation bs : this.lDStations )
-        {
-            for( int i = 0; i < bs.connectedStations.size(); ++i )
-            {
-                if( bs.connectedStations.get( i ).getName().equals( name ) )
-                    bs.connectedStations.remove( i );
-            }
-        }
     }
     
     public BusStation stationAtLocation( double lat, double lng )

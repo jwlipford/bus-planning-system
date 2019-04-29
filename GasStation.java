@@ -4,7 +4,7 @@
  * The classes differ only in use -- the user can select BusStations but not
  * GasStations as departures and destinations. In retrospect, I believe I should
  * have implemented this difference as a boolean or enum field in BusStation, but
- * the current implementation works without any problem.
+ * the current implementation works without problems.
  */
 
 public class GasStation extends BusStation

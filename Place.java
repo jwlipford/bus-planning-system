@@ -47,18 +47,21 @@ public abstract class Place
     }
     
     public double milesTo( Place place )
-    /* Returns the number of miles between this object and place along
-     * the surface of the earth, taking into account its curvature.
-     * 
-     * This method uses formulas found in the Distance section of
-     * https://www.movable-type.co.uk/scripts/latlong.html.
-     * I have no idea how they work, but I have verified that they do.
-     */
+    // Returns the number of miles between this object and place along
+    // the surface of the earth, taking into account its curvature.
+    // 
+    // This method uses formulas found in the Distance section of
+    // https://www.movable-type.co.uk/scripts/latlong.html.
+    // I have no idea how they work, but I have verified that they do.
     {
-    	double thisLatRad   = Math.toRadians(  this.getLatitude()  );
+    	// Find the latitude and longitude of this and place in radians:
+        
+        double thisLatRad   = Math.toRadians(  this.getLatitude()  );
     	double placeLatRad  = Math.toRadians( place.getLatitude()  );
     	double thisLongRad  = Math.toRadians(  this.getLongitude() );
     	double placeLongRad = Math.toRadians( place.getLongitude() );
+    	
+    	// Apply for formula from movable-type.co.uk:
     	
     	double f = Math.sin( 0.5*( Math.abs( thisLatRad - placeLatRad ) ) );
     	double g = Math.cos( thisLatRad );
@@ -82,18 +85,25 @@ public abstract class Place
 	 * verified that it does.
      */
     {
+        // Find the latitude and longitude of this and place in radians:
+        
         double thisLatRad   = Math.toRadians(  this.getLatitude()  );
         double placeLatRad  = Math.toRadians( place.getLatitude()  );
         double thisLongRad  = Math.toRadians(  this.getLongitude() );
         double placeLongRad = Math.toRadians( place.getLongitude() );
     	
+        // Apply for formula from movable-type.co.uk:
+        
         double f = placeLongRad - thisLongRad;
         double g = Math.sin(f) * Math.cos( placeLatRad );
         double h = Math.cos( thisLatRad ) * Math.sin( placeLatRad );
         double i = Math.sin( thisLatRad ) * Math.cos( placeLatRad ) * Math.cos(f);
-    	
         double degrees = Math.toDegrees( Math.atan2( g, h-i ) );
-        // Java's % operator is remainder, not modulus, and can return a negative.
+        
+        // Convert from range [-180, 180] to range [0, 360]:
+        
+        // Java's % operator is remainder, not modulus, and can return a negative,
+        // so we add 360 before applying the remainder:
         return (degrees + 360) % 360;
     }
     

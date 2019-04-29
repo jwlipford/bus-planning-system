@@ -117,7 +117,11 @@ public class DijkstraStation extends BusStation
 	// DijkstraStation with the same connections as the corresponding BusStation,
 	// and each DijkstraStation with dist from start calculated.
 	{
-		ArrayList<DijkstraStation> dStations = new ArrayList<DijkstraStation>();
+		// Create lists dStations (to be returned) and unvisited, both parallel
+	    // to bStations (only initially parallel for unvisited, which loses
+	    // members later in the program):
+	    
+	    ArrayList<DijkstraStation> dStations = new ArrayList<DijkstraStation>();
 		ArrayList<DijkstraStation> unvisited = new ArrayList<DijkstraStation>();
 		for( BusStation bs : bStations )
 		{
@@ -125,9 +129,9 @@ public class DijkstraStation extends BusStation
 			dStations.add( ds );
 			unvisited.add( ds );
 		}
-		// dStations will not change from now on. unvisited will gradually lose
-		// members from now on as more stations are visited.
 		
+		// For each DijkstraStation in dStations, now create its connections
+		// parallel to bStations' stations' connections:
 		
 		for( DijkstraStation ds : dStations )
 		{
@@ -137,27 +141,40 @@ public class DijkstraStation extends BusStation
 				ds.connectedDStations.add( dStations.get( bStations.indexOf( bs ) ) );
 		}
 		
+		// Set the starting DijkstraStations's dist to 0 (since dist is measured
+		// from start):
+		
 		dStations.get( bStations.indexOf( start ) ).dist = 0;
 		
-		DijkstraStation current; // non-constant
+		// Each station besides the one above currently has infinite dist. We
+		// now find these stations' actual dists by visiting each station in a
+		// certain order specified by Dijkstra's Algorithm. Visiting a station
+		// finds the dists of its connected stations that were not already
+		// visited:
 		
-		while( !unvisited.isEmpty() )
+		while( !unvisited.isEmpty() ) // Until all stations have been visited
 		{
-			current = best( unvisited );
-			// In the first iteration, current = the one with dist of 0,
-			// assigned above, corresponding to start.
-			for( DijkstraStation cs : current.connectedDStations )
+			DijkstraStation visiting = best( unvisited );
+			    // The station currently being visited. (During the first
+			    // interation, this is the starting station with 0 dist.)
+			
+			for( DijkstraStation cs : visiting.connectedDStations )
 			{
 				if( !cs.visited )
 				{
-					double distThroughCurrent =
-						current.dist + current.milesTo( cs );
+					// If cs currently has infinite dist or if its distance
+				    // through visiting would be better than its current dist,
+				    // replace its dist with its distance through visiting, a
+				    // lower number.
+				    
+				    double distThroughCurrent =
+						visiting.dist + visiting.milesTo( cs );
 					if( cs.dist > distThroughCurrent )
 						cs.dist = distThroughCurrent;
 				}
 			}
-			current.visited = true;
-			unvisited.remove( current );
+			visiting.visited = true;
+			unvisited.remove( visiting );
 		}
 		
 		return dStations;
@@ -181,7 +198,7 @@ public class DijkstraStation extends BusStation
 		DijkstraStation backtracker = null;
 		    // backtracker backtracks from destination to start
 		
-		// Find start and find backtracker's initial station:
+		// Find start station and backtracker's initial station:
 		
 		for( DijkstraStation ds : dStations )
 		{

@@ -34,13 +34,14 @@ public class BusesDatabase
 	// Reads from the text file to create the list of buses
 	{
 		BufferedReader br = new BufferedReader( new FileReader( DATA_FILE ) );
-		String line = br.readLine();
+		String line = br.readLine(); // Moves line-by-line through the file
 		this.buses = new ArrayList<Bus>();
 		
 		while( line != null && !line.isEmpty() )
 		    // The file might or might not end with an empty line
 		{
 			String[] splitLine = line.split( ", " );
+			    // Should have 5 elements corresponding to Bus's 5 fields
 			
 			String makeAndModel        = splitLine[0];
 			double tankSize            = Double.parseDouble( splitLine[2] );
@@ -64,6 +65,21 @@ public class BusesDatabase
 		br.close();
 	}
 	
+	public void update() throws Exception
+    // Overwrites the text file with information from the buses field. This
+    // method is the only way to save changes made using other methods into the
+    // actual text file; without using this method, changes will be lost upon
+    // closing the program.
+    {
+        FileWriter fw = new FileWriter( DATA_FILE );
+        
+        for( Bus bus : this.buses )
+            fw.write( bus.getMakeAndModel() + ", " + bus.getType() + ", " +
+                      bus.getTankSize() + ", " + bus.getCruisingConsumption() +
+                      ", " + bus.getCruisingSpeed() + "\n" );
+        fw.close();
+    }
+	
 	public Bus[] toArray()
 	// Returns a 1-dimensional array containing all the Buses in the database
     {
@@ -84,10 +100,15 @@ public class BusesDatabase
 	// Bus's maximum range. Only long-distance buses, not city buses, are
 	// included.
 	{
+	    // Create a list of just long-distance buses:
+	    
 	    ArrayList<Bus> lDBuses = new ArrayList<Bus>( buses.size() );
 	    for( Bus b : buses )
 	        if( b.getType() == BusType.longDistance )
 	            lDBuses.add(b);
+	    
+	    // Convert the list to String[][]:
+	    
 	    String[][] array = new String[ lDBuses.size() ][ 6 ];
 	    for( int i = 0; i < lDBuses.size(); ++i )
 	    {
@@ -120,21 +141,6 @@ public class BusesDatabase
             array[i][5] = String.valueOf( b.maxRange() );
 	    }
 	    return array;
-	}
-	
-	public void update() throws Exception
-	// Overwrites the text file with information from the buses field. This
-    // method is the only way to save changes made using other methods into the
-    // actual text file; without using this method, changes will be lost upon
-    // closing the program.
-	{
-		FileWriter fw = new FileWriter( DATA_FILE );
-		
-		for( Bus bus : this.buses )
-			fw.write( bus.getMakeAndModel() + ", " + bus.getType() + ", " +
-		              bus.getTankSize() + ", " + bus.getCruisingConsumption() +
-		              ", " + bus.getCruisingSpeed() + "\n" );
-		fw.close();
 	}
 	
 	public void addBus( Bus bus ) throws Exception
